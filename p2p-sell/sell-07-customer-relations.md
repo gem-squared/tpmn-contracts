@@ -14,6 +14,7 @@ invoice_status:       string    # PAID | SHIPPED | DELIVERED
 invoice_buyer_id:     uuid      # buyer reference
 invoice_seller_id:    uuid      # seller reference
 invoice_total:        decimal   # total amount (for refund calculation)
+invoice_quantity:     int       # units purchased (for stock restoration)
 invoice_paid_at:      datetime  # payment timestamp
 invoice_shipped_at:   datetime? # shipment timestamp (nullable)
 invoice_delivered_at: datetime? # delivery timestamp (nullable)
@@ -64,6 +65,7 @@ rating_comment:       string?   # optional rating comment
        - Create refund record: { refund_id, invoice_id, amount: invoice.total, issued_at: now, status: "REFUNDED" }
        - Update invoice.status = "REFUND"
        - Update dispute.status = "RESOLVED", dispute.resolution = "BUYER_WIN", dispute.resolved_at = now
+       - **Restore listing stock** — listing.quantity_available += invoice.quantity; IF listing.status == "SOLD_OUT": listing.status = "ACTIVE"
        - Notify buyer: refund issued
        - Notify seller: dispute resolved, buyer refunded
      - **IF seller wins**:
@@ -100,6 +102,8 @@ dispute_resolution:  string?   # "BUYER_WIN" | "SELLER_WIN" (null if OPEN/ESCALA
 refund_id:           uuid?     # refund record identifier (if buyer wins dispute)
 refund_amount:       decimal?  # refund amount (invoice.total)
 refund_issued_at:    datetime? # when refund issued
+listing_quantity_restored: bool # true if stock returned to listing (BUYER_WIN only)
+listing_status:      string?   # "ACTIVE" if relisted after BUYER_WIN on SOLD_OUT listing
 rating_id:           uuid?     # rating record identifier (if rating provided)
 rating_score:        int?      # rating score 1-5
 rating_comment:      string?   # sanitized rating comment
@@ -118,9 +122,12 @@ escrow_released:     bool      # true if funds released to seller
 - [ ] Funds frozen immediately on dispute.status = "OPEN" (RULE_7)
 - [ ] DELIVERED → invoice.status == "DELIVERED" AND escrow released (if no dispute)
 - [ ] REFUND → refund_id generated, refund_amount == invoice.total
+- [ ] BUYER_WIN → listing.quantity_available += invoice.quantity (stock restored to listing)
+- [ ] BUYER_WIN → listing.status = "ACTIVE" if previously "SOLD_OUT" after stock restored
+- [ ] SELLER_WIN → stock not restored (sale stands, escrow released to seller)
 - [ ] Rating score ∈ {1, 2, 3, 4, 5} (if provided)
 - [ ] Rating comment sanitized (RULE_13)
-- [ ] Terminal states (SOLD_OUT → invoice chain) are irreversible (RULE_9)
+- [ ] Terminal states (SOLD_OUT → invoice chain) are irreversible unless BUYER_WIN restores stock
 - [ ] Admin-only actions (RESOLVED outcome) restricted to actor_role == "admin"
 - [ ] Buyer and seller notified of resolution outcome
 - [ ] resolution event broadcast
