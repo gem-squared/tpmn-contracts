@@ -1,0 +1,138 @@
+{
+  "_scenario": "A003 — Maternity (Normal delivery), COMP-HEALTH-GOLD, Self, REJECTED at Stage 3 — Waiting Period Not Met",
+  "_outcome": "Pipeline halts at eligibility-check. Policy only 65 days old; maternity waiting period is 270 days.",
+
+  "stage_1_intake": {
+    "_input": {
+      "policy_no": "HIC-2025-00789",
+      "policy_holder": "Priya Subramaniam",
+      "claimant_name": "Priya Subramaniam",
+      "claimant_relationship": "self",
+      "id_document_type": "nric",
+      "id_document_no": "S9023456D",
+      "date_of_birth": "1990-05-18",
+      "claim_date": "2025-05-14",
+      "incident_date": "2025-05-13",
+      "claim_type": "maternity",
+      "provider_name": "KK Women's and Children's Hospital",
+      "provider_registration": "MOH-HOSP-00273",
+      "claim_amount_requested": 8200.00,
+      "supporting_documents": ["medical_bill", "discharge_summary"],
+      "claimant_contact_email": "priya.sub@email.sg",
+      "claimant_contact_phone": "+6583456789"
+    },
+    "_validation": {
+      "policy_no_regex_match": true,
+      "policy_exists_in_db": true,
+      "id_format_valid": true,
+      "date_of_birth_age": 35,
+      "submission_lag_days": 1,
+      "submission_lag_le_365": true,
+      "claim_amount_gt_zero": true,
+      "documents_vocab_valid": true,
+      "minimum_documents_present": true,
+      "missing_documents": []
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01003",
+      "policy_no": "HIC-2025-00789",
+      "claimant_name": "Priya Subramaniam",
+      "claim_type": "maternity",
+      "incident_date": "2025-05-13",
+      "claim_date": "2025-05-14",
+      "claim_amount_requested": 8200.00,
+      "intake_accepted": true,
+      "rejection_reason": null,
+      "missing_documents": [],
+      "intake_timestamp": "2025-05-14T14:05:00+08:00"
+    }
+  },
+
+  "stage_2_policy_verification": {
+    "_db_lookups": {
+      "policy_found": true,
+      "policy_status": "active",
+      "policy_start_date": "2025-03-10",
+      "policy_expiry_date": "2027-03-09",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "identity_matched": true,
+      "relationship": "self",
+      "dependent_status": "active",
+      "arrears_count": 0,
+      "incident_in_coverage_window": true,
+      "dependent_verified": true,
+      "dup_count": 0
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01003",
+      "policy_no": "HIC-2025-00789",
+      "claimant_name": "Priya Subramaniam",
+      "claim_type": "maternity",
+      "incident_date": "2025-05-13",
+      "claim_amount_requested": 8200.00,
+      "policy_verified": true,
+      "verification_failure": null,
+      "policy_start_date": "2025-03-10",
+      "policy_expiry_date": "2027-03-09",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "premium_payment_mode": "annual",
+      "dependent_verified": true,
+      "verification_timestamp": "2025-05-14T14:05:30+08:00"
+    }
+  },
+
+  "stage_3_eligibility_check": {
+    "_db_lookups": {
+      "covered": true,
+      "waiting_period_days": 270,
+      "policy_start_date": "2025-03-10",
+      "incident_date": "2025-05-13",
+      "days_since_policy_start": 64,
+      "waiting_period_satisfied": false,
+      "waiting_period_earliest_eligible_date": "2025-12-04"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01003",
+      "policy_no": "HIC-2025-00789",
+      "claimant_name": "Priya Subramaniam",
+      "claim_type": "maternity",
+      "incident_date": "2025-05-13",
+      "claim_amount_requested": 8200.00,
+      "eligible": false,
+      "eligibility_failure_reason": "WAITING_PERIOD_NOT_MET",
+      "claim_type_covered": true,
+      "waiting_period_satisfied": false,
+      "waiting_period_days": 270,
+      "annual_limit": 20000.00,
+      "annual_utilised": 0.00,
+      "annual_limit_remaining": 20000.00,
+      "per_claim_limit": 10000.00,
+      "claimable_ceiling": 0.00,
+      "exclusions_triggered": [],
+      "eligibility_timestamp": "2025-05-14T14:06:00+08:00"
+    }
+  },
+
+  "stage_4_medical_review": {
+    "_status": "SKIPPED — pipeline halted at stage 3 (eligibility_failure_reason = WAITING_PERIOD_NOT_MET)"
+  },
+
+  "stage_5_adjudication": {
+    "_status": "SKIPPED — pipeline halted at stage 3"
+  },
+
+  "stage_6_disbursement": {
+    "_status": "SKIPPED — pipeline halted at stage 3",
+    "_final_outcome": {
+      "claim_reference_draft": "DRAFT-20250514-01003",
+      "policy_no": "HIC-2025-00789",
+      "claimant_name": "Priya Subramaniam",
+      "claim_type": "maternity",
+      "disbursement_status": "halted",
+      "net_payable": 0.00,
+      "rejection_stage": "eligibility_check",
+      "rejection_reason": "WAITING_PERIOD_NOT_MET — maternity waiting period is 270 days under COMP-HEALTH-GOLD. Policy started 2025-03-10; earliest eligible incident date for maternity is 2025-12-04. Incident occurred 2025-05-13 (day 64 of policy).",
+      "processing_timestamp": "2025-05-14T14:06:10+08:00"
+    }
+  }
+}

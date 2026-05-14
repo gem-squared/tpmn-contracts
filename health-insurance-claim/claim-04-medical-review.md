@@ -31,22 +31,78 @@ medical_details:            object    # extracted from supporting documents
 
 ## F: Processing Logic
 
-1. **Provider accreditation check** — Validate `provider_registration` against the insurer's panel of accredited providers. Non-panel providers may attract reduced benefits or rejection:
-   - Panel provider → standard benefit rate applies
-   - Non-panel provider → apply non-panel surcharge or set `non_panel_flag = true`
-2. **ICD-10 code validation** — Verify `primary_diagnosis_icd10` is a valid, currently active ICD-10-CM code. If invalid → flag `INVALID_ICD10`.
-3. **CPT code validation** — Verify each code in `procedure_cpt_codes` is a valid CPT code. Cross-reference CPT codes against the diagnosis to confirm clinical plausibility (e.g. a labour-and-delivery CPT code must correspond to a maternity ICD-10 diagnosis).
-4. **Pre-authorisation check** — For `claim_type ∈ {hospitalisation, surgical, maternity}`, `pre_authorisation_no` must be non-null and resolvable in the pre-auth registry. If required but absent → flag `MISSING_PRE_AUTH`.
-5. **Hospitalisation duration check** — If `admission_date` and `discharge_date` are provided:
-   - `discharge_date ≥ admission_date` (cannot discharge before admission)
-   - `length_of_stay = discharge_date − admission_date` (days)
-   - Cross-check billed amount against benchmark cost per day for `primary_diagnosis_icd10`.
-6. **Physician licence validation** — Verify `physician_license_no` is an active, non-revoked licence on the medical board registry. If licence is expired or revoked → flag `INVALID_PHYSICIAN_LICENCE`.
-7. **Medical necessity determination** — Map `primary_diagnosis_icd10` and `procedure_cpt_codes` to the plan's medical necessity guidelines. Flag `MEDICAL_NECESSITY_UNCONFIRMED` if the combination does not meet standard clinical criteria.
-8. **Bill reasonableness check** — Compare `claim_amount_requested` against the reference pricing schedule (RPS) for the submitted CPT codes:
-   - `rps_benchmark` = sum of benchmark prices for each CPT code given the provider type and setting.
-   - If `claim_amount_requested > rps_benchmark * 1.5` → flag `BILL_EXCEEDS_BENCHMARK`.
-9. **Medical review result** — `medical_approved = valid_icd10 ∧ valid_cpt ∧ pre_auth_satisfied ∧ physician_valid ∧ medical_necessity_confirmed ∧ not_bill_anomaly`.
+1. **Provider accreditation check** — Query the `accredited_providers` table using `provider_registration` as the key:
+   ```sql
+   SELECT provider_name, provider_type, setting, panel_status, accreditation_expiry_date
+   FROM accredited_providers
+   WHERE provider_registration = :provider_registration;
+   ```
+   - If no row is returned: `non_panel_flag = true`. The `non_panel_reimbursement_pct` is then sourced from `plan_benefits` for the given `policy_product_code`.
+   - If a row is returned but `accreditation_expiry_date < incident_date`: treat as non-panel; `non_panel_flag = true`.
+   - If a row is returned and `panel_status = 'active'` and `accreditation_expiry_date ≥ incident_date`: `non_panel_flag = false`, standard benefit rate applies.
+
+2. **ICD-10 code validation** — Verify `primary_diagnosis_icd10` is a valid, currently active ICD-10-CM code:
+   - Format regex: `^[A-Z]\d{2}(\.\d{1,4})?$` (e.g. `J18.9`, `K35.80`)
+   - Query the `icd10_reference` table: `SELECT 1 FROM icd10_reference WHERE code = :primary_diagnosis_icd10 AND status = 'active'`. If no row → flag `INVALID_ICD10`.
+
+3. **CPT code validation** — For each code in `procedure_cpt_codes`:
+   - Format regex: `^\d{5}$` (exactly 5 digits, e.g. `99213`, `27447`)
+   - Query the `cpt_reference` table: `SELECT 1 FROM cpt_reference WHERE code = :cpt_code AND status = 'active'`. If any code is invalid → flag `INVALID_CPT_CODE`.
+   - Cross-reference `procedure_cpt_codes` against `primary_diagnosis_icd10` in the `icd10_cpt_plausibility` table to confirm clinical plausibility. If a code pair fails plausibility → flag `CPT_ICD10_MISMATCH`.
+
+4. **Pre-authorisation check** — For `claim_type ∈ {hospitalisation, surgical, maternity}`:
+   - `pre_authorisation_no` must be non-null and match the format `^PA-\d{4}-\d{6}$` (e.g. `PA-2025-001234`, where `YYYY` is the year of issuance and `######` is a 6-digit zero-padded sequence number).
+   - Query the `pre_authorisations` table:
+     ```sql
+     SELECT status, policy_no, authorised_amount, expiry_date
+     FROM pre_authorisations
+     WHERE pre_auth_no = :pre_authorisation_no;
+     ```
+   - Validation conditions (all must hold):
+     - Row must exist; if not → flag `MISSING_PRE_AUTH`.
+     - `status = 'approved'`; if `'expired'` or `'cancelled'` → flag `PRE_AUTH_INVALID`.
+     - `policy_no` in the pre-auth record must match this claim's `policy_no`; mismatch → flag `PRE_AUTH_POLICY_MISMATCH`.
+     - `incident_date ≤ expiry_date`; if expired → flag `PRE_AUTH_EXPIRED`.
+   - For `claim_type ∈ {outpatient, dental, vision, emergency, mental_health}`: `pre_auth_verified = true` unconditionally (pre-auth not required).
+
+5. **Hospitalisation duration check** — If `admission_date` and `discharge_date` are non-null:
+   - `discharge_date ≥ admission_date`; if violated → flag `INVALID_ADMISSION_DISCHARGE_DATES`.
+   - `length_of_stay = discharge_date − admission_date` (calendar days).
+   - Query `rps_schedule` for benchmark cost per inpatient day for `primary_diagnosis_icd10` and compare against `claim_amount_requested / length_of_stay` as a per-day plausibility check.
+
+6. **Physician licence validation** — Validate `physician_license_no`:
+   - Format regex: `^MCR-\d{5}[A-Z]$` (e.g. `MCR-12345A`), where `MCR` = Medical Council Registration prefix, `\d{5}` is the 5-digit registration number, and the trailing letter is the check character.
+   - Query the `physician_registry` table:
+     ```sql
+     SELECT status, expiry_date, specialty
+     FROM physician_registry
+     WHERE physician_license_no = :physician_license_no;
+     ```
+   - If no row → flag `INVALID_PHYSICIAN_LICENCE`.
+   - If `status ≠ 'active'` or `expiry_date < incident_date` → flag `INVALID_PHYSICIAN_LICENCE`.
+
+7. **Medical necessity determination** — Query the `medical_necessity_guidelines` table:
+   ```sql
+   SELECT necessity_confirmed
+   FROM medical_necessity_guidelines
+   WHERE icd10_code = :primary_diagnosis_icd10
+     AND cpt_code   IN (:procedure_cpt_codes);
+   ```
+   If `necessity_confirmed = false` for any CPT/ICD-10 pair → flag `MEDICAL_NECESSITY_UNCONFIRMED`.
+
+8. **Bill reasonableness check** — Compute `rps_benchmark` by summing reference prices for all submitted CPT codes:
+   ```sql
+   SELECT SUM(unit_price) AS rps_benchmark
+   FROM rps_schedule
+   WHERE cpt_code      IN (:procedure_cpt_codes)
+     AND provider_type = :provider_type
+     AND setting       = :setting;
+   ```
+   Where `setting ∈ {inpatient, outpatient}` is derived from `claim_type` (hospitalisation/surgical → `inpatient`; outpatient/others → `outpatient`).
+   Compute `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100`.
+   If `bill_variance_pct > 50` → flag `BILL_EXCEEDS_BENCHMARK`.
+
+9. **Medical review result** — `medical_approved = valid_icd10 ∧ valid_cpt ∧ cpt_icd10_plausible ∧ pre_auth_satisfied ∧ valid_admission_dates ∧ physician_valid ∧ medical_necessity_confirmed ∧ not_bill_anomaly`. The first failing condition produces `medical_rejection_reason`.
 
 ## B: Output
 
