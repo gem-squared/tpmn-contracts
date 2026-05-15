@@ -1,0 +1,114 @@
+{
+  "_scenario": "A005 — Emergency (Wrist Fracture), COMP-HEALTH-GOLD, Self, REJECTED at Stage 2 — Duplicate Claim",
+  "_outcome": "Pipeline halts at policy-verification. A paid claim for the same policy_no + incident_date + claim_type already exists in the claims table.",
+
+  "stage_1_intake": {
+    "_input": {
+      "policy_no": "HIC-2024-00099",
+      "policy_holder": "Chen Mei Ling",
+      "claimant_name": "Chen Mei Ling",
+      "claimant_relationship": "self",
+      "id_document_type": "nric",
+      "id_document_no": "S9145678F",
+      "date_of_birth": "1991-12-07",
+      "claim_date": "2025-05-14",
+      "incident_date": "2025-04-21",
+      "claim_type": "emergency",
+      "provider_name": "Tan Tock Seng Hospital",
+      "provider_registration": "MOH-HOSP-00391",
+      "claim_amount_requested": 1850.00,
+      "supporting_documents": ["medical_bill", "imaging_report"],
+      "claimant_contact_email": "chenmei@email.sg",
+      "claimant_contact_phone": "+6587654321"
+    },
+    "_validation": {
+      "policy_no_regex_match": true,
+      "policy_exists_in_db": true,
+      "id_format_valid": true,
+      "date_of_birth_age": 33,
+      "submission_lag_days": 23,
+      "submission_lag_le_365": true,
+      "claim_amount_gt_zero": true,
+      "documents_vocab_valid": true,
+      "minimum_documents_present": true,
+      "required_for_emergency": ["medical_bill"],
+      "missing_documents": []
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01005",
+      "policy_no": "HIC-2024-00099",
+      "claimant_name": "Chen Mei Ling",
+      "claim_type": "emergency",
+      "incident_date": "2025-04-21",
+      "claim_date": "2025-05-14",
+      "claim_amount_requested": 1850.00,
+      "intake_accepted": true,
+      "rejection_reason": null,
+      "missing_documents": [],
+      "intake_timestamp": "2025-05-14T16:45:00+08:00"
+    }
+  },
+
+  "stage_2_policy_verification": {
+    "_db_lookups": {
+      "policy_found": true,
+      "policy_status": "active",
+      "policy_start_date": "2024-04-01",
+      "policy_expiry_date": "2026-03-31",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "identity_matched": true,
+      "relationship": "self",
+      "dependent_verified": true,
+      "arrears_count": 0,
+      "incident_in_coverage_window": true,
+      "duplicate_check_query": "SELECT COUNT(*) FROM claims WHERE policy_no='HIC-2024-00099' AND incident_date='2025-04-21' AND claim_type='emergency' AND status IN ('pending','approved','paid')",
+      "dup_count": 1,
+      "existing_claim_reference": "CLM-2025-0000877",
+      "existing_claim_status": "paid"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01005",
+      "policy_no": "HIC-2024-00099",
+      "claimant_name": "Chen Mei Ling",
+      "claim_type": "emergency",
+      "incident_date": "2025-04-21",
+      "claim_amount_requested": 1850.00,
+      "policy_verified": false,
+      "verification_failure": "DUPLICATE_CLAIM",
+      "policy_start_date": "2024-04-01",
+      "policy_expiry_date": "2026-03-31",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "premium_payment_mode": "annual",
+      "dependent_verified": true,
+      "verification_timestamp": "2025-05-14T16:45:30+08:00",
+      "_rejection_detail": "Existing claim CLM-2025-0000877 (status=paid) already filed for policy_no=HIC-2024-00099, incident_date=2025-04-21, claim_type=emergency. Duplicate submission rejected."
+    }
+  },
+
+  "stage_3_eligibility_check": {
+    "_status": "SKIPPED — pipeline halted at stage 2 (verification_failure = DUPLICATE_CLAIM)"
+  },
+
+  "stage_4_medical_review": {
+    "_status": "SKIPPED — pipeline halted at stage 2"
+  },
+
+  "stage_5_adjudication": {
+    "_status": "SKIPPED — pipeline halted at stage 2"
+  },
+
+  "stage_6_disbursement": {
+    "_status": "SKIPPED — pipeline halted at stage 2",
+    "_final_outcome": {
+      "claim_reference_draft": "DRAFT-20250514-01005",
+      "policy_no": "HIC-2024-00099",
+      "claimant_name": "Chen Mei Ling",
+      "claim_type": "emergency",
+      "disbursement_status": "halted",
+      "net_payable": 0.00,
+      "rejection_stage": "policy_verification",
+      "rejection_reason": "DUPLICATE_CLAIM — A paid claim CLM-2025-0000877 already exists for policy HIC-2024-00099, incident date 2025-04-21, claim type emergency. Resubmission is not permitted for the same incident event.",
+      "processing_timestamp": "2025-05-14T16:45:35+08:00"
+    }
+  }
+}

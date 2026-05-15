@@ -27,21 +27,53 @@ payment_details:                object    # claimant-submitted preferred payment
 
 ## F: Processing Logic
 
-1. **Adjudication approval gate** — If `adjudication_status ≠ approved`, halt immediately. No disbursement for zero-benefit or rejected claims. Record `disbursement_status = halted`.
-2. **Net payable floor check** — `net_payable > 0` must hold. If `net_payable ≤ 0`, halt with `ZERO_NET_PAYABLE`.
-3. **Payment mode validation:**
-   - `direct_credit` / `giro` → `bank_name`, `bank_account_no`, `bank_branch_code` must all be non-empty.
-   - `bank_account_no` must conform to the local account number format (7–16 digits, no special characters).
-   - `provider_direct` → insurer pays provider directly; `bank_account_no` is sourced from provider registry using `provider_registration` from Node 4.
-   - `cheque` → `payee_name` must be non-empty; cheque is mailed to claimant's registered address.
-4. **Anti-fraud cross-check** — Flag if `payment_details.payee_name` does not match `claimant_name` or the registered provider name (when `provider_direct`). Discrepancy triggers manual review hold.
-5. **Claim reference finalisation** — Upgrade `claim_reference_draft` to a permanent `claim_reference_no` (e.g. `CLM-2024-0051234`) by registering in the claims management system.
-6. **Disbursement date determination** — `disbursement_date = processing_date + settlement_days`:
-   - `direct_credit` / `giro`: T+3 business days
-   - `cheque`: T+7 business days
-   - `provider_direct`: T+5 business days
-7. **Deductible ledger update** — Post `deductible_applied_this_claim` (from Node 5) to the claimant's annual deductible ledger.
-8. **Annual utilisation ledger update** — Post `net_payable` to the claimant's annual benefit utilisation balance for `claim_type`.
+1. **Adjudication approval gate** — Check `adjudication_status` from the adjudication stage:
+   - If `adjudication_status ≠ 'approved'` → halt immediately; set `disbursement_status = 'halted'` and record reason.
+   - `zero_benefit` → halt with note `ZERO_BENEFIT_NO_DISBURSEMENT`.
+   - `rejected` → halt with note `CLAIM_REJECTED_UPSTREAM`.
+
+2. **Net payable floor check** — Confirm `net_payable > 0.00 SGD`. If `net_payable ≤ 0` → halt with `ZERO_NET_PAYABLE`.
+
+3. **Payment mode validation** — Apply format rules based on `payment_details.payment_mode`:
+   - **`direct_credit` / `giro`**: `bank_name`, `bank_account_no`, and `bank_branch_code` must all be non-null and non-empty.
+     - `bank_account_no` must match the bank-specific format:
+       - DBS / POSB: `^\d{10}$`
+       - OCBC: `^\d{9,10}$`
+       - UOB: `^\d{10}$`
+       - Standard Chartered: `^\d{9}$`
+       - Other / generic: `^\d{7,16}$`
+     - `bank_branch_code` must match `^\d{3}$` (3-digit branch code, e.g. `081`)
+   - **`cheque`**: `payee_name` must be non-null and non-empty. No bank fields required. The cheque is mailed to the claimant's registered address on file.
+   - **`provider_direct`**: The insurer pays the provider directly. `bank_account_no` is sourced from the `accredited_providers` table using `provider_registration` (from the medical review stage); no claimant bank details required.
+
+4. **Anti-fraud cross-check** — Compare `payment_details.payee_name` against `claimant_name`:
+   - For `payment_mode ∈ {direct_credit, giro, cheque}`: `payee_name` must match `claimant_name` (case-insensitive, normalised whitespace). A mismatch → set `disbursement_status = 'pending_manual_review'` and halt for human review.
+   - For `payment_mode = provider_direct`: `payee_name` must match the registered provider name from the `accredited_providers` table. A mismatch → set `disbursement_status = 'pending_manual_review'`.
+
+5. **Claim reference finalisation** — Upgrade `claim_reference_draft` to a permanent `claim_reference_no`:
+   - Format: `^CLM-\d{4}-\d{7}$` (e.g. `CLM-2025-0001234`), where `YYYY` is the year of finalisation and `#######` is a 7-digit globally unique sequence number.
+   - Sequence is obtained by: `INSERT INTO claim_sequence (year) VALUES (YEAR(NOW())) RETURNING next_val` (atomic auto-increment per year).
+   - Register the permanent reference in the `claims` table: `UPDATE claims SET claim_reference_no = :new_ref, status = 'approved' WHERE claim_reference_draft = :draft_ref`.
+
+6. **Disbursement date determination** — `disbursement_date = processing_date + settlement_days` (business days, excluding weekends and public holidays):
+   - `direct_credit` / `giro` → T+3 business days
+   - `cheque` → T+7 business days
+   - `provider_direct` → T+5 business days
+
+7. **Deductible ledger update** — Insert a row to record the deductible absorbed by this claim:
+   ```sql
+   INSERT INTO deductible_ledger (policy_no, benefit_year, claim_reference_no, amount, posted_at)
+   VALUES (:policy_no, YEAR(:incident_date), :claim_reference_no,
+           :deductible_applied_this_claim, NOW());
+   ```
+
+8. **Annual utilisation ledger update** — Insert a row to record the insurer disbursement for annual limit tracking:
+   ```sql
+   INSERT INTO claim_utilisation (policy_no, claim_type, benefit_year, claim_reference_no,
+                                  net_payable, status, posted_at)
+   VALUES (:policy_no, :claim_type, YEAR(:incident_date), :claim_reference_no,
+           :net_payable, 'paid', NOW());
+   ```
 
 ## B: Output
 

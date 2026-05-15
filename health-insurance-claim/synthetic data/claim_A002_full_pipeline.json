@@ -1,0 +1,263 @@
+{
+  "_scenario": "A002 — Outpatient (Hypertension), COMP-HEALTH-SILVER, Spouse Dependent, APPROVED with co-pay & co-insurance",
+  "_outcome": "Disbursed via direct_credit. Spouse dependent verified. Cost-sharing applied.",
+
+  "stage_1_intake": {
+    "_input": {
+      "policy_no": "HIC-2023-00456",
+      "policy_holder": "Lim Jia Hui",
+      "claimant_name": "Lim Kai Xuan",
+      "claimant_relationship": "spouse",
+      "id_document_type": "nric",
+      "id_document_no": "S8867890C",
+      "date_of_birth": "1988-11-30",
+      "claim_date": "2025-05-14",
+      "incident_date": "2025-05-14",
+      "claim_type": "outpatient",
+      "provider_name": "HealthFirst Medical Clinic",
+      "provider_registration": "MOH-CLIN-00887",
+      "claim_amount_requested": 380.00,
+      "supporting_documents": ["medical_bill", "prescription"],
+      "claimant_contact_email": "limkaixuan@email.sg",
+      "claimant_contact_phone": "+6598765432"
+    },
+    "_validation": {
+      "policy_no_regex_match": true,
+      "policy_exists_in_db": true,
+      "id_format_valid": true,
+      "date_of_birth_age": 36,
+      "submission_lag_days": 0,
+      "submission_lag_le_365": true,
+      "claim_amount_gt_zero": true,
+      "documents_vocab_valid": true,
+      "minimum_documents_present": true,
+      "required_for_outpatient": ["medical_bill"],
+      "missing_documents": []
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "incident_date": "2025-05-14",
+      "claim_date": "2025-05-14",
+      "claim_amount_requested": 380.00,
+      "intake_accepted": true,
+      "rejection_reason": null,
+      "missing_documents": [],
+      "intake_timestamp": "2025-05-14T11:10:00+08:00"
+    }
+  },
+
+  "stage_2_policy_verification": {
+    "_db_lookups": {
+      "policy_found": true,
+      "policy_status": "active",
+      "policy_start_date": "2023-06-01",
+      "policy_expiry_date": "2025-05-31",
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "identity_matched": true,
+      "relationship": "spouse",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null,
+      "arrears_count": 0,
+      "incident_in_coverage_window": true,
+      "dependent_verified": true,
+      "dup_count": 0
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "incident_date": "2025-05-14",
+      "claim_amount_requested": 380.00,
+      "policy_verified": true,
+      "verification_failure": null,
+      "policy_start_date": "2023-06-01",
+      "policy_expiry_date": "2025-05-31",
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "premium_payment_mode": "monthly",
+      "dependent_verified": true,
+      "verification_timestamp": "2025-05-14T11:10:30+08:00"
+    }
+  },
+
+  "stage_3_eligibility_check": {
+    "_db_lookups": {
+      "covered": true,
+      "waiting_period_days": 30,
+      "days_since_policy_start": 713,
+      "waiting_period_satisfied": true,
+      "annual_limit": 5000.00,
+      "per_claim_limit": 500.00,
+      "annual_utilised": 180.00,
+      "annual_limit_remaining": 4820.00,
+      "lifetime_utilised": 180.00,
+      "lifetime_limit": 600000.00,
+      "lifetime_limit_exhausted": false,
+      "exclusions_triggered": []
+    },
+    "_computation": {
+      "claimable_ceiling": "min(380.00, 500.00, 4820.00) = 380.00"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "incident_date": "2025-05-14",
+      "claim_amount_requested": 380.00,
+      "eligible": true,
+      "eligibility_failure_reason": null,
+      "claim_type_covered": true,
+      "waiting_period_satisfied": true,
+      "waiting_period_days": 30,
+      "annual_limit": 5000.00,
+      "annual_utilised": 180.00,
+      "annual_limit_remaining": 4820.00,
+      "per_claim_limit": 500.00,
+      "claimable_ceiling": 380.00,
+      "exclusions_triggered": [],
+      "eligibility_timestamp": "2025-05-14T11:11:00+08:00"
+    }
+  },
+
+  "stage_4_medical_review": {
+    "_medical_details": {
+      "primary_diagnosis_icd10": "I10",
+      "primary_diagnosis_description": "Essential (primary) hypertension",
+      "procedure_cpt_codes": ["99213"],
+      "procedure_descriptions": ["Office/outpatient visit, established patient, moderate complexity"],
+      "admission_date": null,
+      "discharge_date": null,
+      "attending_physician": "Dr. Nur Aisyah Binte Ramli",
+      "physician_license_no": "MCR-20891B",
+      "pre_authorisation_no": null
+    },
+    "_db_lookups": {
+      "panel_status": "active",
+      "non_panel_flag": false,
+      "icd10_valid": true,
+      "cpt_99213_valid": true,
+      "cpt_icd10_plausibility": "PASS — 99213 (outpatient visit) consistent with I10 (hypertension)",
+      "pre_auth_required": false,
+      "pre_auth_verified": true,
+      "physician_status": "active",
+      "physician_valid": true,
+      "rps_benchmark": 320.00,
+      "bill_variance_pct": "((380 - 320) / 320) * 100 = 18.75%",
+      "bill_exceeds_benchmark": false,
+      "medical_necessity_confirmed": true
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "incident_date": "2025-05-14",
+      "claim_amount_requested": 380.00,
+      "claimable_ceiling": 380.00,
+      "medical_approved": true,
+      "medical_rejection_reason": null,
+      "non_panel_flag": false,
+      "pre_auth_verified": true,
+      "length_of_stay": null,
+      "rps_benchmark": 320.00,
+      "bill_variance_pct": 18.75,
+      "medical_necessity_confirmed": true,
+      "medical_flags": [],
+      "review_timestamp": "2025-05-14T11:11:45+08:00"
+    }
+  },
+
+  "stage_5_adjudication": {
+    "_db_lookups": {
+      "deductible_annual": 2000.00,
+      "co_payment_pct": 20,
+      "co_insurance_pct": 15,
+      "co_insurance_cap": 300.00,
+      "deductible_utilised": 0.00
+    },
+    "_computation": {
+      "adjudication_base": "claim(380) <= rps(320)? NO → adjudication_base = 320.00, then min(320, 380) = 320.00",
+      "step4_non_panel": "none",
+      "deductible_remaining": "max(0, 2000.00 - 0.00) = 2000.00",
+      "amount_after_deductible": "max(0, 320.00 - 2000.00) = 0.00",
+      "deductible_applied": "320.00 - 0.00 = 320.00",
+      "_note": "Entire adjudication base absorbed by deductible → net_payable = 0.00 → adjudication_status = zero_benefit",
+      "_override_note": "Wait — claim_amount(380) vs rps_benchmark(320): adjudication_base = min(claim, rps, ceiling) = min(380,320,380) = 320. Deductible_utilised=0, deductible_remaining=2000 > 320, so entire base absorbed.",
+      "co_pay_amount": 0.00,
+      "co_insurance_amount": 0.00,
+      "net_payable": 0.00,
+      "claimant_liability": 380.00,
+      "adjudication_status_initial": "zero_benefit"
+    },
+    "_design_note": "Silver plan deductible of SGD 2,000 fully absorbs this small outpatient claim of SGD 320 (RPS). To make A002 more instructive as an APPROVED case, we assign a deductible_utilised of SGD 1,800 (from earlier claims this year) so only SGD 200 deductible remains.",
+    "_adjusted_db_lookups": {
+      "deductible_utilised": 1800.00,
+      "_source": "deductible_ledger: prior claims in benefit_year 2025 consumed SGD 1,800 of the SGD 2,000 annual deductible"
+    },
+    "_adjusted_computation": {
+      "deductible_remaining": "max(0, 2000.00 - 1800.00) = 200.00",
+      "amount_after_deductible": "max(0, 320.00 - 200.00) = 120.00",
+      "deductible_applied": "320.00 - 120.00 = 200.00",
+      "co_pay_amount": "round(120.00 * 20/100, 2) = 24.00",
+      "amount_after_copay": "120.00 - 24.00 = 96.00",
+      "co_insurance_raw": "round(96.00 * 15/100, 2) = 14.40",
+      "co_insurance_amount": "min(14.40, 300.00) = 14.40",
+      "amount_after_coinsurance": "96.00 - 14.40 = 81.60",
+      "net_payable": 81.60,
+      "claimant_liability": "380.00 - 81.60 = 298.40"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250514-01002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "claim_amount_requested": 380.00,
+      "adjudication_base": 320.00,
+      "deductible_applied_this_claim": 200.00,
+      "co_pay_amount": 24.00,
+      "co_insurance_amount": 14.40,
+      "net_payable": 81.60,
+      "claimant_liability": 298.40,
+      "adjudication_status": "approved",
+      "adjudication_notes": "Adjudicated at RPS SGD 320 (claim SGD 380). Remaining deductible SGD 200 applied. Co-pay 20% (SGD 24). Co-insurance 15% (SGD 14.40). Net payable SGD 81.60.",
+      "adjudication_timestamp": "2025-05-14T11:12:30+08:00"
+    }
+  },
+
+  "stage_6_disbursement": {
+    "_payment_details": {
+      "payment_mode": "giro",
+      "bank_name": "OCBC",
+      "bank_account_no": "7123456789",
+      "bank_account_no_format": "^\\d{9,10}$ (OCBC format)",
+      "bank_branch_code": "502",
+      "payee_name": "Lim Kai Xuan"
+    },
+    "_validation": {
+      "adjudication_status_check": "approved → proceed",
+      "net_payable_gt_zero": true,
+      "bank_account_valid": true,
+      "payee_name_matches_claimant": true,
+      "fraud_flag": false
+    },
+    "_output": {
+      "claim_reference_no": "CLM-2025-0001002",
+      "policy_no": "HIC-2023-00456",
+      "claimant_name": "Lim Kai Xuan",
+      "claim_type": "outpatient",
+      "disbursement_status": "disbursed",
+      "net_payable": 81.60,
+      "claimant_liability": 298.40,
+      "payment_mode": "giro",
+      "payee_name": "Lim Kai Xuan (****6789)",
+      "disbursement_date": "2025-05-19",
+      "incident_date": "2025-05-14",
+      "remarks": "Spouse dependent claim verified. Adjudicated at RPS SGD 320. Remaining deductible SGD 200 applied. Co-pay 20%, co-insurance 15%. T+3 GIRO to OCBC ****6789.",
+      "processing_timestamp": "2025-05-14T11:13:10+08:00"
+    }
+  }
+}

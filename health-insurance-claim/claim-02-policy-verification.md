@@ -23,14 +23,70 @@ claim_amount_requested: number    # from claim-intake output
 
 ## F: Processing Logic
 
-1. **Policy existence lookup** — Query the policy database using `policy_no`. If no record found → reject with `POLICY_NOT_FOUND`.
-2. **Policy holder identity match** — Cross-reference `id_document_type` + `id_document_no` against the registered policyholder or listed dependents. If no match → reject with `IDENTITY_MISMATCH`.
-3. **Policy active status** — Verify `policy_status = active`. If `lapsed`, `cancelled`, or `pending` → reject with appropriate status.
-4. **Premium payment currency** — Confirm no outstanding premium arrears as of `incident_date`. If arrears exist → reject with `UNPAID_PREMIUMS`.
-5. **Policy effective & expiry date** — Verify `policy_start_date ≤ incident_date ≤ policy_expiry_date`. If `incident_date` falls outside the coverage window → reject with `OUT_OF_COVERAGE_PERIOD`.
-6. **Dependent eligibility** — If `claimant_relationship ≠ self`, verify the claimant is listed as an approved dependent on the policy and their dependent coverage has not been separately terminated.
-7. **Duplicate claim check** — Verify no existing claim with `status ∈ {pending, approved, paid}` for the same `incident_date` + `claim_type` combination under this `policy_no`. Duplicate → reject with `DUPLICATE_CLAIM`.
-8. **Policy verification result** — `policy_verified = policy_found ∧ identity_matched ∧ policy_active ∧ premiums_current ∧ within_coverage_period ∧ dependent_valid ∧ not_duplicate`.
+1. **Policy existence lookup** — Query the `policies` table using `policy_no` as the primary key:
+   ```sql
+   SELECT policy_holder_id, policy_status, policy_start_date, policy_expiry_date,
+          policy_product_code, premium_payment_mode, next_premium_due_date
+   FROM policies
+   WHERE policy_no = :policy_no;
+   ```
+   If no row is returned → reject with `POLICY_NOT_FOUND`. If a row is returned, store all retrieved fields for use in subsequent steps.
+
+2. **Policy holder identity match** — Query the `policy_members` table to confirm the claimant's identity document is registered on this policy:
+   ```sql
+   SELECT member_id, full_name, relationship, dependent_status
+   FROM policy_members
+   WHERE policy_no = :policy_no
+     AND id_document_type = :id_document_type
+     AND id_document_no   = :id_document_no;
+   ```
+   If no row is returned → reject with `IDENTITY_MISMATCH`. If a row is returned, store `relationship` and `dependent_status` for Step 6.
+
+3. **Policy active status** — Using `policy_status` retrieved in Step 1:
+   - `active` → proceed
+   - `lapsed` → reject with `POLICY_LAPSED`
+   - `cancelled` → reject with `POLICY_CANCELLED`
+   - `pending` → reject with `POLICY_PENDING_ACTIVATION`
+   No other values are valid; any unexpected value → reject with `UNKNOWN_POLICY_STATUS`.
+
+4. **Premium arrears check** — Query the `premium_ledger` table for any unpaid premium due on or before `incident_date`:
+   ```sql
+   SELECT COUNT(*) AS arrears_count
+   FROM premium_ledger
+   WHERE policy_no       = :policy_no
+     AND due_date        <= :incident_date
+     AND payment_status  = 'unpaid';
+   ```
+   If `arrears_count > 0` → reject with `UNPAID_PREMIUMS`.
+
+5. **Coverage window check** — Using `policy_start_date` and `policy_expiry_date` from Step 1:
+   - Condition: `policy_start_date ≤ incident_date ≤ policy_expiry_date`
+   - If `incident_date < policy_start_date` → reject with `INCIDENT_BEFORE_POLICY_START`
+   - If `incident_date > policy_expiry_date` → reject with `OUT_OF_COVERAGE_PERIOD`
+
+6. **Dependent eligibility** — If `relationship ≠ 'self'` (from Step 2):
+   - `dependent_status` must equal `'active'`. If `'terminated'` or `'suspended'` → reject with `DEPENDENT_NOT_ELIGIBLE`.
+   - Additionally query `policy_members` for `dependent_coverage_end_date`:
+     ```sql
+     SELECT dependent_coverage_end_date
+     FROM policy_members
+     WHERE policy_no = :policy_no AND member_id = :member_id;
+     ```
+     If `dependent_coverage_end_date IS NOT NULL AND dependent_coverage_end_date < incident_date` → reject with `DEPENDENT_COVERAGE_EXPIRED`.
+   - If `relationship = 'self'`, set `dependent_verified = true` unconditionally.
+
+7. **Duplicate claim check** — Query the `claims` table for any existing claim covering the same incident event:
+   ```sql
+   SELECT COUNT(*) AS dup_count
+   FROM claims
+   WHERE policy_no    = :policy_no
+     AND incident_date = :incident_date
+     AND claim_type   = :claim_type
+     AND status       IN ('pending', 'approved', 'paid');
+   ```
+   If `dup_count > 0` → reject with `DUPLICATE_CLAIM`.
+
+8. **Policy verification result** — `policy_verified = policy_found ∧ identity_matched ∧ policy_active ∧ premiums_current ∧ within_coverage_period ∧ dependent_valid ∧ not_duplicate`. All seven conditions must be `true`; the first failing condition produces `verification_failure`.
 
 ## B: Output
 

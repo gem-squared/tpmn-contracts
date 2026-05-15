@@ -29,27 +29,60 @@ benefit_schedule:           object    # retrieved from plan database using polic
 
 ## F: Processing Logic
 
-1. **Adjudication base** — Determine `adjudication_base`:
+1. **Benefit schedule retrieval** — Query the `plan_benefits` table using `policy_product_code` to load all cost-sharing parameters:
+   ```sql
+   SELECT deductible_annual, co_payment_pct, co_insurance_pct,
+          co_insurance_cap, non_panel_reimbursement_pct
+   FROM plan_benefits
+   WHERE policy_product_code = :policy_product_code
+     AND claim_type          = :claim_type;
+   ```
+   These values populate the `benefit_schedule` object used in all subsequent steps.
+
+2. **Deductible utilised retrieval** — Query the `deductible_ledger` table to determine how much of the annual deductible has already been consumed in the current benefit year:
+   ```sql
+   SELECT COALESCE(SUM(amount), 0) AS deductible_utilised
+   FROM deductible_ledger
+   WHERE policy_no    = :policy_no
+     AND benefit_year = YEAR(:incident_date);
+   ```
+   This value becomes `benefit_schedule.deductible_utilised`.
+
+3. **Adjudication base** — Determine `adjudication_base`:
    - If `claim_amount_requested ≤ rps_benchmark`: `adjudication_base = claim_amount_requested`
-   - If `claim_amount_requested > rps_benchmark`: `adjudication_base = rps_benchmark` (excess is claimant liability)
+   - If `claim_amount_requested > rps_benchmark`: `adjudication_base = rps_benchmark` (the excess is claimant liability; insurer does not adjudicate above the benchmark)
    - Apply `claimable_ceiling` cap: `adjudication_base = min(adjudication_base, claimable_ceiling)`
-2. **Non-panel adjustment** — If `non_panel_flag = true`:
+
+4. **Non-panel adjustment** — If `non_panel_flag = true`:
    - `adjudication_base = adjudication_base × (non_panel_reimbursement_pct / 100)`
-3. **Deductible application** — Compute remaining deductible:
+   - Where `non_panel_reimbursement_pct` is `COMP-HEALTH-GOLD`: 80%, `COMP-HEALTH-SILVER`: 70%, `COMP-HEALTH-BRONZE`: 60%.
+
+5. **Deductible application** — Compute using `deductible_annual` and `deductible_utilised` from Steps 1–2:
    - `deductible_remaining = max(0, deductible_annual − deductible_utilised)`
    - `amount_after_deductible = max(0, adjudication_base − deductible_remaining)`
    - `deductible_applied_this_claim = adjudication_base − amount_after_deductible`
-4. **Co-payment application** — Apply fixed co-pay percentage on `amount_after_deductible`:
-   - `co_pay_amount = amount_after_deductible × (co_payment_pct / 100)`
+
+6. **Co-payment application** — Apply fixed co-pay percentage on `amount_after_deductible`:
+   - `co_pay_amount = round(amount_after_deductible × (co_payment_pct / 100), 2)` (rounded to 2 decimal places)
    - `amount_after_copay = amount_after_deductible − co_pay_amount`
-5. **Co-insurance application** — Apply co-insurance on the remaining balance:
-   - `co_insurance_amount = min(amount_after_copay × (co_insurance_pct / 100), co_insurance_cap)`
+
+7. **Co-insurance application** — Apply co-insurance on the remaining balance:
+   - `co_insurance_raw = round(amount_after_copay × (co_insurance_pct / 100), 2)`
+   - `co_insurance_amount = min(co_insurance_raw, co_insurance_cap)`
    - `amount_after_coinsurance = amount_after_copay − co_insurance_amount`
-6. **Net payable calculation** — `net_payable = amount_after_coinsurance`
-   - `net_payable ≥ 0` always (cannot be negative)
+
+8. **Net payable calculation** — `net_payable = round(amount_after_coinsurance, 2)`
+   - `net_payable ≥ 0` always (cannot be negative; floor at 0.00)
    - `net_payable ≤ adjudication_base` (insurer pays no more than adjudicated base)
-7. **Claimant liability summary** — `claimant_liability = claim_amount_requested − net_payable`
-8. **Adjudication decision** — `adjudication_approved = net_payable > 0`. If `net_payable = 0` (e.g. fully consumed by deductible), status is `ZERO_BENEFIT` — not a rejection but no disbursement occurs.
+
+9. **Claimant liability summary** — `claimant_liability = round(claim_amount_requested − net_payable, 2)`
+
+10. **Adjudication decision** — Determine `adjudication_status`:
+    - `net_payable > 0` → `adjudication_status = 'approved'`
+    - `net_payable = 0` and no prior rejection → `adjudication_status = 'zero_benefit'` (this is NOT a rejection; the deductible or cost-sharing consumed the entire base; no disbursement occurs)
+    - Any upstream rejection (passed in from previous pipeline stages) → `adjudication_status = 'rejected'`
+
+
 
 ## B: Output
 

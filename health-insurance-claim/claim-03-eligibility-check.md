@@ -21,23 +21,72 @@ dependent_verified:     bool      # from policy-verification output
 
 ## F: Processing Logic
 
-1. **Coverage type inclusion** — Look up `policy_product_code` against the product benefit table. Verify that `claim_type` is an included benefit. If not covered → set `claim_type_covered = false` and record `exclusion_reason = "BENEFIT_NOT_IN_PLAN"`.
-2. **Waiting period check** — Retrieve the waiting period for `claim_type` under the plan:
-   - General illness / outpatient: typically 30 days from `policy_start_date`
-   - Hospitalisation / surgical: typically 30 days
-   - Maternity: typically 270–365 days from `policy_start_date`
-   - Pre-existing conditions (flagged at underwriting): 12–24 months
-   - Verify `incident_date ≥ policy_start_date + waiting_period_days`. If not → `waiting_period_satisfied = false`.
-3. **Annual benefit limit check** — Query the sum of all `paid` + `pending` claims in the current benefit year for this `policy_no` + `claim_type`. Compute `annual_utilised`. If `annual_utilised ≥ annual_limit` → `annual_limit_available = 0` and flag `ANNUAL_LIMIT_EXHAUSTED`.
-4. **Per-claim limit check** — Retrieve `per_claim_limit` for `claim_type` from the benefit schedule. Compute `claimable_ceiling = min(claim_amount_requested, per_claim_limit)`.
-5. **Lifetime benefit limit check** — Query total lifetime disbursements for the policy. If `lifetime_utilised ≥ lifetime_limit` → flag `LIFETIME_LIMIT_EXHAUSTED`.
-6. **Specific exclusion check** — Evaluate the claim against the policy exclusion list:
-   - Cosmetic procedures
-   - Self-inflicted injuries
-   - Substance abuse treatment (unless explicitly covered)
-   - War/terrorism-related events
-   - Experimental / non-approved treatments
-7. **Eligibility result** — `eligible = claim_type_covered ∧ waiting_period_satisfied ∧ annual_limit_available > 0 ∧ not_lifetime_exhausted ∧ no_specific_exclusion`.
+1. **Coverage type inclusion** — Query the `plan_benefits` table using `policy_product_code` and `claim_type`:
+   ```sql
+   SELECT covered, waiting_period_days, annual_limit, per_claim_limit,
+          lifetime_limit, non_panel_reimbursement_pct
+   FROM plan_benefits
+   WHERE policy_product_code = :policy_product_code
+     AND claim_type          = :claim_type;
+   ```
+   If no row is returned or `covered = false` → set `claim_type_covered = false` and record `exclusion_reason = 'BENEFIT_NOT_IN_PLAN'`.
+
+2. **Waiting period check** — Use `waiting_period_days` retrieved in Step 1. The mandatory minimums by plan tier and claim type are:
+
+   | `policy_product_code` | `claim_type` | `waiting_period_days` |
+   |---|---|---|
+   | `COMP-HEALTH-GOLD` | outpatient | 30 |
+   | `COMP-HEALTH-GOLD` | hospitalisation / surgical | 30 |
+   | `COMP-HEALTH-GOLD` | maternity | 270 |
+   | `COMP-HEALTH-GOLD` | pre_existing (flagged at underwriting) | 365 |
+   | `COMP-HEALTH-GOLD` | emergency / dental / vision / mental_health | 0 |
+   | `COMP-HEALTH-SILVER` | outpatient | 30 |
+   | `COMP-HEALTH-SILVER` | hospitalisation / surgical | 60 |
+   | `COMP-HEALTH-SILVER` | maternity | 365 |
+   | `COMP-HEALTH-SILVER` | pre_existing | 730 |
+   | `COMP-HEALTH-SILVER` | emergency / dental / vision / mental_health | 0 |
+   | `COMP-HEALTH-BRONZE` | outpatient | 60 |
+   | `COMP-HEALTH-BRONZE` | hospitalisation / surgical | 90 |
+   | `COMP-HEALTH-BRONZE` | maternity | 365 |
+   | `COMP-HEALTH-BRONZE` | pre_existing | 730 |
+   | `COMP-HEALTH-BRONZE` | emergency / dental / vision / mental_health | 0 |
+
+   Verify: `incident_date ≥ policy_start_date + waiting_period_days` (calendar days).
+   If not satisfied → set `waiting_period_satisfied = false` and record `eligibility_failure_reason = 'WAITING_PERIOD_NOT_MET'`.
+
+3. **Annual benefit limit check** — Query the `claim_utilisation` table to sum all disbursements in the current benefit year:
+   ```sql
+   SELECT COALESCE(SUM(net_payable), 0) AS annual_utilised
+   FROM claim_utilisation
+   WHERE policy_no    = :policy_no
+     AND claim_type   = :claim_type
+     AND benefit_year = YEAR(:incident_date)
+     AND status       IN ('paid', 'pending');
+   ```
+   Retrieve `annual_limit` from Step 1. Compute `annual_limit_remaining = annual_limit − annual_utilised`.
+   If `annual_limit_remaining ≤ 0` → set `annual_limit_available = 0` and flag `ANNUAL_LIMIT_EXHAUSTED`.
+
+4. **Per-claim limit check** — Use `per_claim_limit` from Step 1. Compute:
+   `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)`
+
+5. **Lifetime benefit limit check** — Query `claim_utilisation` for all-time paid disbursements across all claim types:
+   ```sql
+   SELECT COALESCE(SUM(net_payable), 0) AS lifetime_utilised
+   FROM claim_utilisation
+   WHERE policy_no = :policy_no
+     AND status    = 'paid';
+   ```
+   Retrieve `lifetime_limit` from Step 1. If `lifetime_utilised ≥ lifetime_limit` → flag `LIFETIME_LIMIT_EXHAUSTED`.
+
+6. **Specific exclusion check** — Evaluate the claim against the following hard-coded policy exclusion list. The primary diagnosis ICD-10 code and CPT codes (from supporting documents) are compared against the exclusion catalogue:
+   - `COSMETIC_PROCEDURE` — ICD-10 range Z41.x or procedure category in exclusion table `{15820, 15821, 15822, 15823}` (CPT cosmetic codes)
+   - `SELF_INFLICTED_INJURY` — ICD-10 codes X71–X83 (intentional self-harm)
+   - `SUBSTANCE_ABUSE` — ICD-10 codes F10–F19 (mental/behavioural disorders due to substance use), unless `plan_benefits.substance_abuse_covered = true`
+   - `WAR_TERRORISM` — ICD-10 codes Y36.x, Y38.x
+   - `EXPERIMENTAL_TREATMENT` — Procedure CPT codes in exclusion table `experimental_cpt_codes`
+   All matched exclusions are appended to `exclusions_triggered`.
+
+7. **Eligibility result** — `eligible = claim_type_covered ∧ waiting_period_satisfied ∧ annual_limit_available > 0 ∧ not_lifetime_exhausted ∧ no_specific_exclusion`. The first failing condition is recorded in `eligibility_failure_reason`.
 
 ## B: Output
 

@@ -1,0 +1,164 @@
+{
+  "_comment": "Synthetic fixture — policies table + policy_members table. Matches schema used by claim-02-policy-verification.md.",
+
+  "policies": [
+    {
+      "policy_no": "HIC-2024-00123",
+      "policy_holder_id": "MBR-0001",
+      "policy_status": "active",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "policy_start_date": "2024-01-15",
+      "policy_expiry_date": "2026-01-14",
+      "premium_payment_mode": "annual",
+      "next_premium_due_date": "2025-01-15",
+      "_scenario": "A001 — Gold plan, 2-year cover, policyholder self-claims hospitalisation"
+    },
+    {
+      "policy_no": "HIC-2023-00456",
+      "policy_holder_id": "MBR-0003",
+      "policy_status": "active",
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "policy_start_date": "2023-06-01",
+      "policy_expiry_date": "2025-05-31",
+      "premium_payment_mode": "monthly",
+      "next_premium_due_date": "2025-06-01",
+      "_scenario": "A002 — Silver plan, spouse dependent claims outpatient"
+    },
+    {
+      "policy_no": "HIC-2025-00789",
+      "policy_holder_id": "MBR-0005",
+      "policy_status": "active",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "policy_start_date": "2025-03-10",
+      "policy_expiry_date": "2027-03-09",
+      "premium_payment_mode": "annual",
+      "next_premium_due_date": "2026-03-10",
+      "_scenario": "A003 — Gold plan purchased 66 days ago; maternity waiting period 270d not met"
+    },
+    {
+      "policy_no": "HIC-2022-00321",
+      "policy_holder_id": "MBR-0006",
+      "policy_status": "active",
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "policy_start_date": "2022-09-01",
+      "policy_expiry_date": "2025-08-31",
+      "premium_payment_mode": "quarterly",
+      "next_premium_due_date": "2025-06-01",
+      "_scenario": "A004 — Bronze plan, surgical at non-panel hospital"
+    },
+    {
+      "policy_no": "HIC-2024-00099",
+      "policy_holder_id": "MBR-0007",
+      "policy_status": "active",
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "policy_start_date": "2024-04-01",
+      "policy_expiry_date": "2026-03-31",
+      "premium_payment_mode": "annual",
+      "next_premium_due_date": "2025-04-01",
+      "_scenario": "A005 — Gold plan; a duplicate emergency claim for the same incident already exists"
+    }
+  ],
+
+  "policy_members": [
+    {
+      "member_id": "MBR-0001",
+      "policy_no": "HIC-2024-00123",
+      "full_name": "Tan Wei Ming",
+      "id_document_type": "nric",
+      "id_document_no": "S7801234A",
+      "date_of_birth": "1978-03-22",
+      "relationship": "self",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null
+    },
+    {
+      "member_id": "MBR-0003",
+      "policy_no": "HIC-2023-00456",
+      "full_name": "Lim Jia Hui",
+      "id_document_type": "nric",
+      "id_document_no": "S8512345B",
+      "date_of_birth": "1985-07-14",
+      "relationship": "self",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null
+    },
+    {
+      "member_id": "MBR-0004",
+      "policy_no": "HIC-2023-00456",
+      "full_name": "Lim Kai Xuan",
+      "id_document_type": "nric",
+      "id_document_no": "S8867890C",
+      "date_of_birth": "1988-11-30",
+      "relationship": "spouse",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null,
+      "_scenario": "A002 — spouse claimant on HIC-2023-00456"
+    },
+    {
+      "member_id": "MBR-0005",
+      "policy_no": "HIC-2025-00789",
+      "full_name": "Priya Subramaniam",
+      "id_document_type": "nric",
+      "id_document_no": "S9023456D",
+      "date_of_birth": "1990-05-18",
+      "relationship": "self",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null
+    },
+    {
+      "member_id": "MBR-0006",
+      "policy_no": "HIC-2022-00321",
+      "full_name": "Ahmad Zulkifli bin Hassan",
+      "id_document_type": "nric",
+      "id_document_no": "S7534567E",
+      "date_of_birth": "1975-09-03",
+      "relationship": "self",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null
+    },
+    {
+      "member_id": "MBR-0007",
+      "policy_no": "HIC-2024-00099",
+      "full_name": "Chen Mei Ling",
+      "id_document_type": "nric",
+      "id_document_no": "S9145678F",
+      "date_of_birth": "1991-12-07",
+      "relationship": "self",
+      "dependent_status": "active",
+      "dependent_coverage_end_date": null
+    }
+  ],
+
+  "premium_ledger": [
+    {
+      "policy_no": "HIC-2024-00123",
+      "due_date": "2024-01-15",
+      "payment_status": "paid",
+      "amount": 3200.00
+    },
+    {
+      "policy_no": "HIC-2023-00456",
+      "due_date": "2025-04-01",
+      "payment_status": "paid",
+      "amount": 180.00
+    },
+    {
+      "policy_no": "HIC-2025-00789",
+      "due_date": "2025-03-10",
+      "payment_status": "paid",
+      "amount": 2800.00
+    },
+    {
+      "policy_no": "HIC-2022-00321",
+      "due_date": "2025-03-01",
+      "payment_status": "paid",
+      "amount": 350.00
+    },
+    {
+      "policy_no": "HIC-2024-00099",
+      "due_date": "2024-04-01",
+      "payment_status": "paid",
+      "amount": 3200.00
+    }
+  ]
+}

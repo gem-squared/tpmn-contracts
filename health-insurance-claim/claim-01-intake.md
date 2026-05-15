@@ -32,23 +32,50 @@ claimant_contact_phone: string    # phone number for correspondence
 
 ## F: Processing Logic
 
-1. **Policy number format check** — Verify `policy_no` matches the expected alphanumeric pattern. Reject if malformed.
-2. **Identity document format check** — Validate `id_document_no` conforms to the format of `id_document_type` (e.g. NRIC must be S/T/F/G + 7 digits + letter). Reject if invalid.
+1. **Policy number format check** — Verify `policy_no` matches the exact regex pattern `^HIC-\d{4}-\d{5}$`, where:
+   - `HIC` is the fixed product prefix (Health Insurance Claim)
+   - `\d{4}` is the 4-digit year the policy was purchased (2020–2026)
+   - `\d{5}` is the 5-digit zero-padded queue number (00001–99999) assigned sequentially at purchase
+   - Example of a valid value: `HIC-2024-00123`
+   - Reject with `INVALID_POLICY_FORMAT` if the regex does not match.
+   - After format passes, query the `policies` table: `SELECT 1 FROM policies WHERE policy_no = :policy_no`. If no row is returned → reject with `POLICY_NOT_FOUND`.
+
+2. **Identity document format check** — Validate `id_document_no` against the format for `id_document_type`:
+   - `nric` → regex `^[STFG]\d{7}[A-Z]$` (e.g. `S1234567D`)
+   - `fin` → regex `^[FG]\d{7}[A-Z]$` (e.g. `G7654321K`)
+   - `passport` → regex `^[A-Z]{1,2}\d{6,9}$` (e.g. `A1234567`, `AB123456789`)
+   - `birth_certificate` → regex `^[A-Z]{2}\d{6}[A-Z]$` (e.g. `TC123456A`)
+   - Reject with `INVALID_ID_FORMAT` if the regex does not match the declared `id_document_type`.
+
 3. **Date sanity checks:**
-   - `date_of_birth` must be in the past and yield a reasonable age (0–120 years).
-   - `incident_date` must not be in the future; `incident_date ≤ claim_date`.
-   - `claim_date` must equal today's date (server-side).
-4. **Claim submission window** — `claim_date − incident_date ≤ 365 days`. Claims older than 365 days from incident are rejected as late submissions.
-5. **Claim amount floor** — `claim_amount_requested > 0`. Zero or negative amounts are invalid.
-6. **Supporting documents completeness** — Minimum required document set by `claim_type`:
-   - `hospitalisation` / `surgical` → must include `medical_bill` AND `discharge_summary`
-   - `outpatient` → must include `medical_bill`
-   - `dental` / `vision` → must include `medical_bill`
-   - `maternity` → must include `medical_bill` AND `discharge_summary`
-   - `emergency` → must include `medical_bill`
-7. **Contact information validation** — `claimant_contact_email` must be a valid email format; `claimant_contact_phone` must be non-empty.
-8. **Intake status decision** — `intake_accepted = all format checks pass ∧ date checks pass ∧ within_submission_window ∧ claim_amount_requested > 0 ∧ minimum_documents_present`.
-9. **Rejection reason** — If `intake_accepted = false`, record the first failing check as `rejection_reason`.
+   - `date_of_birth` must be strictly before today's date (`date_of_birth < claim_date`).
+   - `date_of_birth` must yield `age = floor((claim_date − date_of_birth) / 365.25)` in the range `[0, 120]`. Reject with `INVALID_DATE_OF_BIRTH` otherwise.
+   - `incident_date` must satisfy `incident_date ≤ claim_date`. Reject with `FUTURE_INCIDENT_DATE` if violated.
+   - `claim_date` must equal today's server-side date (UTC+8). Reject with `INVALID_CLAIM_DATE` if it differs.
+
+4. **Claim submission window** — Compute `submission_lag = claim_date − incident_date` (calendar days). If `submission_lag > 365` → reject with `LATE_SUBMISSION` (maximum filing window is 365 days from incident).
+
+5. **Claim amount floor** — `claim_amount_requested` must be a positive number (`> 0.00 SGD`). Zero or negative values → reject with `INVALID_CLAIM_AMOUNT`.
+
+6. **Supporting documents vocabulary check** — Each item in `supporting_documents` must be one of the recognised document type tokens:
+   `{medical_bill, discharge_summary, referral_letter, prescription, lab_report, imaging_report, specialist_memo, pre_auth_approval}`
+   Any unrecognised token → reject with `UNKNOWN_DOCUMENT_TYPE`.
+
+7. **Supporting documents completeness** — Minimum required document set by `claim_type` (checked after vocabulary passes):
+   - `hospitalisation` / `surgical` → `supporting_documents` must contain `medical_bill` AND `discharge_summary`
+   - `outpatient` → must contain `medical_bill`
+   - `dental` / `vision` → must contain `medical_bill`
+   - `maternity` → must contain `medical_bill` AND `discharge_summary`
+   - `emergency` → must contain `medical_bill`
+   - Missing required types are collected into `missing_documents`. If `missing_documents` is non-empty → reject with `MISSING_REQUIRED_DOCUMENTS`.
+
+8. **Contact information validation:**
+   - `claimant_contact_email` must match the RFC 5322 simplified pattern `^[^@\s]+@[^@\s]+\.[^@\s]+$`. Reject with `INVALID_EMAIL` if it does not.
+   - `claimant_contact_phone` must match `^\+?[0-9]{8,15}$` (optional leading `+`, 8–15 digits). Reject with `INVALID_PHONE` if it does not.
+
+9. **Intake status decision** — `intake_accepted = (policy_format_valid ∧ policy_exists ∧ id_format_valid ∧ date_checks_pass ∧ within_submission_window ∧ claim_amount_requested > 0 ∧ documents_vocab_valid ∧ minimum_documents_present ∧ email_valid ∧ phone_valid)`.
+
+10. **Rejection reason** — If `intake_accepted = false`, record the first failing check (in the order listed above) as `rejection_reason`.
 
 ## B: Output
 
