@@ -1,7 +1,6 @@
 {
-  "_scenario": "A001 — Hospitalisation (Pneumonia, 4 days), COMP-HEALTH-GOLD, Self, FULLY APPROVED",
+  "_scenario": "A001 \u2014 Hospitalisation (Pneumonia, 4 days), COMP-HEALTH-GOLD, Self, FULLY APPROVED",
   "_outcome": "Disbursed via direct_credit. All 6 pipeline stages pass.",
-
   "stage_1_intake": {
     "_input": {
       "policy_no": "HIC-2024-00123",
@@ -16,8 +15,12 @@
       "claim_type": "hospitalisation",
       "provider_name": "Singapore General Hospital",
       "provider_registration": "MOH-HOSP-00142",
-      "claim_amount_requested": 18500.00,
-      "supporting_documents": ["medical_bill", "discharge_summary", "pre_auth_approval"],
+      "claim_amount_requested": 18500.0,
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ],
       "claimant_contact_email": "tanweiming@email.sg",
       "claimant_contact_phone": "+6591234567"
     },
@@ -34,7 +37,10 @@
       "claim_amount_gt_zero": true,
       "documents_vocab_valid": true,
       "minimum_documents_present": true,
-      "required_for_hospitalisation": ["medical_bill", "discharge_summary"],
+      "required_for_hospitalisation": [
+        "medical_bill",
+        "discharge_summary"
+      ],
       "missing_documents": [],
       "email_valid": true,
       "phone_valid": true
@@ -46,14 +52,27 @@
       "claim_type": "hospitalisation",
       "incident_date": "2025-04-10",
       "claim_date": "2025-04-14",
-      "claim_amount_requested": 18500.00,
+      "claim_amount_requested": 18500.0,
       "intake_accepted": true,
       "rejection_reason": null,
       "missing_documents": [],
-      "intake_timestamp": "2025-04-14T09:23:11+08:00"
+      "intake_timestamp": "2025-04-14T09:23:11+08:00",
+      "id_document_type": "nric",
+      "id_document_no": "S7801234A",
+      "date_of_birth": "1978-03-22",
+      "claimant_relationship": "self",
+      "document_paths": {
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A001/discharge_summary.pdf",
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A001/medical_bill.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A001/pre_auth_approval.pdf"
+      },
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ]
     }
   },
-
   "stage_2_policy_verification": {
     "_db_lookups": {
       "policies_query": "SELECT ... FROM policies WHERE policy_no = 'HIC-2024-00123'",
@@ -81,7 +100,7 @@
       "claimant_name": "Tan Wei Ming",
       "claim_type": "hospitalisation",
       "incident_date": "2025-04-10",
-      "claim_amount_requested": 18500.00,
+      "claim_amount_requested": 18500.0,
       "policy_verified": true,
       "verification_failure": null,
       "policy_start_date": "2024-01-15",
@@ -89,26 +108,35 @@
       "policy_product_code": "COMP-HEALTH-GOLD",
       "premium_payment_mode": "annual",
       "dependent_verified": true,
-      "verification_timestamp": "2025-04-14T09:23:45+08:00"
+      "verification_timestamp": "2025-04-14T09:23:45+08:00",
+      "document_paths": {
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A001/discharge_summary.pdf",
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A001/medical_bill.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A001/pre_auth_approval.pdf"
+      },
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ]
     }
   },
-
   "stage_3_eligibility_check": {
     "_db_lookups": {
       "plan_benefits_query": "SELECT covered, waiting_period_days, ... FROM plan_benefits WHERE policy_product_code='COMP-HEALTH-GOLD' AND claim_type='hospitalisation'",
       "covered": true,
       "waiting_period_days": 30,
-      "annual_limit": 100000.00,
-      "per_claim_limit": 50000.00,
-      "lifetime_limit": 1000000.00,
+      "annual_limit": 100000.0,
+      "per_claim_limit": 50000.0,
+      "lifetime_limit": 1000000.0,
       "policy_start_date": "2024-01-15",
       "incident_date": "2025-04-10",
       "days_since_policy_start": 450,
       "waiting_period_satisfied": true,
       "annual_utilised_query": "SELECT COALESCE(SUM(net_payable),0) FROM claim_utilisation WHERE policy_no='HIC-2024-00123' AND claim_type='hospitalisation' AND benefit_year=2025 AND status IN ('paid','pending')",
-      "annual_utilised": 0.00,
-      "annual_limit_remaining": 100000.00,
-      "lifetime_utilised": 420.00,
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 100000.0,
+      "lifetime_utilised": 420.0,
       "lifetime_limit_exhausted": false,
       "exclusions_triggered": []
     },
@@ -121,28 +149,42 @@
       "claimant_name": "Tan Wei Ming",
       "claim_type": "hospitalisation",
       "incident_date": "2025-04-10",
-      "claim_amount_requested": 18500.00,
+      "claim_amount_requested": 18500.0,
       "eligible": true,
       "eligibility_failure_reason": null,
       "claim_type_covered": true,
       "waiting_period_satisfied": true,
       "waiting_period_days": 30,
-      "annual_limit": 100000.00,
-      "annual_utilised": 0.00,
-      "annual_limit_remaining": 100000.00,
-      "per_claim_limit": 50000.00,
-      "claimable_ceiling": 18500.00,
-      "exclusions_triggered": [],
-      "eligibility_timestamp": "2025-04-14T09:24:02+08:00"
+      "annual_limit": 100000.0,
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 100000.0,
+      "per_claim_limit": 50000.0,
+      "claimable_ceiling": 18500.0,
+      "eligibility_timestamp": "2025-04-14T09:24:02+08:00",
+      "document_paths": {
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A001/discharge_summary.pdf",
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A001/medical_bill.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A001/pre_auth_approval.pdf"
+      },
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ]
     }
   },
-
   "stage_4_medical_review": {
     "_medical_details": {
       "primary_diagnosis_icd10": "J18.9",
       "primary_diagnosis_description": "Pneumonia, unspecified organism",
-      "procedure_cpt_codes": ["99232", "71046"],
-      "procedure_descriptions": ["Subsequent hospital inpatient visit", "Chest X-ray, 2 views"],
+      "procedure_cpt_codes": [
+        "99232",
+        "71046"
+      ],
+      "procedure_descriptions": [
+        "Subsequent hospital inpatient visit",
+        "Chest X-ray, 2 views"
+      ],
       "admission_date": "2025-04-10",
       "discharge_date": "2025-04-14",
       "attending_physician": "Dr. Chong Wei Liang",
@@ -156,7 +198,7 @@
       "icd10_valid": true,
       "cpt_99232_valid": true,
       "cpt_71046_valid": true,
-      "cpt_icd10_plausibility": "PASS — 99232 (inpatient visit) + 71046 (chest X-ray) consistent with J18.9 (pneumonia)",
+      "cpt_icd10_plausibility": "PASS \u2014 99232 (inpatient visit) + 71046 (chest X-ray) consistent with J18.9 (pneumonia)",
       "pre_auth_query": "SELECT status, policy_no, authorised_amount, expiry_date FROM pre_authorisations WHERE pre_auth_no='PA-2025-001234'",
       "pre_auth_status": "approved",
       "pre_auth_policy_match": true,
@@ -168,7 +210,7 @@
       "physician_expiry_date": "2027-06-30",
       "physician_valid": true,
       "rps_query": "SELECT SUM(unit_price) FROM rps_schedule WHERE cpt_code IN ('99232','71046') AND provider_type='public_hospital' AND setting='inpatient'",
-      "rps_benchmark": 16000.00,
+      "rps_benchmark": 16000.0,
       "bill_variance_pct": "((18500 - 16000) / 16000) * 100 = 15.63%",
       "bill_exceeds_benchmark": false,
       "medical_necessity_confirmed": true
@@ -179,37 +221,36 @@
       "claimant_name": "Tan Wei Ming",
       "claim_type": "hospitalisation",
       "incident_date": "2025-04-10",
-      "claim_amount_requested": 18500.00,
-      "claimable_ceiling": 18500.00,
-      "medical_approved": true,
-      "medical_rejection_reason": null,
+      "claim_amount_requested": 18500.0,
+      "claimable_ceiling": 18500.0,
       "non_panel_flag": false,
       "pre_auth_verified": true,
       "length_of_stay": 4,
-      "rps_benchmark": 16000.00,
+      "rps_benchmark": 16000.0,
       "bill_variance_pct": 15.63,
       "medical_necessity_confirmed": true,
       "medical_flags": [],
-      "review_timestamp": "2025-04-14T09:25:30+08:00"
+      "review_timestamp": "2025-04-14T09:25:30+08:00",
+      "medical_review_passed": true,
+      "review_failure_reason": null
     }
   },
-
   "stage_5_adjudication": {
     "_db_lookups": {
       "plan_benefits_query": "SELECT deductible_annual, co_payment_pct, co_insurance_pct, co_insurance_cap FROM plan_benefits WHERE policy_product_code='COMP-HEALTH-GOLD' AND claim_type='hospitalisation'",
-      "deductible_annual": 1000.00,
+      "deductible_annual": 1000.0,
       "co_payment_pct": 5,
       "co_insurance_pct": 10,
-      "co_insurance_cap": 3000.00,
+      "co_insurance_cap": 3000.0,
       "non_panel_reimbursement_pct": 80,
       "deductible_ledger_query": "SELECT COALESCE(SUM(amount),0) FROM deductible_ledger WHERE policy_no='HIC-2024-00123' AND benefit_year=2025",
-      "deductible_utilised": 0.00
+      "deductible_utilised": 0.0
     },
     "_computation": {
-      "step3_adjudication_base": "claim_amount_requested(18500) <= rps_benchmark(16000)? NO → adjudication_base = rps_benchmark = 16000.00",
+      "step3_adjudication_base": "claim_amount_requested(18500) <= rps_benchmark(16000)? NO \u2192 adjudication_base = rps_benchmark = 16000.00",
       "step3_apply_ceiling": "min(16000.00, 18500.00) = 16000.00",
-      "adjudication_base": 16000.00,
-      "step4_non_panel": "non_panel_flag=false → no adjustment",
+      "adjudication_base": 16000.0,
+      "step4_non_panel": "non_panel_flag=false \u2192 no adjustment",
       "step5_deductible_remaining": "max(0, 1000.00 - 0.00) = 1000.00",
       "step5_amount_after_deductible": "max(0, 16000.00 - 1000.00) = 15000.00",
       "step5_deductible_applied": "16000.00 - 15000.00 = 1000.00",
@@ -226,19 +267,18 @@
       "policy_no": "HIC-2024-00123",
       "claimant_name": "Tan Wei Ming",
       "claim_type": "hospitalisation",
-      "claim_amount_requested": 18500.00,
-      "adjudication_base": 16000.00,
-      "deductible_applied_this_claim": 1000.00,
-      "co_pay_amount": 750.00,
-      "co_insurance_amount": 1425.00,
-      "net_payable": 12825.00,
-      "claimant_liability": 5675.00,
+      "claim_amount_requested": 18500.0,
+      "adjudication_base": 16000.0,
+      "deductible_applied_this_claim": 1000.0,
+      "co_pay_amount": 750.0,
+      "co_insurance_amount": 1425.0,
+      "net_payable": 12825.0,
+      "claimant_liability": 5675.0,
       "adjudication_status": "approved",
       "adjudication_notes": "Adjudicated at RPS benchmark SGD 16,000 (claim SGD 18,500 exceeds benchmark; excess SGD 2,500 is claimant liability). Annual deductible SGD 1,000 fully applied. Co-pay 5% (SGD 750). Co-insurance 10% (SGD 1,425). Net payable SGD 12,825.",
       "adjudication_timestamp": "2025-04-14T09:26:00+08:00"
     }
   },
-
   "stage_6_disbursement": {
     "_payment_details": {
       "payment_mode": "direct_credit",
@@ -250,7 +290,7 @@
       "payee_name": "Tan Wei Ming"
     },
     "_validation": {
-      "adjudication_status_check": "approved → proceed",
+      "adjudication_status_check": "approved \u2192 proceed",
       "net_payable_gt_zero": true,
       "bank_account_valid": true,
       "branch_code_valid": true,
@@ -269,8 +309,8 @@
       "claimant_name": "Tan Wei Ming",
       "claim_type": "hospitalisation",
       "disbursement_status": "disbursed",
-      "net_payable": 12825.00,
-      "claimant_liability": 5675.00,
+      "net_payable": 12825.0,
+      "claimant_liability": 5675.0,
       "payment_mode": "direct_credit",
       "payee_name": "Tan Wei Ming (****4567)",
       "disbursement_date": "2025-04-17",

@@ -1,0 +1,92 @@
+Here is a highly realistic imaging report, formatted as a raw text extraction from a structured document, suitable for an insurance claim.
+
+***
+
+```text
+================================================================================
+                         TAN TOCK SENG HOSPITAL
+                  DEPARTMENT OF DIAGNOSTIC RADIOLOGY
+                            IMAGING REPORT
+================================================================================
+
+--------------------------------------------------------------------------------
+| PATIENT & EXAMINATION INFORMATION                                            |
+--------------------------------------------------------------------------------
+| Patient Name:      CHEN, MEI LING                                            |
+| MRN:               70985421                                                  |
+| NRIC:              S78*****9B                                                |
+| Date of Birth:     1978-06-12 (46Y)                                          |
+| Sex:               Female                                                    |
+|                                                                              |
+| Accession Number:  CT250421-9812A                                            |
+| Examination Date:  2025-04-21                                                |
+| Report Status:     FINAL                                                     |
+|                                                                              |
+| Referring MD:      Dr. Lim Wei Shen                                          |
+| Referring Service: Emergency Department                                     |
+--------------------------------------------------------------------------------
+
+
+EXAMINATION:
+CT ABDOMEN AND PELVIS WITH IV CONTRAST
+
+
+CLINICAL HISTORY / INDICATION:
+46-year-old female presented to the ED following a mechanical fall from a height (approx. 8 steps of a staircase) at home. Patient is complaining of severe, acute left flank pain and tenderness. Gross hematuria noted on initial assessment. Query traumatic internal organ injury, specifically renal or splenic laceration.
+
+
+TECHNIQUE:
+Axial images of the abdomen and pelvis were acquired from the lung bases through the pubic symphysis following the intravenous administration of 100 mL of Omnipaque 350 contrast agent. Arterial, portal venous, and delayed phases were obtained. Coronal and sagittal multiplanar reformatted images were generated and reviewed.
+
+
+FINDINGS:
+
+LIVER: Normal in size and contour. No evidence of laceration, contusion, or subcapsular hematoma. No focal hepatic lesions.
+
+SPLEEN: Normal in size. Homogeneous parenchymal enhancement. No laceration or hematoma.
+
+PANCREAS AND ADRENAL GLANDS: Unremarkable.
+
+KIDNEYS AND URINARY TRACT:
+Right Kidney: Normal in size, position, and enhancement. No hydronephrosis or perinephric fluid collection.
+Left Kidney: A complex, deep laceration is identified involving the mid and lower pole, extending more than 1 cm into the renal cortex. This corresponds to an AAST Grade III renal injury. Active extravasation of contrast is noted on the delayed phase images, indicative of active hemorrhage. A moderate-sized perinephric hematoma is present, measuring approximately 8.5 x 5.2 cm in maximal axial dimensions, causing mass effect on the adjacent psoas muscle. The left renal artery and vein appear patent.
+Ureters and Bladder: The right ureter is normal. The urinary bladder is distended and contains high-density material consistent with blood products/clot.
+
+BOWEL AND MESENTERY: No evidence of bowel wall thickening, free air, or mesenteric stranding to suggest bowel injury.
+
+VASCULATURE: The aorta and IVC are patent. No signs of dissection or major vessel injury.
+
+GALLBLADDER: Unremarkable. No gallstones or wall thickening.
+
+BONES AND SOFT TISSUES: No acute fracture is identified in the visualized portions of the lower ribs, lumbar spine, or pelvis. Mild subcutaneous soft tissue stranding is noted over the left flank.
+
+
+IMPRESSION:
+
+1.  ACUTE LEFT RENAL TRAUMA: Grade III laceration of the left kidney involving the mid to lower pole.
+
+2.  EVIDENCE OF ACTIVE HEMORRHAGE, as demonstrated by contrast extravasation on delayed phase imaging.
+
+3.  MODERATE LEFT PERINEPHRIC HEMATOMA with associated mass effect.
+
+4.  HEMOBADDER, consistent with gross hematuria from the renal injury.
+
+5.  No CT evidence of injury to the liver, spleen, pancreas, or bowel.
+
+Urgent surgical/interventional radiology consultation is recommended given the findings of active hemorrhage.
+
+
+================================================================================
+Electronically Signed By:
+Dr. Anjali Sharma, M.B.B.S., FRCR
+Consultant Radiologist
+SMC: 19876D
+
+Dictated: 2025-04-21 23:45 SGT
+Verified: 2025-04-22 00:15 SGT
+
+*** END OF REPORT ***
+
+This is a confidential medical report. This information is intended only for the use of the individual or entity named above.
+TTSH_RAD_REPORTSYS_V4.1
+```

@@ -1,0 +1,102 @@
+```text
+================================================================================
+                         HEALTHFIRST MEDICAL CLINIC
+                         Official Prescription & Invoice
+================================================================================
+
+Clinic Details:
+--------------------------------------------------------------------------------
+HealthFirst Medical Clinic
+#02-15 Orchard Medical Centre, 304 Orchard Road, Singapore 238863
+Tel: +65 6235 1188 | Fax: +65 6235 1189
+UEN: 201012345A
+
+Physician: Dr. Tan Wei Ling
+SMC Reg. No: M12345Z
+
+--------------------------------------------------------------------------------
+Patient Information:
+--------------------------------------------------------------------------------
+Patient Name      : Lim Kai Xuan
+NRIC / FIN        : S****1234A
+Date of Birth     : 15-Jul-1978
+Date of Visit     : 14-May-2025
+Invoice Number    : HFMC-25-18834
+Claim Type        : Outpatient
+
+================================================================================
+                             MEDICAL DETAILS
+================================================================================
+
+Chief Complaint:
+Follow-up for hypertension management. Patient reports occasional mild headaches
+but is otherwise stable. Routine blood pressure check and medication review.
+
+Vitals:
+Blood Pressure    : 138/88 mmHg
+Heart Rate        : 76 bpm
+Temperature       : 36.8°C
+
+Diagnosis:
++-----------------+--------------------------------------+
+| ICD-10 Code     | Description                          |
++-----------------+--------------------------------------+
+| I10             | Essential (primary) hypertension     |
++-----------------+--------------------------------------+
+
+
+================================================================================
+                                PRESCRIPTION
+================================================================================
+
++-----------------------+----------+-------------------+----------+
+| Medication            | Dosage   | Frequency         | Quantity |
++-----------------------+----------+-------------------+----------+
+| Amlodipine Besylate   | 5 mg     | ONE tablet daily  | 30 Tabs  |
+| Losartan Potassium    | 50 mg    | ONE tablet daily  | 30 Tabs  |
++-----------------------+----------+-------------------+----------+
+
+Remarks: To continue medication as prescribed. Follow up in 1 month or earlier
+if symptoms worsen. Advised on low-sodium diet and regular exercise.
+
+
+================================================================================
+                              BILLING DETAILS
+================================================================================
+
++---------------------------------------------+-----------+-----+----------+
+| Description                                 | CPT Code  | Qty | Amount   |
+|                                             |           |     | (SGD)    |
++---------------------------------------------+-----------+-----+----------+
+| Outpatient Consultation (Established Pt)    | 99213     | 1   |    80.00 |
+| Amlodipine Besylate 5mg (30 Tabs)           | -         | 1   |   135.00 |
+| Losartan Potassium 50mg (30 Tabs)           | -         | 1   |   145.00 |
+| Dispensing Fee                              | -         | 1   |    20.00 |
++---------------------------------------------+-----------+-----+----------+
+
+                                             Subtotal     :     380.00
+                                             GST @ 0%     :       0.00
+                                             ---------------------------
+                                             TOTAL AMOUNT :    380.00 SGD
+                                             ---------------------------
+
+Payment Mode: Credit Card (PAID)
+
+
+================================================================================
+Physician's Signature & Clinic Stamp:
+
+
+[  Dr. Tan Wei Ling  ]
+--- Signature on File ---
+
+
+                                     +--------------------------+
+                                     |  HEALTHFIRST MEDICAL     |
+                                     |         CLINIC           |
+                                     |   Tel: +65 6235 1188     |
+                                     | Date: 14-May-2025        |
+                                     +--------------------------+
+
+--- End of Document ---
+```

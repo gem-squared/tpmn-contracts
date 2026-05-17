@@ -1,6 +1,5 @@
 {
-  "_comment": "Synthetic fixture — pre_authorisations table and claim_utilisation table. pre_auth_no format: ^PA-\\d{4}-\\d{6}$. claim_utilisation tracks paid/pending disbursements for annual limit and lifetime limit checks.",
-
+  "_comment": "Synthetic fixture \u2014 pre_authorisations table and claim_utilisation table. pre_auth_no format: ^PA-\\d{4}-\\d{6}$. claim_utilisation tracks paid/pending disbursements for annual limit and lifetime limit checks.",
   "pre_authorisations": [
     {
       "pre_auth_no": "PA-2025-001234",
@@ -8,10 +7,10 @@
       "claim_type": "hospitalisation",
       "incident_date": "2025-04-10",
       "status": "approved",
-      "authorised_amount": 50000.00,
+      "authorised_amount": 50000.0,
       "issued_date": "2025-04-08",
       "expiry_date": "2025-07-08",
-      "_scenario": "A001 — pre-auth approved for Tan Wei Ming's pneumonia hospitalisation"
+      "_scenario": "A001 \u2014 pre-auth approved for Tan Wei Ming's pneumonia hospitalisation"
     },
     {
       "pre_auth_no": "PA-2025-005678",
@@ -19,10 +18,10 @@
       "claim_type": "maternity",
       "incident_date": "2025-05-14",
       "status": "approved",
-      "authorised_amount": 10000.00,
+      "authorised_amount": 10000.0,
       "issued_date": "2025-05-01",
       "expiry_date": "2025-08-01",
-      "_scenario": "A003 — pre-auth exists but claim halted at eligibility (waiting period). Included for completeness."
+      "_scenario": "A003 \u2014 pre-auth exists but claim halted at eligibility (waiting period). Included for completeness."
     },
     {
       "pre_auth_no": "PA-2025-009901",
@@ -30,66 +29,63 @@
       "claim_type": "surgical",
       "incident_date": "2025-05-02",
       "status": "approved",
-      "authorised_amount": 12000.00,
+      "authorised_amount": 12000.0,
       "issued_date": "2025-04-30",
       "expiry_date": "2025-07-31",
-      "_scenario": "A004 — pre-auth for Ahmad's appendectomy at non-panel hospital"
+      "_scenario": "A004 \u2014 pre-auth for Ahmad's appendectomy at non-panel hospital"
     }
   ],
-
   "claim_utilisation": [
     {
-      "_comment": "Prior-year utilisation for HIC-2024-00123 (Tan Wei Ming) — used to compute annual_utilised and deductible_utilised for A001",
+      "_comment": "Prior-year utilisation for HIC-2024-00123 (Tan Wei Ming) \u2014 used to compute annual_utilised and deductible_utilised for A001",
       "policy_no": "HIC-2024-00123",
       "claim_type": "outpatient",
       "benefit_year": 2024,
       "claim_reference_no": "CLM-2024-0000345",
-      "net_payable": 420.00,
+      "net_payable": 420.0,
       "status": "paid",
       "posted_at": "2024-08-20T10:15:00+08:00"
     },
     {
-      "_comment": "Current-year utilisation for HIC-2023-00456 (Lim Jia Hui / Lim Kai Xuan) — used for A002 annual limit check",
+      "_comment": "Current-year utilisation for HIC-2023-00456 (Lim Jia Hui / Lim Kai Xuan) \u2014 used for A002 annual limit check",
       "policy_no": "HIC-2023-00456",
       "claim_type": "outpatient",
       "benefit_year": 2025,
       "claim_reference_no": "CLM-2025-0000512",
-      "net_payable": 180.00,
+      "net_payable": 180.0,
       "status": "paid",
       "posted_at": "2025-02-14T09:00:00+08:00"
     },
     {
-      "_comment": "Existing paid claim for HIC-2024-00099 (Chen Mei Ling) — duplicate check for A005",
+      "_comment": "Existing paid claim for HIC-2024-00099 (Chen Mei Ling) \u2014 duplicate check for A005",
       "policy_no": "HIC-2024-00099",
       "claim_type": "emergency",
       "benefit_year": 2025,
       "claim_reference_no": "CLM-2025-0000877",
-      "net_payable": 2100.00,
+      "net_payable": 2100.0,
       "status": "paid",
       "posted_at": "2025-04-22T14:30:00+08:00"
     }
   ],
-
   "deductible_ledger": [
     {
-      "_comment": "2024 deductible usage for HIC-2024-00123 — does NOT carry over to 2025 benefit year",
+      "_comment": "2024 deductible usage for HIC-2024-00123 \u2014 does NOT carry over to 2025 benefit year",
       "policy_no": "HIC-2024-00123",
       "benefit_year": 2024,
       "claim_reference_no": "CLM-2024-0000345",
-      "amount": 420.00,
+      "amount": 420.0,
       "posted_at": "2024-08-20T10:15:00+08:00"
     },
     {
-      "_comment": "2025 deductible usage for HIC-2024-00123 — starts fresh; deductible_utilised = 0.00 for A001",
+      "_comment": "2025 deductible usage for HIC-2024-00123 \u2014 starts fresh; deductible_utilised = 0.00 for A001",
       "policy_no": "HIC-2024-00123",
       "benefit_year": 2025,
       "claim_reference_no": null,
-      "amount": 0.00,
+      "amount": 0.0,
       "posted_at": null,
       "_note": "No 2025 claims processed yet for this policy; deductible_utilised = 0.00"
     }
   ],
-
   "claims": [
     {
       "_comment": "Existing claim record for A005 duplicate-check scenario. Same policy_no + incident_date + claim_type already has status=paid.",

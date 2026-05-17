@@ -1,0 +1,126 @@
+Of course. Here is a highly realistic discharge summary formatted to look like a raw text extraction from a structured hospital document.
+
+***
+
+```text
+================================================================================
+                         KK WOMEN'S AND CHILDREN'S HOSPITAL
+                                 100 Bukit Timah Road
+                                  Singapore 229899
+                                Tel: (+65) 6225 5554
+================================================================================
+
+                              HOSPITAL DISCHARGE SUMMARY
+                              --------------------------
+
+--- PATIENT INFORMATION --------------------------------------------------------
+
+PATIENT NAME        : SUBRAMANIAM, PRIYA
+NRIC/FIN            : S****5678A
+DATE OF BIRTH       : 1993-08-22 (31 Years)
+GENDER              : Female
+ADDRESS             : 15 Marine Parade Rd, #12-04, Singapore 449267
+CONTACT             : +65 9123 4567
+
+--- ADMISSION DETAILS ----------------------------------------------------------
+
+ADMISSION DATE      : 2025-05-12 19:45
+DISCHARGE DATE      : 2025-05-16 11:30
+HOSPITAL CASE NO.   : KKH-25-0089142
+WARD / BED          : 6A / 21B (Single Room)
+ATTENDING PHYSICIAN : Dr. Eileen Tan (MCR: 12345J)
+                      Senior Consultant, Obstetrics & Gynaecology
+
+================================================================================
+
+PRINCIPAL DIAGNOSIS:
+O82.9 - Delivery by Caesarean section, unspecified.
+        - Term pregnancy at 39+4 weeks, delivered.
+
+SECONDARY DIAGNOSES:
+O66.9 - Obstructed labor, unspecified (Failure to progress in first stage).
+Z37.0 - Singleton, liveborn.
+
+--------------------------------------------------------------------------------
+PROCEDURES PERFORMED
+--------------------------------------------------------------------------------
++------------------------------------------+---------------+------------------+
+| PROCEDURE                                | DATE          | SURGEON          |
++------------------------------------------+---------------+------------------+
+| Lower Segment Caesarean Section (LSCS)   | 2025-05-13    | Dr. Eileen Tan   |
+| Spinal Anaesthesia                       | 2025-05-13    | Dr. Lim Wei Ming |
++------------------------------------------+---------------+------------------+
+
+================================================================================
+
+SUMMARY OF HOSPITAL COURSE:
+
+Patient, a 31-year-old G1P0 lady at 39+4 weeks gestation, was admitted on 2025-05-12 for management of labor. She presented with regular uterine contractions. On examination, cervix was 3cm dilated. Admitted to the delivery suite for monitoring and augmentation of labor.
+
+Labor was augmented with an oxytocin infusion. Despite adequate contractions over the next 8 hours, cervical dilatation progressed poorly from 4cm to 5cm. Fetal heart rate monitoring remained reassuring throughout. The lack of progress was assessed as cephalopelvic disproportion / failure to progress.
+
+After counselling the patient and her husband on the findings and options, a joint decision was made to proceed with a Lower Segment Caesarean Section (LSCS).
+
+Patient underwent an uncomplicated LSCS under spinal anaesthesia on 2025-05-13 at 08:52. A live, healthy baby boy was delivered.
+
+  - Baby's Weight: 3.45 kg
+  - APGAR Scores: 9 at 1 minute, 10 at 5 minutes.
+  - No neonatal complications noted. Baby rooming-in with mother.
+
+Post-operatively, the patient's recovery was uneventful. Vital signs remained stable. Pain was well-controlled with oral analgesia. The surgical wound is clean, dry, and intact. Patient was able to ambulate independently from post-op Day 2. Lochia is normal. Breastfeeding was successfully initiated.
+
+CONDITION ON DISCHARGE:
+Stable, afebrile, and comfortable. Ambulating well. Tolerating diet. Passing flatus and urine normally. Post-operative wound is satisfactory.
+
+================================================================================
+
+DISCHARGE MEDICATIONS:
++---------------------+-------------------+---------------------+-----------+
+| MEDICATION          | DOSAGE            | FREQUENCY           | DURATION  |
++---------------------+-------------------+---------------------+-----------+
+| Tab Paracetamol     | 1000 mg           | Every 6 hours, PRN  | 7 days    |
+| Tab Ibuprofen       | 400 mg            | Every 8 hours, PRN  | 7 days    |
+| Ferrous Fumarate    | 200 mg            | Once daily          | 30 days   |
++---------------------+-------------------+---------------------+-----------+
+
+FOLLOW-UP INSTRUCTIONS:
+1.  Appointment at Women's Specialist Clinic C with Dr. Eileen Tan for postnatal review and wound check in 6 weeks. Date: 2025-06-25 at 10:00 AM.
+2.  Remove waterproof dressing over wound after 7 days. Keep wound clean and dry.
+3.  Watch for signs of wound infection (redness, swelling, discharge, fever).
+4.  Continue postnatal and lactation support as advised.
+5.  Newborn to follow up at local Polyclinic for developmental checks and vaccinations.
+
+================================================================================
+                         FINANCIAL SUMMARY FOR INSURANCE CLAIM
+================================================================================
+
++-------------------------------------------------+-----------------+
+| ITEM DESCRIPTION                                | AMOUNT (SGD)    |
++-------------------------------------------------+-----------------+
+| ROOM CHARGES (Single Room, 3 Nights)            |      1,860.00   |
+| DELIVERY ROOM / OPERATING THEATRE CHARGES       |      1,950.00   |
+| OBSTETRICIAN'S PROCEDURE FEE (LSCS)             |      2,800.00   |
+| ANAESTHETIST'S FEE                              |        950.00   |
+| NURSERY & NEONATAL CARE                         |        420.00   |
+| MEDICATIONS & CONSUMABLES                       |        145.00   |
+| LABORATORY & DIAGNOSTIC TESTS                   |         75.00   |
++-------------------------------------------------+-----------------+
+|                                                 |                 |
+| TOTAL BILL AMOUNT                               |      8,200.00   |
+|                                                 |                 |
++-------------------------------------------------+-----------------+
+
+================================================================================
+
+Electronically Signed,
+---
+Dr. Eileen Tan
+Senior Consultant
+Department of Obstetrics & Gynaecology
+KK Women's and Children's Hospital
+MCR No: 12345J
+
+--------------------------------------------------------------------------------
+DOCUMENT GENERATED: 2025-05-16 11:45:12 | Page 1 of 1
+*** CONFIDENTIAL MEDICAL RECORD ***
+```

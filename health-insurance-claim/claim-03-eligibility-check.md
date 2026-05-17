@@ -78,15 +78,7 @@ dependent_verified:     bool      # from policy-verification output
    ```
    Retrieve `lifetime_limit` from Step 1. If `lifetime_utilised ≥ lifetime_limit` → flag `LIFETIME_LIMIT_EXHAUSTED`.
 
-6. **Specific exclusion check** — Evaluate the claim against the following hard-coded policy exclusion list. The primary diagnosis ICD-10 code and CPT codes (from supporting documents) are compared against the exclusion catalogue:
-   - `COSMETIC_PROCEDURE` — ICD-10 range Z41.x or procedure category in exclusion table `{15820, 15821, 15822, 15823}` (CPT cosmetic codes)
-   - `SELF_INFLICTED_INJURY` — ICD-10 codes X71–X83 (intentional self-harm)
-   - `SUBSTANCE_ABUSE` — ICD-10 codes F10–F19 (mental/behavioural disorders due to substance use), unless `plan_benefits.substance_abuse_covered = true`
-   - `WAR_TERRORISM` — ICD-10 codes Y36.x, Y38.x
-   - `EXPERIMENTAL_TREATMENT` — Procedure CPT codes in exclusion table `experimental_cpt_codes`
-   All matched exclusions are appended to `exclusions_triggered`.
-
-7. **Eligibility result** — `eligible = claim_type_covered ∧ waiting_period_satisfied ∧ annual_limit_available > 0 ∧ not_lifetime_exhausted ∧ no_specific_exclusion`. The first failing condition is recorded in `eligibility_failure_reason`.
+6. **Eligibility result** — `eligible = claim_type_covered ∧ waiting_period_satisfied ∧ annual_limit_available > 0 ∧ not_lifetime_exhausted`. The first failing condition is recorded in `eligibility_failure_reason`.
 
 ## B: Output
 
@@ -107,7 +99,6 @@ annual_utilised:            number    # amount already claimed this benefit year
 annual_limit_remaining:     number    # annual_limit − annual_utilised (SGD)
 per_claim_limit:            number    # maximum payable per single claim event (SGD)
 claimable_ceiling:          number    # min(claim_amount_requested, per_claim_limit, annual_limit_remaining)
-exclusions_triggered:       string[]  # list of exclusion rules matched (empty if none)
 eligibility_timestamp:      datetime
 ```
 
@@ -117,7 +108,7 @@ eligibility_timestamp:      datetime
 - [ ] `policy_no` in B matches A
 - [ ] `eligible` is boolean
 - [ ] If `eligible = false` → `eligibility_failure_reason` is non-empty and maps to a failing rule
-- [ ] If `eligible = true` → `eligibility_failure_reason` is null and `exclusions_triggered` is empty
+- [ ] If `eligible = true` → `eligibility_failure_reason` is null
 - [ ] `annual_limit_remaining = annual_limit − annual_utilised` (arithmetic correctness)
 - [ ] `annual_limit_remaining ≥ 0` (cannot be negative)
 - [ ] `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)` (arithmetic correctness)
@@ -127,4 +118,3 @@ eligibility_timestamp:      datetime
 - [ ] `eligible = true` ⟹ `annual_limit_remaining > 0` (limit invariant)
 - [ ] `waiting_period_days` matches the plan schedule for `claim_type` and `policy_product_code`
 - [ ] `eligibility_timestamp` is valid ISO 8601, not future-dated
-- [ ] No S→T violation: exclusion checks are applied to the claim event, not attributed as a character trait of the claimant

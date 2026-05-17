@@ -1,6 +1,5 @@
 {
-  "_comment": "Synthetic fixture — physician_registry table. Queried by claim-04-medical-review.md Step 6. physician_license_no format: ^MCR-\\d{5}[A-Z]$",
-
+  "_comment": "Synthetic fixture \u2014 physician_registry table. Queried by claim-04-medical-review.md Step 6. physician_license_no format: ^MCR-\\d{5}[A-Z]$",
   "physician_registry": [
     {
       "physician_license_no": "MCR-10234A",
@@ -8,7 +7,7 @@
       "specialty": "internal_medicine",
       "status": "active",
       "expiry_date": "2027-06-30",
-      "_scenario": "A001 — treating physician for pneumonia hospitalisation"
+      "_scenario": "A001 \u2014 treating physician for pneumonia hospitalisation"
     },
     {
       "physician_license_no": "MCR-20891B",
@@ -16,7 +15,7 @@
       "specialty": "general_practice",
       "status": "active",
       "expiry_date": "2026-09-30",
-      "_scenario": "A002 — GP treating outpatient hypertension"
+      "_scenario": "A002 \u2014 GP treating outpatient hypertension"
     },
     {
       "physician_license_no": "MCR-31457C",
@@ -24,7 +23,7 @@
       "specialty": "obstetrics_gynaecology",
       "status": "active",
       "expiry_date": "2027-03-31",
-      "_scenario": "A003 — OB-GYN for maternity claim (claim halted at eligibility)"
+      "_scenario": "A003 \u2014 OB-GYN for maternity claim (claim halted at eligibility)"
     },
     {
       "physician_license_no": "MCR-44012D",
@@ -32,7 +31,7 @@
       "specialty": "general_surgery",
       "status": "active",
       "expiry_date": "2026-12-31",
-      "_scenario": "A004 — surgeon for appendectomy at non-panel hospital"
+      "_scenario": "A004 \u2014 surgeon for appendectomy at non-panel hospital"
     },
     {
       "physician_license_no": "MCR-55678E",
@@ -40,7 +39,7 @@
       "specialty": "emergency_medicine",
       "status": "active",
       "expiry_date": "2027-01-31",
-      "_scenario": "A005 — ED physician for fracture treatment"
+      "_scenario": "A005 \u2014 ED physician for fracture treatment"
     }
   ]
 }

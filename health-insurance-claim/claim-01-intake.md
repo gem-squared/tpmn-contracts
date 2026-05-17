@@ -80,9 +80,13 @@ claimant_contact_phone: string    # phone number for correspondence
 ## B: Output
 
 ```yaml
-claim_reference_draft:  string    # temporary reference ID (e.g. "DRAFT-20240514-00789"); becomes permanent upon full processing
+claim_reference_draft:  string    # temporary reference ID (e.g. "DRAFT-20240514-00789")
 policy_no:              string    # passthrough from A
 claimant_name:          string    # passthrough from A
+id_document_type:       enum      # passthrough from A
+id_document_no:         string    # passthrough from A
+date_of_birth:          date      # passthrough from A
+claimant_relationship:  enum      # passthrough from A
 claim_type:             enum      # passthrough from A
 incident_date:          date      # passthrough from A
 claim_date:             date      # passthrough from A

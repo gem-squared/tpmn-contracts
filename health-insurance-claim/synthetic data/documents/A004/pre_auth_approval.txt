@@ -1,0 +1,99 @@
+```text
+================================================================================
+MERIDIAN GLOBAL HEALTH - PRE-AUTHORIZATION APPROVAL
+================================================================================
+DOCUMENT ID: MGA-PA-2025-891442
+ISSUE DATE:  2025-04-29
+STATUS:      **APPROVED**
+
+--------------------------------------------------------------------------------
+SECTION A: PATIENT & POLICY INFORMATION
+--------------------------------------------------------------------------------
+
+Patient Name         : Ahmad Zulkifli bin Hassan
+Policy Number        : SG-883451-01
+Member ID            : M3490127B
+Date of Birth        : 1988-07-15
+Plan Name            : Corporate Advantage Gold
+
+--------------------------------------------------------------------------------
+SECTION B: PROVIDER & FACILITY INFORMATION
+--------------------------------------------------------------------------------
+
+Requesting Provider  : Novena Surgical and Orthopaedic Centre
+Provider ID          : P991023SG
+Attending Physician  : Dr. Tan Boon Kiat
+Facility             : Mount Elizabeth Novena Hospital
+Facility ID          : F0087SG
+
+--------------------------------------------------------------------------------
+SECTION C: AUTHORIZATION DETAILS
+--------------------------------------------------------------------------------
+
+Authorization Number : PA-2025-009901
+Claim Type           : Surgical / Inpatient
+Incident Date        : 2025-05-02
+Effective Date       : 2025-04-29
+Expiration Date      : 2025-07-28
+
+Primary Diagnosis    : K35.80 - Unspecified acute appendicitis without peritonitis
+
+Clinical Summary     : Patient presented with acute right lower quadrant (RLQ)
+                     abdominal pain, nausea, and low-grade fever. Clinical
+                     examination and imaging studies are consistent with acute
+                     appendicitis. Surgical intervention is deemed medically
+                     necessary.
+
+--------------------------------------------------------------------------------
+SECTION D: APPROVED SERVICES & FINANCIALS
+--------------------------------------------------------------------------------
+
+This pre-authorization approves the following services based on medical necessity
+and policy guidelines.
+
+| CPT CODE | DESCRIPTION                       | ICD-10  | UNITS | APPROVED AMOUNT (SGD) |
+|----------|-----------------------------------|---------|-------|-----------------------|
+| 44950    | Appendectomy                      | K35.80  | 1     | 9,800.00              |
+| 99232    | Subsequent Hospital Care, per day | K35.80  | 2     | 1,700.00              |
+|----------|-----------------------------------|---------|-------|-----------------------|
+
+FINANCIAL SUMMARY:
+------------------
+Total Requested Amount ..................... : 11,500.00 SGD
+Total Approved Amount ...................... : 11,500.00 SGD
+
+Estimated Patient Responsibility:
+   Policy Deductible Remaining ............. :      0.00 SGD
+   Co-insurance / Co-payment ............... :      0.00 SGD
+   Non-Covered Charges ..................... :      0.00 SGD
+   ----------------------------------------------------------
+   ESTIMATED PATIENT SHARE ................. :      0.00 SGD
+   ESTIMATED AMOUNT PAYABLE BY INSURER ..... : 11,500.00 SGD
+
+--------------------------------------------------------------------------------
+SECTION E: REMARKS & CONDITIONS
+--------------------------------------------------------------------------------
+
+1. This approval is based on the clinical information provided at the time of
+   request and is subject to the member's eligibility and benefits at the time
+   services are rendered.
+
+2. This authorization is valid only for the services, provider, and facility
+   listed above. Any deviation, additional procedures, or extended stay will
+   require a separate review and authorization.
+
+3. Final payment is contingent upon review of the submitted claim, which must
+   include all relevant medical records and itemized billing.
+
+4. Please submit the final claim with Authorization Number PA-2025-009901 clearly
+   indicated.
+
+5. This document is not an Explanation of Benefits (EOB) or a guarantee of
+   payment.
+
+--------------------------------------------------------------------------------
+For inquiries, please contact the Pre-Authorization Department at +65 3158 9900
+or email preauth@meridianglobal.sg.
+
+*** END OF DOCUMENT ***
+```
