@@ -29,6 +29,34 @@ medical_details:            object    # extracted from supporting documents
   pre_authorisation_no:     string?   # pre-auth reference if applicable (nullable)
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string.
+- `policy_no` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `incident_date` must be a valid ISO 8601 date.
+- `claim_amount_requested` must be a positive decimal number.
+- `claimable_ceiling` must be a non-negative decimal number.
+- `provider_name` must be a non-empty string.
+- `provider_registration` must be a non-empty string.
+- `supporting_documents` must be a non-empty array of strings.
+- `medical_details` must be an object with: `primary_diagnosis_icd10` (string), `procedure_cpt_codes` (string array), `attending_physician` (string), `physician_license_no` (string); `admission_date` and `discharge_date` may be null but must be valid ISO 8601 dates when present; `pre_authorisation_no` may be null.
+
+### Format Validation
+- `medical_details.primary_diagnosis_icd10` must match the regex `^[A-Z]\d{2}(\.\d{1,4})?$`.
+- Every entry in `medical_details.procedure_cpt_codes` must match `^\d{5}$`.
+- `medical_details.physician_license_no` must match `^MCR-\d{5}[A-Z]$`.
+- For `claim_type ∈ {hospitalisation, surgical, maternity}`: `medical_details.pre_authorisation_no` must be non-null and match `^PA-\d{4}-\d{6}$`.
+- If `medical_details.admission_date` and `medical_details.discharge_date` are both present: `discharge_date ≥ admission_date`.
+- `claimable_ceiling ≤ claim_amount_requested` (upstream invariant from eligibility-check).
+
+### Regulation/Compliance Gates
+- `accredited_providers`, `icd10_reference`, `cpt_reference`, `icd10_cpt_plausibility`, `pre_authorisations`, `rps_schedule`, `physician_registry`, `medical_necessity_guidelines` reference tables must all be loadable at runtime per InsClaims-PolicyDoc §7.
+- Upstream `eligible = true` is assumed (Gate G3 — this stage is unreachable otherwise).
+- Singapore MOH ICD-10-CM / CPT current-version registries must be available — clinical-coding validity is regulatory-bound (Gate G4 — MOH circular 04/2024).
+
 ## F: Processing Logic
 
 1. **Provider accreditation check** — Query the `accredited_providers` table using `provider_registration` as the key:
@@ -135,21 +163,31 @@ medical_flags:                  string[]  # e.g. ["BILL_EXCEEDS_BENCHMARK", "NON
 review_timestamp:               datetime
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_draft` in B matches A
-- [ ] `policy_no` in B matches A
-- [ ] `medical_approved` is boolean
-- [ ] If `medical_approved = false` → `medical_rejection_reason` is non-empty and identifies the first failing check
-- [ ] If `medical_approved = true` → `medical_rejection_reason` is null
-- [ ] `medical_approved = true` ⟹ `pre_auth_verified = true` for `claim_type ∈ {hospitalisation, surgical, maternity}`
-- [ ] `medical_approved = true` ⟹ `medical_necessity_confirmed = true`
-- [ ] `length_of_stay = discharge_date − admission_date` in days (if both dates present)
-- [ ] `length_of_stay ≥ 0` (discharge cannot precede admission)
-- [ ] `length_of_stay` is null for outpatient claims
-- [ ] `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100` (arithmetic correctness)
-- [ ] `BILL_EXCEEDS_BENCHMARK` is in `medical_flags` iff `bill_variance_pct > 50`
-- [ ] `NON_PANEL_PROVIDER` is in `medical_flags` iff `non_panel_flag = true`
-- [ ] `rps_benchmark > 0` (reference price must be positive)
-- [ ] `review_timestamp` is valid ISO 8601, not future-dated
-- [ ] No Δe→∫de violation: benchmark comparison is specific to this claim's codes, not an actuarial prediction for the claimant population
+### Correctness
+
+- `claim_reference_draft` in B matches A
+- `policy_no` in B matches A
+- `medical_approved` is boolean
+- If `medical_approved = false` → `medical_rejection_reason` is non-empty and identifies the first failing check
+- If `medical_approved = true` → `medical_rejection_reason` is null
+- `medical_approved = true` ⟹ `pre_auth_verified = true` for `claim_type ∈ {hospitalisation, surgical, maternity}`
+- `medical_approved = true` ⟹ `medical_necessity_confirmed = true`
+- `length_of_stay = discharge_date − admission_date` in days (if both dates present)
+- `length_of_stay ≥ 0` (discharge cannot precede admission)
+- `length_of_stay` is null for outpatient claims
+- `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100` (arithmetic correctness)
+- `BILL_EXCEEDS_BENCHMARK` is in `medical_flags` iff `bill_variance_pct > 50`
+- `NON_PANEL_PROVIDER` is in `medical_flags` iff `non_panel_flag = true`
+- `rps_benchmark > 0` (reference price must be positive)
+- `review_timestamp` is valid ISO 8601, not future-dated
+- No Δe→∫de violation: benchmark comparison is specific to this claim's codes, not an actuarial prediction for the claimant population
+
+## Circus Executor
+
+**stage_type:** llm-assisted
+**agent_role:** medical-review-agent
+**routing_priority:** medium
+**trust_gate_L1:** 75 // company policy: clinical schemas (ICD-10 / CPT / pre-auth) require precise alignment — moderate-high threshold per MOH circular 04/2024
+**trust_gate_L2:** 88 // company policy: medical-necessity + exclusions drive payout eligibility — high threshold per InsClaims-PolicyDoc §7.4 (clinical adjudication standard)

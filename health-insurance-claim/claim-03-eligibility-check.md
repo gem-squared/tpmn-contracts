@@ -19,6 +19,28 @@ policy_product_code:    string    # from policy-verification output (e.g. "COMP-
 dependent_verified:     bool      # from policy-verification output
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string.
+- `policy_no` must be a non-empty string matching `^HIC-\d{4}-\d{5}$`.
+- `claimant_name` must be a non-empty string.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `incident_date` must be a valid ISO 8601 date.
+- `claim_amount_requested` must be a positive decimal number.
+- `policy_product_code` must be a non-empty string matching one of the known plan codes `{COMP-HEALTH-GOLD, COMP-HEALTH-SILVER, COMP-HEALTH-BRONZE}`.
+- `dependent_verified` must be a boolean.
+
+### Format Validation
+- `claim_amount_requested > 0` (zero or negative inputs would not have passed earlier stages).
+- `dependent_verified = true` (this stage is unreachable otherwise — guarded by Gate G2 from policy-verification).
+- `incident_date ≤ today()` (no future-dated incidents).
+
+### Regulation/Compliance Gates
+- `plan_benefits` reference table must be loadable — waiting-period and limit lookups depend on it (Gate G3.1).
+- `claim_utilisation` reference table must be loadable — annual + lifetime utilisation aggregates per InsClaims-PolicyDoc §6.4.
+- Benefit-year boundary (`YEAR(:incident_date)`) is computed against fiscal calendar; calendar must be available at runtime.
+
 ## F: Processing Logic
 
 1. **Coverage type inclusion** — Query the `plan_benefits` table using `policy_product_code` and `claim_type`:
@@ -102,19 +124,29 @@ claimable_ceiling:          number    # min(claim_amount_requested, per_claim_li
 eligibility_timestamp:      datetime
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_draft` in B matches A
-- [ ] `policy_no` in B matches A
-- [ ] `eligible` is boolean
-- [ ] If `eligible = false` → `eligibility_failure_reason` is non-empty and maps to a failing rule
-- [ ] If `eligible = true` → `eligibility_failure_reason` is null
-- [ ] `annual_limit_remaining = annual_limit − annual_utilised` (arithmetic correctness)
-- [ ] `annual_limit_remaining ≥ 0` (cannot be negative)
-- [ ] `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)` (arithmetic correctness)
-- [ ] `claimable_ceiling ≤ claim_amount_requested` (never exceeds what was requested)
-- [ ] `eligible = true` ⟹ `claim_type_covered = true` (coverage gate invariant)
-- [ ] `eligible = true` ⟹ `waiting_period_satisfied = true` (waiting period invariant)
-- [ ] `eligible = true` ⟹ `annual_limit_remaining > 0` (limit invariant)
-- [ ] `waiting_period_days` matches the plan schedule for `claim_type` and `policy_product_code`
-- [ ] `eligibility_timestamp` is valid ISO 8601, not future-dated
+### Correctness
+
+- `claim_reference_draft` in B matches A
+- `policy_no` in B matches A
+- `eligible` is boolean
+- If `eligible = false` → `eligibility_failure_reason` is non-empty and maps to a failing rule
+- If `eligible = true` → `eligibility_failure_reason` is null
+- `annual_limit_remaining = annual_limit − annual_utilised` (arithmetic correctness)
+- `annual_limit_remaining ≥ 0` (cannot be negative)
+- `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)` (arithmetic correctness)
+- `claimable_ceiling ≤ claim_amount_requested` (never exceeds what was requested)
+- `eligible = true` ⟹ `claim_type_covered = true` (coverage gate invariant)
+- `eligible = true` ⟹ `waiting_period_satisfied = true` (waiting period invariant)
+- `eligible = true` ⟹ `annual_limit_remaining > 0` (limit invariant)
+- `waiting_period_days` matches the plan schedule for `claim_type` and `policy_product_code`
+- `eligibility_timestamp` is valid ISO 8601, not future-dated
+
+## Circus Executor
+
+**stage_type:** deterministic
+**agent_role:** eligibility-check-agent
+**routing_priority:** medium
+**trust_gate_L1:** 75 // company policy: inputs are validated upstream; structural alignment must hold for plan-table joins per InsClaims-PolicyDoc §6.4
+**trust_gate_L2:** 90 // company policy: claimable_ceiling arithmetic + waiting-period gates drive payout — very high threshold per Solvency-II Article 132 (internal model approval)

@@ -25,6 +25,34 @@ payment_details:                object    # claimant-submitted preferred payment
   payee_name:                   string    # legal name of payee (claimant or provider)
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string matching `^DRAFT-\d{8}-\d{5}$`.
+- `policy_no` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `net_payable` must be a non-negative decimal number.
+- `adjudication_status` must be one of `{approved, zero_benefit, rejected}`.
+- `claimant_liability` must be a non-negative decimal number.
+- `adjudication_notes` must be a non-empty string.
+- `payment_details` must be an object with `payment_mode` (enum), `payee_name` (string), and optional bank fields.
+- `payment_details.payment_mode` must be one of `{direct_credit, cheque, giro, provider_direct}`.
+
+### Format Validation
+- For `payment_details.payment_mode ∈ {direct_credit, giro}`: `bank_name`, `bank_account_no`, and `bank_branch_code` must all be non-null and non-empty.
+- `payment_details.bank_branch_code`, when present, must match `^\d{3}$`.
+- `payment_details.bank_account_no`, when present, must match `^\d{7,16}$` (generic bank range; bank-specific narrower formats apply in F).
+- `payment_details.payee_name` must be a non-empty string.
+- `net_payable + claimant_liability` must equal the upstream `claim_amount_requested` (conservation invariant from adjudication — Gate G5).
+- `net_payable > 0` if `adjudication_status = approved`.
+
+### Regulation/Compliance Gates
+- `claim_sequence`, `claims`, `deductible_ledger`, `claim_utilisation`, `accredited_providers` reference tables must be loadable AND writable per InsClaims-PolicyDoc §9.
+- `claim_reference_no` uniqueness must be guaranteed by `claim_sequence` atomic increment — non-atomic ledger inserts violate audit immutability (MAS Notice 612 §3).
+- Anti-fraud cross-check (payee_name vs claimant_name normalisation) must be available — payee mismatch routes to manual review per insurer governance.
+- `adjudication_status = 'approved'` is the only path to disbursement (Gate G5 — non-approved claims halt before this stage).
+
 ## F: Processing Logic
 
 1. **Adjudication approval gate** — Check `adjudication_status` from the adjudication stage:
@@ -93,20 +121,30 @@ remarks:                    string    # processing notes (e.g. "Non-panel surcha
 processing_timestamp:       datetime  # when disbursement record was created
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_no` is a non-empty, permanent reference following the `CLM-YYYY-#######` format
-- [ ] `claim_reference_no` is distinct from `claim_reference_draft` (upgrade confirmed)
-- [ ] `policy_no` in B matches that from Node 1 (end-to-end passthrough correctness)
-- [ ] `disbursement_status = disbursed` ⟹ `adjudication_status = approved` from Node 5
-- [ ] `disbursement_status = disbursed` ⟹ `net_payable > 0`
-- [ ] `disbursement_status = halted` ⟹ `net_payable = 0` in B output
-- [ ] `disbursement_status = pending_manual_review` ⟹ payee name mismatch was detected
-- [ ] `disbursement_date` is not past-dated; within expected settlement window for `payment_mode`
-- [ ] Bank account number is masked in B (no full account number exposed in output)
-- [ ] `remarks` is non-empty string (audit rationale always required)
-- [ ] `processing_timestamp` is valid ISO 8601 and not future-dated
-- [ ] Deductible ledger updated: new `deductible_utilised` = prior value + `deductible_applied_this_claim` from Node 5
-- [ ] Annual utilisation ledger updated: new `annual_utilised` = prior value + `net_payable`
-- [ ] No SPT violation: disbursement decision characterises the claim event, not the claimant as a person
-- [ ] No Δe→∫de violation: payment posting is claim-specific, not extrapolated to projected future utilisation
+### Correctness
+
+- `claim_reference_no` is a non-empty, permanent reference following the `CLM-YYYY-#######` format
+- `claim_reference_no` is distinct from `claim_reference_draft` (upgrade confirmed)
+- `policy_no` in B matches that from Node 1 (end-to-end passthrough correctness)
+- `disbursement_status = disbursed` ⟹ `adjudication_status = approved` from Node 5
+- `disbursement_status = disbursed` ⟹ `net_payable > 0`
+- `disbursement_status = halted` ⟹ `net_payable = 0` in B output
+- `disbursement_status = pending_manual_review` ⟹ payee name mismatch was detected
+- `disbursement_date` is not past-dated; within expected settlement window for `payment_mode`
+- Bank account number is masked in B (no full account number exposed in output)
+- `remarks` is non-empty string (audit rationale always required)
+- `processing_timestamp` is valid ISO 8601 and not future-dated
+- Deductible ledger updated: new `deductible_utilised` = prior value + `deductible_applied_this_claim` from Node 5
+- Annual utilisation ledger updated: new `annual_utilised` = prior value + `net_payable`
+- No SPT violation: disbursement decision characterises the claim event, not the claimant as a person
+- No Δe→∫de violation: payment posting is claim-specific, not extrapolated to projected future utilisation
+
+## Circus Executor
+
+**stage_type:** hybrid
+**agent_role:** disbursement-agent
+**routing_priority:** high
+**trust_gate_L1:** 85 // company policy: final-stage money-disbursement requires high input rigor — adjudication_status + payment_mode + bank fields cannot be ambiguous per InsClaims-PolicyDoc §9
+**trust_gate_L2:** 92 // company policy: outputs represent a legal payment record + ledger writes — highest threshold per MAS Notice 612 §3 (audit immutability)
