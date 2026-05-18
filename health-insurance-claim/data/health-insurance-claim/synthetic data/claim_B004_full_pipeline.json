@@ -1,0 +1,349 @@
+{
+  "_scenario": "B004 — Surgical (Appendectomy), COMP-HEALTH-BRONZE, Self, Non-Panel Hospital, APPROVED with 60% non-panel reimbursement",
+  "_outcome": "Node 4 flags NON_PANEL_PROVIDER. Node 5 applies 60% non-panel rate + SGD 3,500 deductible (fully consumed) + 20% co-pay + 20% co-insurance. Net payable SGD 1,392. Disbursed via provider_direct T+5.",
+  "_arithmetic_verify": {
+    "adjudication_base_pre_panel": "min(11800, 8500, 12000) = 8500.00",
+    "non_panel_adjustment": "8500 × 60/100 = 5100.00",
+    "adjudication_base": 5100.0,
+    "deductible_remaining": "max(0, 3500 - 0) = 3500.00",
+    "amount_after_deductible": "max(0, 5100 - 3500) = 1600.00",
+    "deductible_applied": 3500.0,
+    "co_pay": "round(1600 × 20/100, 2) = 320.00",
+    "amount_after_copay": 1280.0,
+    "co_insurance_raw": "round(1280 × 20/100, 2) = 256.00",
+    "co_insurance_applied": "min(256, 2000) = 256.00",
+    "net_payable": "round(1280 - 256, 2) = 1024.00",
+    "claimant_liability": "round(11800 - 1024, 2) = 10776.00",
+    "conservation_check": "1024 + 10776 = 11800 ✓"
+  },
+  "stage_1_intake": {
+    "_input": {
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "claimant_relationship": "self",
+      "id_document_type": "nric",
+      "id_document_no": "S7534567E",
+      "date_of_birth": "1975-09-03",
+      "incident_date": "2025-05-02",
+      "claim_date": "2025-05-10",
+      "claim_type": "surgical",
+      "claim_amount_requested": 11800.0,
+      "provider_name": "Novena Surgical and Orthopaedic Centre",
+      "provider_registration": "PRV-HOSP-09921",
+      "supporting_documents": ["medical_bill", "discharge_summary", "pre_auth_approval"],
+      "scanned_files": ["B004/medical_bill.pdf", "B004/discharge_summary.pdf", "B004/pre_auth_approval.pdf"]
+    },
+    "_validation": {
+      "policy_no_regex_match": true,
+      "id_format_valid": true,
+      "date_of_birth_age": 49,
+      "submission_lag_days": 8,
+      "pre_auth_document_present": true,
+      "missing_documents": []
+    },
+    "_document_extraction": {
+      "total_billed_amount": 11800.0,
+      "itemised_charges": [
+        {"description": "Appendectomy (open)", "quantity": 1, "unit_price": 8500.0},
+        {"description": "Anaesthesia", "quantity": 1, "unit_price": 1200.0},
+        {"description": "Ward charges (2 nights)", "quantity": 2, "unit_price": 650.0},
+        {"description": "Post-operative medications", "quantity": 1, "unit_price": 1000.0}
+      ],
+      "primary_diagnosis_icd10": "K35.80",
+      "procedure_cpt_codes": ["44950", "99232"],
+      "symptom_onset_date": "2025-05-01",
+      "admission_date": "2025-05-02",
+      "discharge_date": "2025-05-04",
+      "attending_physician": "Dr. Tan Boon Kiat",
+      "physician_license_no": "MCR-44012D",
+      "pre_authorisation_no": "PA-2025-880001",
+      "provider_name_on_bill": "Novena Surgical and Orthopaedic Centre",
+      "extraction_warnings": []
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "id_document_type": "nric",
+      "id_document_no": "S7534567E",
+      "date_of_birth": "1975-09-03",
+      "claimant_relationship": "self",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "claim_date": "2025-05-10",
+      "claim_amount_requested": 11800.0,
+      "provider_name": "Novena Surgical and Orthopaedic Centre",
+      "provider_registration": "PRV-HOSP-09921",
+      "intake_accepted": true,
+      "rejection_reason": null,
+      "missing_documents": [],
+      "intake_timestamp": "2025-05-10T14:00:00+08:00",
+      "document_summary": {
+        "total_billed_amount": 11800.0,
+        "itemised_charges": [
+          {"description": "Appendectomy (open)", "quantity": 1, "unit_price": 8500.0},
+          {"description": "Anaesthesia", "quantity": 1, "unit_price": 1200.0},
+          {"description": "Ward charges (2 nights)", "quantity": 2, "unit_price": 650.0},
+          {"description": "Post-operative medications", "quantity": 1, "unit_price": 1000.0}
+        ],
+        "primary_diagnosis_icd10": "K35.80",
+        "procedure_cpt_codes": ["44950", "99232"],
+        "symptom_onset_date": "2025-05-01",
+        "admission_date": "2025-05-02",
+        "discharge_date": "2025-05-04",
+        "attending_physician": "Dr. Tan Boon Kiat",
+        "physician_license_no": "MCR-44012D",
+        "pre_authorisation_no": "PA-2025-880001",
+        "provider_name_on_bill": "Novena Surgical and Orthopaedic Centre",
+        "extraction_warnings": [],
+        "summary_narrative": "Ahmad Zulkifli bin Hassan, 49, admitted to Novena Surgical and Orthopaedic Centre on 2 May 2025 for acute appendicitis (ICD-10 K35.80). Symptoms first noted 1 May 2025. Open appendectomy performed (CPT 44950) with anaesthesia and 2-night post-surgical ward stay (CPT 99232). Total billed SGD 11,800 including surgery, anaesthesia, ward, and medications. Pre-authorisation PA-2025-880001 submitted."
+      }
+    }
+  },
+  "stage_2_policy_verification": {
+    "_db_lookups": {
+      "policy_found": true,
+      "policy_status": "active",
+      "policy_start_date": "2022-09-01",
+      "policy_expiry_date": "2025-08-31",
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "premium_payment_mode": "quarterly",
+      "incident_in_coverage_window": true,
+      "identity_matched": true,
+      "relationship": "self",
+      "dependent_verified": true,
+      "arrears_count": 0,
+      "dup_count": 0
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "id_document_type": "nric",
+      "id_document_no": "S7534567E",
+      "date_of_birth": "1975-09-03",
+      "claimant_relationship": "self",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "claim_amount_requested": 11800.0,
+      "provider_name": "Novena Surgical and Orthopaedic Centre",
+      "provider_registration": "PRV-HOSP-09921",
+      "document_summary": "<<passthrough>>",
+      "policy_verified": true,
+      "verification_failure": null,
+      "policy_start_date": "2022-09-01",
+      "policy_expiry_date": "2025-08-31",
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "premium_payment_mode": "quarterly",
+      "dependent_verified": true,
+      "verification_timestamp": "2025-05-10T14:01:00+08:00"
+    }
+  },
+  "stage_3_eligibility_check": {
+    "_plan_document_lookup": {
+      "query": "SELECT plan_document FROM plan_documents WHERE policy_product_code='COMP-HEALTH-BRONZE' AND claim_type='surgical'",
+      "interpreted_parameters": {
+        "covered": true,
+        "waiting_period_days": 90,
+        "annual_limit": 25000.0,
+        "per_claim_limit": 12000.0
+      }
+    },
+    "_computation": {
+      "policy_start_date": "2022-09-01",
+      "symptom_onset_date": "2025-05-01",
+      "waiting_period_basis": "symptom_onset",
+      "days_from_policy_start_to_symptom_onset": 972,
+      "waiting_period_satisfied": true,
+      "exclusions_check": "K35.80 (Appendicitis) — no exclusion match",
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 25000.0,
+      "claimable_ceiling": "min(11800, 12000, 25000) = 11800.00"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "claim_amount_requested": 11800.0,
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "provider_name": "Novena Surgical and Orthopaedic Centre",
+      "provider_registration": "PRV-HOSP-09921",
+      "document_summary": "<<passthrough>>",
+      "eligible": true,
+      "eligibility_failure_reason": null,
+      "waiting_period_satisfied": true,
+      "waiting_period_days": 90,
+      "waiting_period_basis": "symptom_onset",
+      "annual_limit": 25000.0,
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 25000.0,
+      "per_claim_limit": 12000.0,
+      "claimable_ceiling": 11800.0,
+      "exclusions_triggered": [],
+      "eligibility_rationale": "Surgical is covered under COMP-HEALTH-BRONZE with 90-day waiting period. Symptom onset 1 May 2025 is 972 days after policy inception 1 Sep 2022 — waiting period satisfied. K35.80 (appendicitis) triggers no exclusion. Annual limit SGD 25,000 fully available. Per-claim limit SGD 12,000 exceeds claim SGD 11,800. Claimable ceiling SGD 11,800.",
+      "eligibility_timestamp": "2025-05-10T14:02:00+08:00"
+    }
+  },
+  "stage_4_medical_review": {
+    "_registry_lookups": {
+      "provider_accreditation": {
+        "query": "MOH Accredited Provider Registry — lookup provider_registration='PRV-HOSP-09921'",
+        "result": "Not found in MOH accredited provider list as of 2025-05-10. Novena Surgical and Orthopaedic Centre operates as a private hospital without MOH panel status.",
+        "non_panel_flag": true,
+        "accreditation_claim": "Novena Surgical and Orthopaedic Centre (PRV-HOSP-09921) was not found in the MOH accredited panel provider list as of 2025-05-10. Provider operates as a non-panel private hospital. Source: MOH Healthcare Institution Registry.",
+        "provider_name_match": "Novena Surgical and Orthopaedic Centre == Novena Surgical and Orthopaedic Centre ✓"
+      },
+      "physician_licence": {
+        "query": "SMC Full Medical Register — lookup physician_license_no='MCR-44012D'",
+        "result": "Dr. Tan Boon Kiat — Active, General Surgery, expiry 2026-12-31",
+        "physician_licence_claim": "Dr. Tan Boon Kiat (MCR-44012D) holds a valid and active medical licence registered with the Singapore Medical Council under General Surgery. Licence verified at SMC Full Medical Register on 2025-05-10. Licence valid through 2026-12-31.",
+        "licence_valid_as_of_incident": true
+      },
+      "pre_auth_check": {
+        "query": "SELECT status, policy_no, authorised_amount, expiry_date FROM pre_authorisations WHERE pre_auth_no='PA-2025-880001'",
+        "status": "approved",
+        "policy_no_match": true,
+        "incident_within_expiry": true,
+        "pre_auth_verified": true
+      },
+      "rps_benchmark": {
+        "cpt_codes": ["44950", "99232"],
+        "rps_unit_prices": {"44950": 8500.0, "99232": 250.0},
+        "rps_benchmark": 8750.0,
+        "bill_variance_pct": "((11800 - 8750) / 8750) × 100 = 34.86%",
+        "bill_exceeds_benchmark_50pct": false
+      }
+    },
+    "_coding_assessment": [
+      {
+        "cpt_code": "44950",
+        "valid": true,
+        "plausible": true,
+        "reasoning": "CPT 44950 (appendectomy) is valid and clinically plausible for ICD-10 K35.80 (acute appendicitis without abscess) — open appendectomy is the standard surgical treatment."
+      },
+      {
+        "cpt_code": "99232",
+        "valid": true,
+        "plausible": true,
+        "reasoning": "CPT 99232 (subsequent inpatient visit) is valid and plausible for post-surgical inpatient monitoring following appendectomy for K35.80."
+      }
+    ],
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "claim_amount_requested": 11800.0,
+      "claimable_ceiling": 11800.0,
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "provider_registration": "PRV-HOSP-09921",
+      "document_summary": "<<passthrough>>",
+      "medical_review_passed": true,
+      "review_failure_reason": null,
+      "non_panel_flag": true,
+      "accreditation_claim": "Novena Surgical and Orthopaedic Centre (PRV-HOSP-09921) was not found in the MOH accredited panel provider list as of 2025-05-10. Provider is a non-panel private hospital. Source: MOH Healthcare Institution Registry.",
+      "physician_licence_claim": "Dr. Tan Boon Kiat (MCR-44012D) holds a valid and active medical licence under General Surgery, verified at SMC Full Medical Register on 2025-05-10. Valid through 2026-12-31.",
+      "coding_assessment": [
+        {"cpt_code": "44950", "valid": true, "plausible": true, "reasoning": "Appendectomy (CPT 44950) is standard surgical treatment for acute appendicitis K35.80."},
+        {"cpt_code": "99232", "valid": true, "plausible": true, "reasoning": "Post-surgical inpatient monitoring (CPT 99232) is expected following appendectomy."}
+      ],
+      "pre_auth_verified": true,
+      "length_of_stay": 2,
+      "rps_benchmark": 8750.0,
+      "bill_variance_pct": 34.86,
+      "medical_necessity_confirmed": true,
+      "medical_flags": ["NON_PANEL_PROVIDER"],
+      "medical_review_notes": "Non-panel private hospital Novena Surgical confirmed not on MOH panel — NON_PANEL_PROVIDER flagged. Dr. Tan Boon Kiat SMC licence valid through 2026. CPT 44950 (appendectomy) and 99232 (inpatient visit) clinically plausible for K35.80 appendicitis. Pre-auth PA-2025-880001 verified. Bill SGD 11,800 is 34.9% above RPS benchmark SGD 8,750 — within 50% threshold. Medical necessity confirmed.",
+      "review_timestamp": "2025-05-10T14:03:30+08:00"
+    }
+  },
+  "stage_5_adjudication": {
+    "_plan_document_lookup": {
+      "query": "SELECT plan_document FROM plan_documents WHERE policy_product_code='COMP-HEALTH-BRONZE' AND claim_type='surgical'",
+      "interpreted_parameters": {
+        "deductible_annual": 3500.0,
+        "co_payment_pct": 20,
+        "co_insurance_pct": 20,
+        "co_insurance_cap": 2000.0,
+        "non_panel_reimbursement_pct": 60
+      },
+      "deductible_utilised": 0.0,
+      "deductible_remaining": 3500.0
+    },
+    "_computation": {
+      "adjudication_base_pre_panel": "min(11800, 8750, 11800) = 8750.00",
+      "non_panel_adjustment": "8750 × 60/100 = 5250.00",
+      "adjudication_base": 5250.0,
+      "deductible_remaining": 3500.0,
+      "amount_after_deductible": "max(0, 5250 - 3500) = 1750.00",
+      "deductible_applied_this_claim": 3500.0,
+      "co_pay": "round(1750 × 20/100, 2) = 350.00",
+      "amount_after_copay": 1400.0,
+      "co_insurance_raw": "round(1400 × 20/100, 2) = 280.00",
+      "co_insurance_applied": "min(280, 2000) = 280.00",
+      "net_payable": "round(1400 - 280, 2) = 1120.00",
+      "claimant_liability": "round(11800 - 1120, 2) = 10680.00"
+    },
+    "_output": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "claim_amount_requested": 11800.0,
+      "provider_registration": "PRV-HOSP-09921",
+      "adjudication_base": 5250.0,
+      "deductible_applied_this_claim": 3500.0,
+      "co_pay_amount": 350.0,
+      "co_insurance_amount": 280.0,
+      "net_payable": 1120.0,
+      "claimant_liability": 10680.0,
+      "adjudication_status": "approved",
+      "adjudication_notes": "Non-panel provider: 60% Bronze reimbursement applied — base reduced from RPS SGD 8,750 to SGD 5,250. Annual deductible SGD 3,500 fully applied. Co-pay 20% = SGD 350. Co-insurance 20% = SGD 280 (below SGD 2,000 cap). Net payable SGD 1,120. Claimant liability SGD 10,680.",
+      "adjudication_timestamp": "2025-05-10T14:04:00+08:00"
+    }
+  },
+  "stage_6_disbursement": {
+    "_payment_details": {
+      "payment_mode": "provider_direct",
+      "payee_name": "Novena Surgical and Orthopaedic Centre",
+      "bank_account_no_source": "accredited_providers table — bank_account_no for PRV-HOSP-09921 = '1099219921'",
+      "bank_name": "UOB",
+      "bank_branch_code": "055"
+    },
+    "_validation": {
+      "adjudication_status_gate": "approved → proceed",
+      "net_payable_gt_zero": true,
+      "bank_account_found_in_accredited_providers": true,
+      "payee_name_matches_registered_provider": true,
+      "fraud_flag": false
+    },
+    "_reference_upgrade": {
+      "claim_reference_draft": "DRAFT-20250510-01104",
+      "claim_reference_no": "CLM-2025-0001104",
+      "sequence_source": "claim_sequence table — next_val=1104 for year 2025"
+    },
+    "_ledger_writes": {
+      "deductible_ledger_insert": "INSERT INTO deductible_ledger (policy_no, benefit_year, claim_reference_no, amount, posted_at) VALUES ('HIC-2022-00321', 2025, 'CLM-2025-0001104', 3500.00, NOW())",
+      "claim_utilisation_insert": "INSERT INTO claim_utilisation (policy_no, claim_type, benefit_year, claim_reference_no, net_payable, status, posted_at) VALUES ('HIC-2022-00321', 'surgical', 2025, 'CLM-2025-0001104', 1120.00, 'paid', NOW())"
+    },
+    "_output": {
+      "claim_reference_no": "CLM-2025-0001104",
+      "policy_no": "HIC-2022-00321",
+      "claimant_name": "Ahmad Zulkifli bin Hassan",
+      "claim_type": "surgical",
+      "disbursement_status": "disbursed",
+      "net_payable": 1120.0,
+      "claimant_liability": 10680.0,
+      "payment_mode": "provider_direct",
+      "payee_name": "Novena Surgical and Orthopaedic Centre",
+      "disbursement_date": "2025-05-15",
+      "incident_date": "2025-05-02",
+      "remarks": "Claim CLM-2025-0001104 approved. Non-panel 60% reimbursement and SGD 3,500 annual deductible applied. Net payable SGD 1,120 disbursed directly to Novena Surgical and Orthopaedic Centre via UOB provider_direct by 15 May 2025 (T+5).",
+      "processing_timestamp": "2025-05-10T14:05:00+08:00"
+    }
+  }
+}

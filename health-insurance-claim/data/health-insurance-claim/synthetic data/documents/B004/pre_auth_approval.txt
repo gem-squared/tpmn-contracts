@@ -1,0 +1,43 @@
+PRE-AUTHORISATION APPROVAL CERTIFICATE
+TPMN Health Insurance — Medical Pre-Authorisation Unit
+10 Marina Boulevard, Singapore 018983
+Tel: +65 6123 4567
+
+=============================================
+PRE-AUTHORISATION NUMBER:  PA-2025-880001
+DATE ISSUED:               30 April 2025
+STATUS:                    APPROVED
+=============================================
+
+POLICY DETAILS:
+  Policy No:         HIC-2022-00321
+  Plan:              COMP-HEALTH-BRONZE
+  Policyholder:      Ahmad Zulkifli bin Hassan
+
+CLAIMANT DETAILS:
+  Name:              Ahmad Zulkifli bin Hassan
+  NRIC:              S7534567E
+  Relationship:      Self
+
+CLAIM DETAILS:
+  Claim Type:        Surgical
+  Provider:          Novena Surgical and Orthopaedic Centre
+  Provider Reg No:   PRV-HOSP-09921
+  Attending Physician: Dr. Tan Boon Kiat (MCR-44012D)
+  Procedure:         Open Appendectomy (CPT 44950)
+  Expected Admission: 02 May 2025
+
+AUTHORISATION:
+  Authorised Amount: SGD 12,000.00 (maximum)
+  Validity:          30 April 2025 to 31 July 2025
+  Expiry Date:       31 July 2025
+
+NOTE:
+  This pre-authorisation covers surgical procedure CPT 44950 at
+  the stated provider. Reimbursement is subject to COMP-HEALTH-
+  BRONZE plan terms, including the non-panel provider clause
+  (reimbursement capped at 60% for non-panel providers).
+
+Authorised by: TPMN Pre-Authorisation Unit
+Date: 30 April 2025
+=============================================

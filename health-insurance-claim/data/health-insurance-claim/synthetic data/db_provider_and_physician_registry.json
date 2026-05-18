@@ -1,0 +1,143 @@
+{
+  "_comment": "Synthetic fixture — accredited_providers table (MOH registry) + physician_registry table (SMC registry). Queried by claim-04-medical-review.md Steps 1 and 2 via external registry tool. Accreditation source: MOH Accredited Healthcare Provider Registry. Physician source: Singapore Medical Council (SMC) Full Medical Register. Also stores bank_account_no for provider_direct disbursement (Node 6).",
+  "accredited_providers": [
+    {
+      "provider_registration": "MOH-HOSP-00142",
+      "provider_name": "Singapore General Hospital",
+      "provider_type": "public_hospital",
+      "setting": "inpatient",
+      "panel_status": "active",
+      "certification_body": "Ministry of Health Singapore",
+      "certification_scope": "Acute General Hospital — Full Service",
+      "accreditation_expiry_date": "2027-12-31",
+      "registry_source": "https://www.moh.gov.sg/hpp/allopathic-medicine/healthcare-institutions/hospitals",
+      "bank_name": "DBS",
+      "bank_account_no": "0019001420",
+      "bank_branch_code": "007",
+      "_scenario": "A001 — panel hospital for pneumonia hospitalisation"
+    },
+    {
+      "provider_registration": "MOH-CLIN-00887",
+      "provider_name": "HealthFirst Medical Clinic",
+      "provider_type": "gp_clinic",
+      "setting": "outpatient",
+      "panel_status": "active",
+      "certification_body": "Ministry of Health Singapore",
+      "certification_scope": "General Practice Outpatient Clinic",
+      "accreditation_expiry_date": "2026-06-30",
+      "registry_source": "https://www.moh.gov.sg/hpp/allopathic-medicine/healthcare-institutions/clinics",
+      "bank_name": "OCBC",
+      "bank_account_no": "712345678",
+      "bank_branch_code": "501",
+      "_scenario": "A002 — panel GP clinic for outpatient hypertension"
+    },
+    {
+      "provider_registration": "MOH-HOSP-00273",
+      "provider_name": "KK Women's and Children's Hospital",
+      "provider_type": "public_hospital",
+      "setting": "inpatient",
+      "panel_status": "active",
+      "certification_body": "Ministry of Health Singapore",
+      "certification_scope": "Acute Specialist Hospital — Obstetrics, Gynaecology and Paediatrics",
+      "accreditation_expiry_date": "2027-12-31",
+      "registry_source": "https://www.moh.gov.sg/hpp/allopathic-medicine/healthcare-institutions/hospitals",
+      "bank_name": "DBS",
+      "bank_account_no": "0019002730",
+      "bank_branch_code": "007",
+      "_scenario": "A003 — maternity hospital (claim rejected at eligibility; included for completeness)"
+    },
+    {
+      "provider_registration": "MOH-HOSP-00391",
+      "provider_name": "Tan Tock Seng Hospital",
+      "provider_type": "public_hospital",
+      "setting": "inpatient",
+      "panel_status": "active",
+      "certification_body": "Ministry of Health Singapore",
+      "certification_scope": "Acute General Hospital — Full Service",
+      "accreditation_expiry_date": "2027-12-31",
+      "registry_source": "https://www.moh.gov.sg/hpp/allopathic-medicine/healthcare-institutions/hospitals",
+      "bank_name": "UOB",
+      "bank_account_no": "1023910000",
+      "bank_branch_code": "055",
+      "_scenario": "A005 — emergency hospital"
+    },
+    {
+      "provider_registration": "PRV-HOSP-09921",
+      "provider_name": "Novena Surgical and Orthopaedic Centre",
+      "provider_type": "private_hospital",
+      "setting": "inpatient",
+      "panel_status": "non_panel",
+      "certification_body": null,
+      "certification_scope": null,
+      "accreditation_expiry_date": null,
+      "registry_source": "https://www.moh.gov.sg/hpp/allopathic-medicine/healthcare-institutions/hospitals",
+      "accreditation_note": "Not found in MOH accredited provider list as of 2025-05-02. Provider operates as a private facility without MOH panel status.",
+      "bank_name": "UOB",
+      "bank_account_no": "1099219921",
+      "bank_branch_code": "055",
+      "_scenario": "A004 — non-panel private hospital; triggers non_panel_flag=true and 60% reimbursement under Bronze"
+    }
+  ],
+  "physician_registry": [
+    {
+      "physician_license_no": "MCR-10234A",
+      "full_name": "Dr. Chong Wei Liang",
+      "specialty": "Internal Medicine",
+      "institution": "Singapore General Hospital",
+      "registration_date": "2005-07-01",
+      "status": "active",
+      "expiry_date": "2027-06-30",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "A001 — treating physician for pneumonia hospitalisation"
+    },
+    {
+      "physician_license_no": "MCR-20891B",
+      "full_name": "Dr. Nur Aisyah Binte Ramli",
+      "specialty": "General Practice",
+      "institution": "HealthFirst Medical Clinic",
+      "registration_date": "2012-09-15",
+      "status": "active",
+      "expiry_date": "2026-09-30",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "A002 — GP treating outpatient hypertension"
+    },
+    {
+      "physician_license_no": "MCR-31457C",
+      "full_name": "Dr. Kavitha Rajendran",
+      "specialty": "Obstetrics & Gynaecology",
+      "institution": "KK Women's and Children's Hospital",
+      "registration_date": "2010-03-01",
+      "status": "active",
+      "expiry_date": "2027-03-31",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "A003 — OB-GYN for maternity claim (halted at eligibility)"
+    },
+    {
+      "physician_license_no": "MCR-44012D",
+      "full_name": "Dr. Tan Boon Kiat",
+      "specialty": "General Surgery",
+      "institution": "Novena Surgical and Orthopaedic Centre",
+      "registration_date": "2003-01-15",
+      "status": "active",
+      "expiry_date": "2026-12-31",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "A004 — surgeon for appendectomy at non-panel hospital"
+    },
+    {
+      "physician_license_no": "MCR-55678E",
+      "full_name": "Dr. Lim Ah Kow",
+      "specialty": "Emergency Medicine",
+      "institution": "Tan Tock Seng Hospital",
+      "registration_date": "2008-02-01",
+      "status": "active",
+      "expiry_date": "2027-01-31",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "A005 — ED physician for fracture treatment (claim rejected at Node 2 duplicate check)"
+    }
+  ]
+}

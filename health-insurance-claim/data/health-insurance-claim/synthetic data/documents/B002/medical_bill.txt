@@ -1,0 +1,39 @@
+MEDICAL BILL
+CityMed Family Clinic
+Block 123 Toa Payoh Central, #01-45, Singapore 310123
+Tel: +65 6456 7890 | GST Reg: 200811234K
+
+=============================================
+BILL DATE:       20 April 2025
+PATIENT NAME:    Lim Kai Xuan
+NRIC:            S8867890C
+DATE OF BIRTH:   30 November 1988
+VISIT TYPE:      Outpatient Consultation
+VISIT DATE:      20 April 2025
+=============================================
+
+ITEMISED CHARGES
+----------------
+GP Consultation Fee                        SGD     85.00
+  CPT Code: 99213
+
+Blood Pressure Monitoring & ECG            SGD     60.00
+  CPT Code: 93000
+
+Basic Metabolic Panel (Blood Test)         SGD     45.00
+  CPT Code: 80048
+
+Antihypertensive Medications (30-day supply)
+  Amlodipine 5mg x 30 tabs                SGD     90.00
+  Perindopril 4mg x 30 tabs              SGD    100.00
+                                         ____________
+TOTAL BILLED AMOUNT:                     SGD    380.00
+
+ATTENDING PHYSICIAN: Dr. Farhan Bin Riza
+PHYSICIAN LICENCE:   MCR-67890F
+PROVIDER REG NO:     PRV-CLIN-07734
+
+No pre-authorisation required for outpatient consultation.
+Payment received: SGD 380.00 (credit card)
+=============================================
+Thank you for visiting CityMed Family Clinic.

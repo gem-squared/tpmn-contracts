@@ -1,0 +1,126 @@
+{
+  "_comment": "Synthetic fixture — pre_authorisations table, claim_utilisation table, deductible_ledger table, and claims table. All updated to reflect the 5 new test case scenarios B001–B005. B001: Hospitalisation GOLD fully approved. B002: Outpatient SILVER approved (non-panel, bill at benchmark). B003: Maternity GOLD rejected at eligibility (waiting period not met, 66 days < 270 days). B004: Surgical BRONZE approved (non-panel 60% discount, large deductible). B005: Emergency GOLD duplicate claim rejected at policy-verification.",
+  "pre_authorisations": [
+    {
+      "pre_auth_no": "PA-2025-110001",
+      "policy_no": "HIC-2024-00123",
+      "claim_type": "hospitalisation",
+      "incident_date": "2025-04-10",
+      "status": "approved",
+      "authorised_amount": 50000.0,
+      "issued_date": "2025-04-08",
+      "expiry_date": "2025-07-08",
+      "_scenario": "B001 — pre-auth approved for Tan Wei Ming's pneumonia hospitalisation at SGH"
+    },
+    {
+      "pre_auth_no": "PA-2025-550001",
+      "policy_no": "HIC-2025-00789",
+      "claim_type": "maternity",
+      "incident_date": "2025-05-14",
+      "status": "approved",
+      "authorised_amount": 10000.0,
+      "issued_date": "2025-05-01",
+      "expiry_date": "2025-08-01",
+      "_scenario": "B003 — pre-auth exists but claim halted at eligibility (waiting period 66 days < 270 days)"
+    },
+    {
+      "pre_auth_no": "PA-2025-880001",
+      "policy_no": "HIC-2022-00321",
+      "claim_type": "surgical",
+      "incident_date": "2025-05-02",
+      "status": "approved",
+      "authorised_amount": 12000.0,
+      "issued_date": "2025-04-30",
+      "expiry_date": "2025-07-31",
+      "_scenario": "B004 — pre-auth for Ahmad's appendectomy at Novena (non-panel, Bronze plan)"
+    }
+  ],
+  "claim_utilisation": [
+    {
+      "_comment": "2024 outpatient claim for HIC-2024-00123 — does not count toward 2025 annual limit",
+      "policy_no": "HIC-2024-00123",
+      "claim_type": "outpatient",
+      "benefit_year": 2024,
+      "claim_reference_no": "CLM-2024-0000345",
+      "net_payable": 420.0,
+      "status": "paid",
+      "posted_at": "2024-08-20T10:15:00+08:00"
+    },
+    {
+      "_comment": "2025 prior outpatient claim for HIC-2023-00456 — counts toward annual limit for B002",
+      "policy_no": "HIC-2023-00456",
+      "claim_type": "outpatient",
+      "benefit_year": 2025,
+      "claim_reference_no": "CLM-2025-0000512",
+      "net_payable": 180.0,
+      "status": "paid",
+      "posted_at": "2025-02-14T09:00:00+08:00"
+    },
+    {
+      "_comment": "Existing paid emergency claim for HIC-2024-00099 — triggers duplicate claim rejection for B005 (same policy_no + incident_date 2025-04-21 + claim_type emergency)",
+      "policy_no": "HIC-2024-00099",
+      "claim_type": "emergency",
+      "benefit_year": 2025,
+      "claim_reference_no": "CLM-2025-0000877",
+      "net_payable": 2100.0,
+      "status": "paid",
+      "posted_at": "2025-04-22T14:30:00+08:00"
+    }
+  ],
+  "deductible_ledger": [
+    {
+      "_comment": "2024 deductible for HIC-2024-00123 — does not carry forward to 2025",
+      "policy_no": "HIC-2024-00123",
+      "benefit_year": 2024,
+      "claim_reference_no": "CLM-2024-0000345",
+      "amount": 420.0,
+      "posted_at": "2024-08-20T10:15:00+08:00"
+    },
+    {
+      "_comment": "2025 deductible for HIC-2024-00123 — starts fresh at 0.00 for B001",
+      "policy_no": "HIC-2024-00123",
+      "benefit_year": 2025,
+      "claim_reference_no": null,
+      "amount": 0.0,
+      "posted_at": null,
+      "_note": "No 2025 claims processed yet; deductible_utilised = 0.00"
+    },
+    {
+      "_comment": "2025 deductible for HIC-2023-00456 — prior outpatient claim applied partial deductible",
+      "policy_no": "HIC-2023-00456",
+      "benefit_year": 2025,
+      "claim_reference_no": "CLM-2025-0000512",
+      "amount": 180.0,
+      "posted_at": "2025-02-14T09:00:00+08:00",
+      "_note": "SGD 180 of the SGD 2,000 annual deductible consumed. Remaining: SGD 1,820 for B002."
+    },
+    {
+      "_comment": "2025 deductible for HIC-2022-00321 — no prior 2025 claims for B004",
+      "policy_no": "HIC-2022-00321",
+      "benefit_year": 2025,
+      "claim_reference_no": null,
+      "amount": 0.0,
+      "posted_at": null,
+      "_note": "No 2025 deductible consumed yet; deductible_utilised = 0.00 for B004."
+    }
+  ],
+  "claims": [
+    {
+      "_comment": "Existing paid claim for B005 duplicate-check. Same policy_no HIC-2024-00099 + incident_date 2025-04-21 + claim_type emergency already exists with status=paid.",
+      "policy_no": "HIC-2024-00099",
+      "claim_reference_no": "CLM-2025-0000877",
+      "claim_reference_draft": "DRAFT-20250422-00877",
+      "claim_type": "emergency",
+      "incident_date": "2025-04-21",
+      "status": "paid",
+      "created_at": "2025-04-22T08:00:00+08:00"
+    }
+  ],
+  "claim_sequence": [
+    {
+      "_comment": "Sequence counter for CLM-2025-NNNNNNN. B001 will consume next_val=1101.",
+      "year": 2025,
+      "next_val": 1101
+    }
+  ]
+}

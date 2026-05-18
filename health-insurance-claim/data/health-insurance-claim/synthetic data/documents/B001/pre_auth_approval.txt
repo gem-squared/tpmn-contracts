@@ -1,0 +1,48 @@
+PRE-AUTHORISATION APPROVAL CERTIFICATE
+TPMN Health Insurance — Medical Pre-Authorisation Unit
+10 Marina Boulevard, Singapore 018983
+Tel: +65 6123 4567 | Fax: +65 6123 4568
+
+=============================================
+PRE-AUTHORISATION NUMBER:  PA-2025-110001
+DATE ISSUED:               08 April 2025
+STATUS:                    APPROVED
+=============================================
+
+POLICY DETAILS:
+  Policy No:         HIC-2024-00123
+  Plan:              COMP-HEALTH-GOLD
+  Policyholder:      Tan Wei Ming
+
+CLAIMANT DETAILS:
+  Name:              Tan Wei Ming
+  NRIC:              S7801234A
+  Relationship:      Self
+
+CLAIM DETAILS:
+  Claim Type:        Hospitalisation
+  Provider:          Singapore General Hospital
+  Provider Reg No:   MOH-HOSP-00142
+  Attending Physician: Dr. Chong Wei Liang (MCR-10234A)
+  Estimated Admission: 10 April 2025
+  Estimated Discharge: 14 April 2025 (estimated)
+  Diagnosis:         Community-Acquired Pneumonia (J18.9)
+
+AUTHORISATION:
+  Authorised Amount: SGD 50,000.00 (maximum)
+  Validity:          08 April 2025 to 08 July 2025
+  Expiry Date:       08 July 2025
+
+CONDITIONS:
+  1. This pre-authorisation is valid only for the above-named claimant,
+     policy, and provider.
+  2. Actual claim reimbursement is subject to policy terms, benefit
+     limits, deductibles, and co-payments.
+  3. Admission must occur within the validity period.
+  4. This document must be presented at admission and submitted with
+     the claim.
+
+Authorised by: TPMN Pre-Authorisation Unit
+Reference Officer: Ms. Siti Rahimah
+Date: 08 April 2025
+=============================================
