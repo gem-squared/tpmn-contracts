@@ -19,97 +19,46 @@ claimant_relationship:  enum      # from claim-intake output
 claim_type:             enum      # from claim-intake output
 incident_date:          date      # from claim-intake output
 claim_amount_requested: number    # from claim-intake output
+document_summary:       object    # passthrough from claim-intake output
 ```
 
 ## P_pre: Preconditions
 
 ### Type Alignment
-- `claim_reference_draft` must be a non-empty string matching `^DRAFT-\d{8}-\d{5}$`.
-- `policy_no` must be a non-empty string.
+- `claim_reference_draft` must match `^DRAFT-\d{8}-\d{5}$`.
+- `policy_no` must match `^HIC-\d{4}-\d{5}$`.
 - `claimant_name` must be a non-empty string.
-- `id_document_type` must be one of `{nric, passport, fin, birth_certificate}`.
+- `id_document_type` ∈ `{nric, passport, fin, birth_certificate}`.
 - `id_document_no` must be a non-empty string.
-- `date_of_birth`, `incident_date` must each be valid ISO 8601 dates.
-- `claimant_relationship` must be one of `{self, spouse, child, parent, sibling, other_dependent}`.
-- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
-- `claim_amount_requested` must be a positive decimal number.
+- `date_of_birth`, `incident_date` must be valid ISO 8601 dates; `date_of_birth < incident_date`.
+- `claimant_relationship` ∈ `{self, spouse, child, parent, sibling, other_dependent}`.
+- `claim_type` ∈ `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `claim_amount_requested` must be > 0.
+- `document_summary` must be a non-null object with `primary_diagnosis_icd10` and `total_billed_amount` present.
 
-### Format Validation
-- `policy_no` must match the regex `^HIC-\d{4}-\d{5}$`.
-- `date_of_birth < incident_date` (cannot have an incident before being born).
-- `claim_amount_requested > 0` (zero or negative inputs are rejected at intake).
-
-### Regulation/Compliance Gates
-- `policies`, `policy_members`, `premium_ledger`, and `claims` reference tables must all be loadable at runtime — verification depends on four database lookups per InsClaims-PolicyDoc §5.2.
-- Upstream `intake_accepted = true` is assumed (this stage is only reached after intake approval — Gate G1).
-- Duplicate-claim audit registry must be queryable per MAS Notice 117 §6 (anti-fraud requirement).
+### Compliance Gate
+- `policies`, `policy_members`, `premium_ledger`, and `claims` tables must all be queryable at runtime (Gate G1).
+- Upstream `intake_accepted = true` is assumed — this stage is only reached after intake approval.
 
 ## F: Processing Logic
 
-1. **Policy existence lookup** — Query the `policies` table using `policy_no` as the primary key:
-   ```sql
-   SELECT policy_holder_id, policy_status, policy_start_date, policy_expiry_date,
-          policy_product_code, premium_payment_mode, next_premium_due_date
-   FROM policies
-   WHERE policy_no = :policy_no;
-   ```
-   If no row is returned → reject with `POLICY_NOT_FOUND`. If a row is returned, store all retrieved fields for use in subsequent steps.
+1. **Policy status & coverage window** — Query `policies` for `policy_status`, `policy_start_date`, `policy_expiry_date`, `policy_product_code`, `premium_payment_mode`:
+   - If no row → reject `POLICY_NOT_FOUND`.
+   - `policy_status` must be `active`; else reject `POLICY_LAPSED` / `POLICY_CANCELLED` / `POLICY_PENDING_ACTIVATION`.
+   - Must satisfy `policy_start_date ≤ incident_date ≤ policy_expiry_date`; else reject `INCIDENT_BEFORE_POLICY_START` or `OUT_OF_COVERAGE_PERIOD`.
 
-2. **Policy holder identity match** — Query the `policy_members` table to confirm the claimant's identity document is registered on this policy:
-   ```sql
-   SELECT member_id, full_name, relationship, dependent_status
-   FROM policy_members
-   WHERE policy_no = :policy_no
-     AND id_document_type = :id_document_type
-     AND id_document_no   = :id_document_no;
-   ```
-   If no row is returned → reject with `IDENTITY_MISMATCH`. If a row is returned, store `relationship` and `dependent_status` for Step 6.
+2. **Identity match** — Query `policy_members` using `policy_no + id_document_type + id_document_no`:
+   - If no row → reject `IDENTITY_MISMATCH`.
+   - Store `relationship`, `dependent_status`, `member_id` for Step 3.
 
-3. **Policy active status** — Using `policy_status` retrieved in Step 1:
-   - `active` → proceed
-   - `lapsed` → reject with `POLICY_LAPSED`
-   - `cancelled` → reject with `POLICY_CANCELLED`
-   - `pending` → reject with `POLICY_PENDING_ACTIVATION`
-   No other values are valid; any unexpected value → reject with `UNKNOWN_POLICY_STATUS`.
+3. **Dependent eligibility** — If `relationship ≠ 'self'`:
+   - `dependent_status` must be `active`; else reject `DEPENDENT_NOT_ELIGIBLE`.
+   - Query `dependent_coverage_end_date`; if non-null and `< incident_date` → reject `DEPENDENT_COVERAGE_EXPIRED`.
+   - If `relationship = 'self'` → set `dependent_verified = true` unconditionally.
 
-4. **Premium arrears check** — Query the `premium_ledger` table for any unpaid premium due on or before `incident_date`:
-   ```sql
-   SELECT COUNT(*) AS arrears_count
-   FROM premium_ledger
-   WHERE policy_no       = :policy_no
-     AND due_date        <= :incident_date
-     AND payment_status  = 'unpaid';
-   ```
-   If `arrears_count > 0` → reject with `UNPAID_PREMIUMS`.
+4. **Premium arrears check** — Query `premium_ledger` for `COUNT(*)` where `due_date ≤ incident_date AND payment_status = 'unpaid'`. If count > 0 → reject `UNPAID_PREMIUMS`.
 
-5. **Coverage window check** — Using `policy_start_date` and `policy_expiry_date` from Step 1:
-   - Condition: `policy_start_date ≤ incident_date ≤ policy_expiry_date`
-   - If `incident_date < policy_start_date` → reject with `INCIDENT_BEFORE_POLICY_START`
-   - If `incident_date > policy_expiry_date` → reject with `OUT_OF_COVERAGE_PERIOD`
-
-6. **Dependent eligibility** — If `relationship ≠ 'self'` (from Step 2):
-   - `dependent_status` must equal `'active'`. If `'terminated'` or `'suspended'` → reject with `DEPENDENT_NOT_ELIGIBLE`.
-   - Additionally query `policy_members` for `dependent_coverage_end_date`:
-     ```sql
-     SELECT dependent_coverage_end_date
-     FROM policy_members
-     WHERE policy_no = :policy_no AND member_id = :member_id;
-     ```
-     If `dependent_coverage_end_date IS NOT NULL AND dependent_coverage_end_date < incident_date` → reject with `DEPENDENT_COVERAGE_EXPIRED`.
-   - If `relationship = 'self'`, set `dependent_verified = true` unconditionally.
-
-7. **Duplicate claim check** — Query the `claims` table for any existing claim covering the same incident event:
-   ```sql
-   SELECT COUNT(*) AS dup_count
-   FROM claims
-   WHERE policy_no    = :policy_no
-     AND incident_date = :incident_date
-     AND claim_type   = :claim_type
-     AND status       IN ('pending', 'approved', 'paid');
-   ```
-   If `dup_count > 0` → reject with `DUPLICATE_CLAIM`.
-
-8. **Policy verification result** — `policy_verified = policy_found ∧ identity_matched ∧ policy_active ∧ premiums_current ∧ within_coverage_period ∧ dependent_valid ∧ not_duplicate`. All seven conditions must be `true`; the first failing condition produces `verification_failure`.
+5. **Duplicate claim check** — Query `claims` for existing records matching `policy_no + incident_date + claim_type` with `status IN ('pending', 'approved', 'paid')`. If count > 0 → reject `DUPLICATE_CLAIM`.
 
 ## B: Output
 
@@ -120,37 +69,40 @@ claimant_name:          string    # passthrough
 claim_type:             enum      # passthrough
 incident_date:          date      # passthrough
 claim_amount_requested: number    # passthrough
-policy_verified:        bool      # overall policy verification result
-verification_failure:   string?   # null if verified; failure code if not (e.g. "UNPAID_PREMIUMS")
-policy_start_date:      date      # retrieved from policy database
-policy_expiry_date:     date      # retrieved from policy database
-policy_product_code:    string    # product/plan code (e.g. "COMP-HEALTH-GOLD")
+provider_name:          string    # passthrough from claim-intake — required by Node 4 (accreditation check)
+provider_registration:  string    # passthrough from claim-intake — required by Node 4 and Node 6
+document_summary:       object    # passthrough from claim-intake (unchanged)
+policy_verified:        bool      # overall verification result
+verification_failure:   string?   # null if verified; first failing rejection code if not
+policy_start_date:      date      # retrieved from policies table
+policy_expiry_date:     date      # retrieved from policies table
+policy_product_code:    string    # e.g. "COMP-HEALTH-GOLD" — required by Node 3 (eligibility) and Node 5 (adjudication)
 premium_payment_mode:   enum      # {monthly, quarterly, annual}
-dependent_verified:     bool      # true if claimant is self or validated dependent
+dependent_verified:     bool      # true if claimant is self or active dependent
 verification_timestamp: datetime
 ```
 
 ## P_post: Postconditions
 
 ### Correctness
+- `claim_reference_draft` and `policy_no` in B match A exactly.
+- `policy_verified` is boolean (not null, not missing).
+- If `policy_verified = false` → `verification_failure` is one of `{POLICY_NOT_FOUND, POLICY_LAPSED, POLICY_CANCELLED, POLICY_PENDING_ACTIVATION, INCIDENT_BEFORE_POLICY_START, OUT_OF_COVERAGE_PERIOD, IDENTITY_MISMATCH, DEPENDENT_NOT_ELIGIBLE, DEPENDENT_COVERAGE_EXPIRED, UNPAID_PREMIUMS, DUPLICATE_CLAIM}`.
+- If `policy_verified = true` → `verification_failure` is null.
+- `policy_start_date ≤ incident_date ≤ policy_expiry_date` whenever `policy_verified = true`.
+- `dependent_verified = true` whenever `policy_verified = true`.
+- `policy_product_code` is non-empty and ∈ `{COMP-HEALTH-GOLD, COMP-HEALTH-SILVER, COMP-HEALTH-BRONZE}`.
+- `verification_timestamp` is valid ISO 8601, not future-dated.
 
-- `claim_reference_draft` in B matches A
-- `policy_no` in B matches A
-- `policy_verified` is boolean (not null, not missing)
-- If `policy_verified = false` → `verification_failure` is one of the defined rejection codes
-- If `policy_verified = true` → `verification_failure` is null
-- `policy_start_date ≤ incident_date ≤ policy_expiry_date` whenever `policy_verified = true`
-- `dependent_verified = true` whenever `policy_verified = true`
-- `policy_product_code` is non-empty string
-- `premium_payment_mode` is a valid enum value
-- `verification_timestamp` is valid ISO 8601, not future-dated
-- No duplicate claim exists for same `policy_no` + `incident_date` + `claim_type` when `policy_verified = true`
-- No SPT violation: identity verification is a document match check, not a behavioural profile of the claimant
+### Document Summary Passthrough
+- `document_summary` in B is identical to `document_summary` in A (no mutation permitted at this node).
+- `document_summary.primary_diagnosis_icd10` must remain a non-empty string.
+- `document_summary.symptom_onset_date`, if present, must still satisfy `≤ incident_date`.
 
 ## Circus Executor
 
-**stage_type:** deterministic
-**agent_role:** policy-verification-agent
-**routing_priority:** high
-**trust_gate_L1:** 75 // company policy: policy lookup keys must align tightly with database schema — moderate-high threshold per InsClaims-PolicyDoc §5.2
-**trust_gate_L2:** 90 // company policy: policy verification gates premium, identity, and duplicate-claim invariants — very high threshold per anti-fraud MAS Notice 117 §6
+**stage_type:** deterministic  
+**agent_role:** policy-verification-agent  
+**routing_priority:** high  
+**trust_gate_L1:** 75 // policy lookup keys must align tightly with database schema — per InsClaims-PolicyDoc §5.2  
+**trust_gate_L2:** 90 // gates premium, identity, and duplicate-claim invariants — per anti-fraud MAS Notice 117 §6

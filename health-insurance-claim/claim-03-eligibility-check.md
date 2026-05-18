@@ -15,92 +15,63 @@ claimant_name:          string    # from policy-verification output
 claim_type:             enum      # from policy-verification output
 incident_date:          date      # from policy-verification output
 claim_amount_requested: number    # from policy-verification output
-policy_product_code:    string    # from policy-verification output (e.g. "COMP-HEALTH-GOLD")
+policy_product_code:    string    # from policy-verification output, e.g. "COMP-HEALTH-GOLD"
+policy_start_date:      date      # from policy-verification output
 dependent_verified:     bool      # from policy-verification output
+provider_name:          string    # passthrough from claim-intake via policy-verification
+provider_registration:  string    # passthrough from claim-intake via policy-verification
+document_summary:       object    # passthrough from claim-intake output
+  symptom_onset_date:   date?     # extracted by Node 1 — used for waiting period adjudication
+  primary_diagnosis_icd10: string # extracted by Node 1 — used for exclusion check
 ```
 
 ## P_pre: Preconditions
 
 ### Type Alignment
-- `claim_reference_draft` must be a non-empty string.
-- `policy_no` must be a non-empty string matching `^HIC-\d{4}-\d{5}$`.
-- `claimant_name` must be a non-empty string.
-- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
-- `incident_date` must be a valid ISO 8601 date.
-- `claim_amount_requested` must be a positive decimal number.
-- `policy_product_code` must be a non-empty string matching one of the known plan codes `{COMP-HEALTH-GOLD, COMP-HEALTH-SILVER, COMP-HEALTH-BRONZE}`.
-- `dependent_verified` must be a boolean.
+- `claim_reference_draft` must match `^DRAFT-\d{8}-\d{5}$`.
+- `policy_no` must match `^HIC-\d{4}-\d{5}$`.
+- `claim_type` ∈ `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `incident_date` must be a valid ISO 8601 date; `incident_date ≤ today()`.
+- `claim_amount_requested` must be > 0.
+- `policy_product_code` ∈ `{COMP-HEALTH-GOLD, COMP-HEALTH-SILVER, COMP-HEALTH-BRONZE}`.
+- `policy_start_date` must be a valid ISO 8601 date; `policy_start_date ≤ incident_date`.
+- `dependent_verified = true` (this stage is unreachable if Node 2 failed — Gate G2).
+- `document_summary.primary_diagnosis_icd10` must be a non-empty string.
 
-### Format Validation
-- `claim_amount_requested > 0` (zero or negative inputs would not have passed earlier stages).
-- `dependent_verified = true` (this stage is unreachable otherwise — guarded by Gate G2 from policy-verification).
-- `incident_date ≤ today()` (no future-dated incidents).
-
-### Regulation/Compliance Gates
-- `plan_benefits` reference table must be loadable — waiting-period and limit lookups depend on it (Gate G3.1).
-- `claim_utilisation` reference table must be loadable — annual + lifetime utilisation aggregates per InsClaims-PolicyDoc §6.4.
-- Benefit-year boundary (`YEAR(:incident_date)`) is computed against fiscal calendar; calendar must be available at runtime.
+### Compliance Gate
+- `plan_documents` and `claim_utilisation` tables must be queryable at runtime (Gate G3).
 
 ## F: Processing Logic
 
-1. **Coverage type inclusion** — Query the `plan_benefits` table using `policy_product_code` and `claim_type`:
-   ```sql
-   SELECT covered, waiting_period_days, annual_limit, per_claim_limit,
-          lifetime_limit, non_panel_reimbursement_pct
-   FROM plan_benefits
-   WHERE policy_product_code = :policy_product_code
-     AND claim_type          = :claim_type;
-   ```
-   If no row is returned or `covered = false` → set `claim_type_covered = false` and record `exclusion_reason = 'BENEFIT_NOT_IN_PLAN'`.
+1. **Plan document retrieval** — Query `plan_documents` using `policy_product_code + claim_type` to retrieve the stored plan coverage document (`plan_document`): a natural-language matrix that specifies coverage scope, exclusions, waiting periods, annual limits, per-claim limits, lifetime limits, substance abuse coverage, and non-panel reimbursement rates for this product and claim type combination.
+   - If no document is found or `plan_document` indicates the claim type is not covered → reject `BENEFIT_NOT_IN_PLAN`.
+   - The `plan_document` is used as-is; all subsequent steps read from it directly rather than from decomposed fields.
 
-2. **Waiting period check** — Use `waiting_period_days` retrieved in Step 1. The mandatory minimums by plan tier and claim type are:
+2. **Waiting period check** — Read the applicable `waiting_period_days` from `plan_document` for the `policy_product_code + claim_type` combination. Compute the effective reference date: use `document_summary.symptom_onset_date` if present and `< incident_date`, otherwise use `incident_date`. Record the basis as `waiting_period_basis = "symptom_onset"` or `"incident_date"`. Verify `reference_date ≥ policy_start_date + waiting_period_days` (calendar days). If not satisfied → reject `WAITING_PERIOD_NOT_MET`.
 
-   | `policy_product_code` | `claim_type` | `waiting_period_days` |
+   | Plan | claim_type | waiting_period_days |
    |---|---|---|
-   | `COMP-HEALTH-GOLD` | outpatient | 30 |
-   | `COMP-HEALTH-GOLD` | hospitalisation / surgical | 30 |
-   | `COMP-HEALTH-GOLD` | maternity | 270 |
-   | `COMP-HEALTH-GOLD` | pre_existing (flagged at underwriting) | 365 |
-   | `COMP-HEALTH-GOLD` | emergency / dental / vision / mental_health | 0 |
-   | `COMP-HEALTH-SILVER` | outpatient | 30 |
-   | `COMP-HEALTH-SILVER` | hospitalisation / surgical | 60 |
-   | `COMP-HEALTH-SILVER` | maternity | 365 |
-   | `COMP-HEALTH-SILVER` | pre_existing | 730 |
-   | `COMP-HEALTH-SILVER` | emergency / dental / vision / mental_health | 0 |
-   | `COMP-HEALTH-BRONZE` | outpatient | 60 |
-   | `COMP-HEALTH-BRONZE` | hospitalisation / surgical | 90 |
-   | `COMP-HEALTH-BRONZE` | maternity | 365 |
-   | `COMP-HEALTH-BRONZE` | pre_existing | 730 |
-   | `COMP-HEALTH-BRONZE` | emergency / dental / vision / mental_health | 0 |
+   | GOLD | outpatient / hospitalisation / surgical | 30 |
+   | GOLD | maternity | 270 |
+   | GOLD | emergency / dental / vision / mental_health | 0 |
+   | SILVER | outpatient | 30 · hospitalisation / surgical | 60 · maternity | 365 |
+   | BRONZE | outpatient | 60 · hospitalisation / surgical | 90 · maternity | 365 |
+   | All plans | emergency / dental / vision / mental_health | 0 |
 
-   Verify: `incident_date ≥ policy_start_date + waiting_period_days` (calendar days).
-   If not satisfied → set `waiting_period_satisfied = false` and record `eligibility_failure_reason = 'WAITING_PERIOD_NOT_MET'`.
+3. **Exclusion check** — Compare `document_summary.primary_diagnosis_icd10` against the exclusion rules defined in `plan_document`:
+   - ICD-10 Z41.x → `COSMETIC_PROCEDURE`
+   - ICD-10 X71–X83 → `SELF_INFLICTED_INJURY`
+   - ICD-10 F10–F19 → `SUBSTANCE_ABUSE` (unless `plan_document` specifies substance abuse is covered)
+   - ICD-10 Y36.x / Y38.x → `WAR_TERRORISM`
+   - If any match → reject with the corresponding exclusion code.
 
-3. **Annual benefit limit check** — Query the `claim_utilisation` table to sum all disbursements in the current benefit year:
-   ```sql
-   SELECT COALESCE(SUM(net_payable), 0) AS annual_utilised
-   FROM claim_utilisation
-   WHERE policy_no    = :policy_no
-     AND claim_type   = :claim_type
-     AND benefit_year = YEAR(:incident_date)
-     AND status       IN ('paid', 'pending');
-   ```
-   Retrieve `annual_limit` from Step 1. Compute `annual_limit_remaining = annual_limit − annual_utilised`.
-   If `annual_limit_remaining ≤ 0` → set `annual_limit_available = 0` and flag `ANNUAL_LIMIT_EXHAUSTED`.
+4. **Annual limit check** — Read `annual_limit`, `per_claim_limit`, and `lifetime_limit` from `plan_document`. Query `claim_utilisation` for `SUM(net_payable)` where `policy_no + claim_type + benefit_year = YEAR(incident_date)` with `status IN ('paid', 'pending')`. Compute `annual_limit_remaining = annual_limit − annual_utilised`. If `annual_limit_remaining ≤ 0` → reject `ANNUAL_LIMIT_EXHAUSTED`. Compute `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)`. Query all-time `SUM(net_payable)` for `status = 'paid'`; if `lifetime_utilised ≥ lifetime_limit` → reject `LIFETIME_LIMIT_EXHAUSTED`.
 
-4. **Per-claim limit check** — Use `per_claim_limit` from Step 1. Compute:
-   `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)`
-
-5. **Lifetime benefit limit check** — Query `claim_utilisation` for all-time paid disbursements across all claim types:
-   ```sql
-   SELECT COALESCE(SUM(net_payable), 0) AS lifetime_utilised
-   FROM claim_utilisation
-   WHERE policy_no = :policy_no
-     AND status    = 'paid';
-   ```
-   Retrieve `lifetime_limit` from Step 1. If `lifetime_utilised ≥ lifetime_limit` → flag `LIFETIME_LIMIT_EXHAUSTED`.
-
-6. **Eligibility result** — `eligible = claim_type_covered ∧ waiting_period_satisfied ∧ annual_limit_available > 0 ∧ not_lifetime_exhausted`. The first failing condition is recorded in `eligibility_failure_reason`.
+5. **Holistic eligibility judgment** — Cross-reference the `plan_document` against `document_summary` to produce a reasoned eligibility verdict:
+   - Confirm the `document_summary.summary_narrative` describes a medical event consistent with the declared `claim_type` (e.g. a narrative describing a routine dental cleaning should not pass under a `hospitalisation` claim type).
+   - Confirm `document_summary.total_billed_amount` is plausible relative to the per-claim limit stated in `plan_document` (flag if billed amount > 2× per_claim_limit as `AMOUNT_ANOMALY`, do not reject).
+   - Confirm the treatment described in `summary_narrative` is not contradicted by any triggered exclusion in Step 3.
+   - Produce `eligibility_rationale`: a ≤ 80-word plain-language explanation of the eligibility outcome referencing the plan tier, the key limit or waiting-period figure applied, and any flags raised.
 
 ## B: Output
 
@@ -111,42 +82,61 @@ claimant_name:              string    # passthrough
 claim_type:                 enum      # passthrough
 incident_date:              date      # passthrough
 claim_amount_requested:     number    # passthrough
+policy_product_code:        string    # passthrough — required by Node 5 (adjudication plan lookup)
+provider_name:              string    # passthrough — required by Node 4 (accreditation check)
+provider_registration:      string    # passthrough — required by Node 4 (accreditation check) and Node 6 (provider_direct payment)
+document_summary:           object    # passthrough (unchanged)
 eligible:                   bool      # overall eligibility result
-eligibility_failure_reason: string?   # null if eligible; first failing rule if not
-claim_type_covered:         bool
+eligibility_failure_reason: string?   # null if eligible; first failing rejection code if not
 waiting_period_satisfied:   bool
-waiting_period_days:        number    # applicable waiting period for claim_type (days)
+waiting_period_days:        number    # applicable waiting period used in check (days)
 annual_limit:               number    # annual benefit cap for claim_type (SGD)
 annual_utilised:            number    # amount already claimed this benefit year (SGD)
 annual_limit_remaining:     number    # annual_limit − annual_utilised (SGD)
 per_claim_limit:            number    # maximum payable per single claim event (SGD)
 claimable_ceiling:          number    # min(claim_amount_requested, per_claim_limit, annual_limit_remaining)
+exclusions_triggered:       string[]  # exclusion codes matched (empty if none)
+waiting_period_basis:       enum      # {symptom_onset, incident_date} — reference date used in Step 2
+eligibility_rationale:      string    # ≤ 80-word plain-language explanation of eligibility outcome
 eligibility_timestamp:      datetime
 ```
 
 ## P_post: Postconditions
 
 ### Correctness
+- `claim_reference_draft` and `policy_no` in B match A exactly.
+- `eligible` is boolean (not null, not missing).
+- If `eligible = false` → `eligibility_failure_reason` is one of `{BENEFIT_NOT_IN_PLAN, WAITING_PERIOD_NOT_MET, COSMETIC_PROCEDURE, SELF_INFLICTED_INJURY, SUBSTANCE_ABUSE, WAR_TERRORISM, ANNUAL_LIMIT_EXHAUSTED, LIFETIME_LIMIT_EXHAUSTED}`.
+- If `eligible = true` → `eligibility_failure_reason` is null and `exclusions_triggered` is empty.
+- `annual_limit_remaining = annual_limit − annual_utilised` (arithmetic correctness).
+- `annual_limit_remaining ≥ 0` (cannot be negative).
+- `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)` (arithmetic correctness).
+- `eligible = true` ⟹ `waiting_period_satisfied = true`.
+- `eligible = true` ⟹ `annual_limit_remaining > 0`.
+- `waiting_period_days` matches the plan schedule table for `policy_product_code + claim_type`.
+- `eligibility_timestamp` is valid ISO 8601, not future-dated.
 
-- `claim_reference_draft` in B matches A
-- `policy_no` in B matches A
-- `eligible` is boolean
-- If `eligible = false` → `eligibility_failure_reason` is non-empty and maps to a failing rule
-- If `eligible = true` → `eligibility_failure_reason` is null
-- `annual_limit_remaining = annual_limit − annual_utilised` (arithmetic correctness)
-- `annual_limit_remaining ≥ 0` (cannot be negative)
-- `claimable_ceiling = min(claim_amount_requested, per_claim_limit, annual_limit_remaining)` (arithmetic correctness)
-- `claimable_ceiling ≤ claim_amount_requested` (never exceeds what was requested)
-- `eligible = true` ⟹ `claim_type_covered = true` (coverage gate invariant)
-- `eligible = true` ⟹ `waiting_period_satisfied = true` (waiting period invariant)
-- `eligible = true` ⟹ `annual_limit_remaining > 0` (limit invariant)
-- `waiting_period_days` matches the plan schedule for `claim_type` and `policy_product_code`
-- `eligibility_timestamp` is valid ISO 8601, not future-dated
+### Waiting Period Adjudication Constraint
+- If `document_summary.symptom_onset_date` is present and `< incident_date`, the waiting period check **must** use `symptom_onset_date` as the reference date (not `incident_date`). The orchestrator must verify the `waiting_period_days` output reflects this.
+- If `symptom_onset_date` is null, `incident_date` is used; this must be noted in a `waiting_period_basis` field (value: `"symptom_onset"` or `"incident_date"`).
+
+### Rationale Logical Soundness (eligibility_rationale)
+- If `eligible = true` → `eligibility_rationale` must not contain rejection language or reference a failing condition.
+- If `eligible = false` → `eligibility_rationale` must explicitly name or describe the `eligibility_failure_reason` code — it must not cite a different reason than the one that actually caused the rejection.
+- The plan tier referenced in `eligibility_rationale` must match `policy_product_code` (e.g. must not describe a GOLD plan if the policy is SILVER).
+- If a waiting period was the basis for rejection or was applied, the `waiting_period_days` figure cited in `eligibility_rationale` must match the `waiting_period_days` output exactly.
+- The `waiting_period_basis` used (`symptom_onset` or `incident_date`) must be consistent with `waiting_period_basis` in B — the rationale must not describe a different reference date than was actually applied.
+- Any limit figures (annual, per-claim, lifetime) cited in `eligibility_rationale` must be grounded in the values read from `plan_document`, not estimated or approximated.
+- `eligibility_rationale` must not assert clinical judgments about the claimant's condition beyond what is stated in `document_summary.summary_narrative`.
+
+### Document Summary Passthrough
+- `document_summary` in B is identical to `document_summary` in A (no mutation permitted at this node).
 
 ## Circus Executor
 
-**stage_type:** deterministic
-**agent_role:** eligibility-check-agent
-**routing_priority:** medium
-**trust_gate_L1:** 75 // company policy: inputs are validated upstream; structural alignment must hold for plan-table joins per InsClaims-PolicyDoc §6.4
-**trust_gate_L2:** 90 // company policy: claimable_ceiling arithmetic + waiting-period gates drive payout — very high threshold per Solvency-II Article 132 (internal model approval)
+**stage_type:** llm-assisted  
+**agent_role:** eligibility-check-agent  
+**routing_priority:** medium  
+**trust_gate_L1:** 75 // deterministic steps (Steps 2–4) must pass before judgment is invoked — per InsClaims-PolicyDoc §6.4  
+**trust_gate_L2:** 90 // holistic judgment in Step 5 cross-references plan_document + document_summary; rationale must be verifiable — per Solvency-II Article 132  
+**llm_scope:** Steps 1, 4 (limit reading from plan_document), and 5 — Steps 2–3 are deterministic checks against the plan_document content; Step 5 produces eligibility_rationale
