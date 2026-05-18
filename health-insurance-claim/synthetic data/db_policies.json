@@ -1,6 +1,5 @@
 {
-  "_comment": "Synthetic fixture — policies table + policy_members table. Matches schema used by claim-02-policy-verification.md.",
-
+  "_comment": "Synthetic fixture \u2014 policies table + policy_members table. Matches schema used by claim-02-policy-verification.md.",
   "policies": [
     {
       "policy_no": "HIC-2024-00123",
@@ -11,7 +10,7 @@
       "policy_expiry_date": "2026-01-14",
       "premium_payment_mode": "annual",
       "next_premium_due_date": "2025-01-15",
-      "_scenario": "A001 — Gold plan, 2-year cover, policyholder self-claims hospitalisation"
+      "_scenario": "A001 \u2014 Gold plan, 2-year cover, policyholder self-claims hospitalisation"
     },
     {
       "policy_no": "HIC-2023-00456",
@@ -22,7 +21,7 @@
       "policy_expiry_date": "2025-05-31",
       "premium_payment_mode": "monthly",
       "next_premium_due_date": "2025-06-01",
-      "_scenario": "A002 — Silver plan, spouse dependent claims outpatient"
+      "_scenario": "A002 \u2014 Silver plan, spouse dependent claims outpatient"
     },
     {
       "policy_no": "HIC-2025-00789",
@@ -33,7 +32,7 @@
       "policy_expiry_date": "2027-03-09",
       "premium_payment_mode": "annual",
       "next_premium_due_date": "2026-03-10",
-      "_scenario": "A003 — Gold plan purchased 66 days ago; maternity waiting period 270d not met"
+      "_scenario": "A003 \u2014 Gold plan purchased 66 days ago; maternity waiting period 270d not met"
     },
     {
       "policy_no": "HIC-2022-00321",
@@ -44,7 +43,7 @@
       "policy_expiry_date": "2025-08-31",
       "premium_payment_mode": "quarterly",
       "next_premium_due_date": "2025-06-01",
-      "_scenario": "A004 — Bronze plan, surgical at non-panel hospital"
+      "_scenario": "A004 \u2014 Bronze plan, surgical at non-panel hospital"
     },
     {
       "policy_no": "HIC-2024-00099",
@@ -55,10 +54,9 @@
       "policy_expiry_date": "2026-03-31",
       "premium_payment_mode": "annual",
       "next_premium_due_date": "2025-04-01",
-      "_scenario": "A005 — Gold plan; a duplicate emergency claim for the same incident already exists"
+      "_scenario": "A005 \u2014 Gold plan; a duplicate emergency claim for the same incident already exists"
     }
   ],
-
   "policy_members": [
     {
       "member_id": "MBR-0001",
@@ -92,7 +90,7 @@
       "relationship": "spouse",
       "dependent_status": "active",
       "dependent_coverage_end_date": null,
-      "_scenario": "A002 — spouse claimant on HIC-2023-00456"
+      "_scenario": "A002 \u2014 spouse claimant on HIC-2023-00456"
     },
     {
       "member_id": "MBR-0005",
@@ -128,37 +126,36 @@
       "dependent_coverage_end_date": null
     }
   ],
-
   "premium_ledger": [
     {
       "policy_no": "HIC-2024-00123",
       "due_date": "2024-01-15",
       "payment_status": "paid",
-      "amount": 3200.00
+      "amount": 3200.0
     },
     {
       "policy_no": "HIC-2023-00456",
       "due_date": "2025-04-01",
       "payment_status": "paid",
-      "amount": 180.00
+      "amount": 180.0
     },
     {
       "policy_no": "HIC-2025-00789",
       "due_date": "2025-03-10",
       "payment_status": "paid",
-      "amount": 2800.00
+      "amount": 2800.0
     },
     {
       "policy_no": "HIC-2022-00321",
       "due_date": "2025-03-01",
       "payment_status": "paid",
-      "amount": 350.00
+      "amount": 350.0
     },
     {
       "policy_no": "HIC-2024-00099",
       "due_date": "2024-04-01",
       "payment_status": "paid",
-      "amount": 3200.00
+      "amount": 3200.0
     }
   ]
 }

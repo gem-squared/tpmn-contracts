@@ -27,6 +27,32 @@ benefit_schedule:           object    # retrieved from plan database using polic
   non_panel_reimbursement_pct: number # reimbursement rate for non-panel providers [0, 100]
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string.
+- `policy_no` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `claim_amount_requested` must be a positive decimal number.
+- `claimable_ceiling` must be a non-negative decimal number.
+- `rps_benchmark` must be a positive decimal number.
+- `non_panel_flag` must be a boolean.
+- `policy_product_code` must match one of `{COMP-HEALTH-GOLD, COMP-HEALTH-SILVER, COMP-HEALTH-BRONZE}`.
+- `benefit_schedule` must be an object with all of: `deductible_annual`, `deductible_utilised`, `co_payment_pct`, `co_insurance_pct`, `co_insurance_cap`, `non_panel_reimbursement_pct` (all numeric).
+
+### Format Validation
+- `claim_amount_requested > 0` and `rps_benchmark > 0`.
+- `claimable_ceiling ≤ claim_amount_requested` (eligibility-check invariant).
+- `benefit_schedule.co_payment_pct` and `benefit_schedule.co_insurance_pct` and `benefit_schedule.non_panel_reimbursement_pct` must each be in the range `[0, 100]`.
+- `benefit_schedule.deductible_annual ≥ 0` and `benefit_schedule.deductible_utilised ≥ 0` and `benefit_schedule.deductible_utilised ≤ benefit_schedule.deductible_annual`.
+- `benefit_schedule.co_insurance_cap ≥ 0`.
+
+### Regulation/Compliance Gates
+- `plan_benefits` and `deductible_ledger` reference tables must be loadable per InsClaims-PolicyDoc §8.
+- PAY-001 (payout calculation methodology) policy reference must be loadable — adjudication ordering (deductible → co-pay → co-insurance) is policy-prescribed.
+- Upstream `medical_review_passed = true` is assumed (Gate G4 — this stage is unreachable otherwise).
+
 ## F: Processing Logic
 
 1. **Benefit schedule retrieval** — Query the `plan_benefits` table using `policy_product_code` to load all cost-sharing parameters:
@@ -103,24 +129,34 @@ adjudication_notes:             string    # brief rationale for adjudication out
 adjudication_timestamp:         datetime
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_draft` in B matches A
-- [ ] `policy_no` in B matches A
-- [ ] `adjudication_base ≤ min(rps_benchmark, claimable_ceiling)` (capped correctly)
-- [ ] `adjudication_base ≤ claim_amount_requested` (insurer adjudicates no more than claimed)
-- [ ] `deductible_applied_this_claim = adjudication_base − amount_after_deductible` (arithmetic correctness)
-- [ ] `deductible_applied_this_claim ≥ 0` and `deductible_applied_this_claim ≤ deductible_remaining`
-- [ ] `co_pay_amount = amount_after_deductible × (co_payment_pct / 100)` (arithmetic correctness)
-- [ ] `co_insurance_amount ≤ co_insurance_cap` (cap invariant)
-- [ ] `net_payable = amount_after_coinsurance` (arithmetic correctness)
-- [ ] `net_payable ≥ 0` (no negative payable)
-- [ ] `net_payable ≤ adjudication_base` (insurer cannot pay more than adjudicated)
-- [ ] `claimant_liability = claim_amount_requested − net_payable` (arithmetic correctness)
-- [ ] `claimant_liability ≥ 0`
-- [ ] `net_payable + claimant_liability = claim_amount_requested` (conservation invariant)
-- [ ] `adjudication_status = approved` iff `net_payable > 0`
-- [ ] `adjudication_status = zero_benefit` iff `net_payable = 0` and no rejection
-- [ ] `adjudication_notes` is non-empty string
-- [ ] `adjudication_timestamp` is valid ISO 8601, not future-dated
-- [ ] No L→G violation: benefit schedule figures are policy-specific, not generalised to a population cohort
+### Correctness
+
+- `claim_reference_draft` in B matches A
+- `policy_no` in B matches A
+- `adjudication_base ≤ min(rps_benchmark, claimable_ceiling)` (capped correctly)
+- `adjudication_base ≤ claim_amount_requested` (insurer adjudicates no more than claimed)
+- `deductible_applied_this_claim = adjudication_base − amount_after_deductible` (arithmetic correctness)
+- `deductible_applied_this_claim ≥ 0` and `deductible_applied_this_claim ≤ deductible_remaining`
+- `co_pay_amount = amount_after_deductible × (co_payment_pct / 100)` (arithmetic correctness)
+- `co_insurance_amount ≤ co_insurance_cap` (cap invariant)
+- `net_payable = amount_after_coinsurance` (arithmetic correctness)
+- `net_payable ≥ 0` (no negative payable)
+- `net_payable ≤ adjudication_base` (insurer cannot pay more than adjudicated)
+- `claimant_liability = claim_amount_requested − net_payable` (arithmetic correctness)
+- `claimant_liability ≥ 0`
+- `net_payable + claimant_liability = claim_amount_requested` (conservation invariant)
+- `adjudication_status = approved` iff `net_payable > 0`
+- `adjudication_status = zero_benefit` iff `net_payable = 0` and no rejection
+- `adjudication_notes` is non-empty string
+- `adjudication_timestamp` is valid ISO 8601, not future-dated
+- No L→G violation: benefit schedule figures are policy-specific, not generalised to a population cohort
+
+## Circus Executor
+
+**stage_type:** deterministic
+**agent_role:** claim-adjudication-agent
+**routing_priority:** high
+**trust_gate_L1:** 80 // company policy: adjudication is pure arithmetic — inputs must be numerically precise to two decimal places per PAY-001 methodology
+**trust_gate_L2:** 92 // company policy: this stage computes the payout figure — highest threshold; arithmetic correctness is non-negotiable per Solvency-II Article 132

@@ -21,6 +21,29 @@ incident_date:          date      # from claim-intake output
 claim_amount_requested: number    # from claim-intake output
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string matching `^DRAFT-\d{8}-\d{5}$`.
+- `policy_no` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `id_document_type` must be one of `{nric, passport, fin, birth_certificate}`.
+- `id_document_no` must be a non-empty string.
+- `date_of_birth`, `incident_date` must each be valid ISO 8601 dates.
+- `claimant_relationship` must be one of `{self, spouse, child, parent, sibling, other_dependent}`.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `claim_amount_requested` must be a positive decimal number.
+
+### Format Validation
+- `policy_no` must match the regex `^HIC-\d{4}-\d{5}$`.
+- `date_of_birth < incident_date` (cannot have an incident before being born).
+- `claim_amount_requested > 0` (zero or negative inputs are rejected at intake).
+
+### Regulation/Compliance Gates
+- `policies`, `policy_members`, `premium_ledger`, and `claims` reference tables must all be loadable at runtime — verification depends on four database lookups per InsClaims-PolicyDoc §5.2.
+- Upstream `intake_accepted = true` is assumed (this stage is only reached after intake approval — Gate G1).
+- Duplicate-claim audit registry must be queryable per MAS Notice 117 §6 (anti-fraud requirement).
+
 ## F: Processing Logic
 
 1. **Policy existence lookup** — Query the `policies` table using `policy_no` as the primary key:
@@ -107,17 +130,27 @@ dependent_verified:     bool      # true if claimant is self or validated depend
 verification_timestamp: datetime
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_draft` in B matches A
-- [ ] `policy_no` in B matches A
-- [ ] `policy_verified` is boolean (not null, not missing)
-- [ ] If `policy_verified = false` → `verification_failure` is one of the defined rejection codes
-- [ ] If `policy_verified = true` → `verification_failure` is null
-- [ ] `policy_start_date ≤ incident_date ≤ policy_expiry_date` whenever `policy_verified = true`
-- [ ] `dependent_verified = true` whenever `policy_verified = true`
-- [ ] `policy_product_code` is non-empty string
-- [ ] `premium_payment_mode` is a valid enum value
-- [ ] `verification_timestamp` is valid ISO 8601, not future-dated
-- [ ] No duplicate claim exists for same `policy_no` + `incident_date` + `claim_type` when `policy_verified = true`
-- [ ] No SPT violation: identity verification is a document match check, not a behavioural profile of the claimant
+### Correctness
+
+- `claim_reference_draft` in B matches A
+- `policy_no` in B matches A
+- `policy_verified` is boolean (not null, not missing)
+- If `policy_verified = false` → `verification_failure` is one of the defined rejection codes
+- If `policy_verified = true` → `verification_failure` is null
+- `policy_start_date ≤ incident_date ≤ policy_expiry_date` whenever `policy_verified = true`
+- `dependent_verified = true` whenever `policy_verified = true`
+- `policy_product_code` is non-empty string
+- `premium_payment_mode` is a valid enum value
+- `verification_timestamp` is valid ISO 8601, not future-dated
+- No duplicate claim exists for same `policy_no` + `incident_date` + `claim_type` when `policy_verified = true`
+- No SPT violation: identity verification is a document match check, not a behavioural profile of the claimant
+
+## Circus Executor
+
+**stage_type:** deterministic
+**agent_role:** policy-verification-agent
+**routing_priority:** high
+**trust_gate_L1:** 75 // company policy: policy lookup keys must align tightly with database schema — moderate-high threshold per InsClaims-PolicyDoc §5.2
+**trust_gate_L2:** 90 // company policy: policy verification gates premium, identity, and duplicate-claim invariants — very high threshold per anti-fraud MAS Notice 117 §6

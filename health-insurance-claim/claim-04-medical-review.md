@@ -29,6 +29,34 @@ medical_details:            object    # extracted from supporting documents
   pre_authorisation_no:     string?   # pre-auth reference if applicable (nullable)
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `claim_reference_draft` must be a non-empty string.
+- `policy_no` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `incident_date` must be a valid ISO 8601 date.
+- `claim_amount_requested` must be a positive decimal number.
+- `claimable_ceiling` must be a non-negative decimal number.
+- `provider_name` must be a non-empty string.
+- `provider_registration` must be a non-empty string.
+- `supporting_documents` must be a non-empty array of strings.
+- `medical_details` must be an object with: `primary_diagnosis_icd10` (string), `procedure_cpt_codes` (string array), `attending_physician` (string), `physician_license_no` (string); `admission_date` and `discharge_date` may be null but must be valid ISO 8601 dates when present; `pre_authorisation_no` may be null.
+
+### Format Validation
+- `medical_details.primary_diagnosis_icd10` must match the regex `^[A-Z]\d{2}(\.\d{1,4})?$`.
+- Every entry in `medical_details.procedure_cpt_codes` must match `^\d{5}$`.
+- `medical_details.physician_license_no` must match `^MCR-\d{5}[A-Z]$`.
+- For `claim_type ∈ {hospitalisation, surgical, maternity}`: `medical_details.pre_authorisation_no` must be non-null and match `^PA-\d{4}-\d{6}$`.
+- If `medical_details.admission_date` and `medical_details.discharge_date` are both present: `discharge_date ≥ admission_date`.
+- `claimable_ceiling ≤ claim_amount_requested` (upstream invariant from eligibility-check).
+
+### Regulation/Compliance Gates
+- `accredited_providers`, `icd10_reference`, `cpt_reference`, `icd10_cpt_plausibility`, `pre_authorisations`, `rps_schedule`, `physician_registry`, `medical_necessity_guidelines` reference tables must all be loadable at runtime per InsClaims-PolicyDoc §7.
+- Upstream `eligible = true` is assumed (Gate G3 — this stage is unreachable otherwise).
+- Singapore MOH ICD-10-CM / CPT current-version registries must be available — clinical-coding validity is regulatory-bound (Gate G4 — MOH circular 04/2024).
+
 ## F: Processing Logic
 
 1. **Provider accreditation check** — Query the `accredited_providers` table using `provider_registration` as the key:
@@ -50,7 +78,15 @@ medical_details:            object    # extracted from supporting documents
    - Query the `cpt_reference` table: `SELECT 1 FROM cpt_reference WHERE code = :cpt_code AND status = 'active'`. If any code is invalid → flag `INVALID_CPT_CODE`.
    - Cross-reference `procedure_cpt_codes` against `primary_diagnosis_icd10` in the `icd10_cpt_plausibility` table to confirm clinical plausibility. If a code pair fails plausibility → flag `CPT_ICD10_MISMATCH`.
 
-4. **Pre-authorisation check** — For `claim_type ∈ {hospitalisation, surgical, maternity}`:
+4. **Specific Exclusion Check** — Evaluate the claim against the following hard-coded policy exclusion list. The primary diagnosis ICD-10 code and CPT codes (from supporting documents) are compared against the exclusion catalogue:
+   - `COSMETIC_PROCEDURE` — ICD-10 range Z41.x or procedure category in exclusion table `{15820, 15821, 15822, 15823}` (CPT cosmetic codes)
+   - `SELF_INFLICTED_INJURY` — ICD-10 codes X71–X83 (intentional self-harm)
+   - `SUBSTANCE_ABUSE` — ICD-10 codes F10–F19 (mental/behavioural disorders due to substance use), unless `plan_benefits.substance_abuse_covered = true`
+   - `WAR_TERRORISM` — ICD-10 codes Y36.x, Y38.x
+   - `EXPERIMENTAL_TREATMENT` — Procedure CPT codes in exclusion table `experimental_cpt_codes`
+   All matched exclusions are appended to `exclusions_triggered`. If any exclusions are matched, `medical_review_passed = false` and `review_failure_reason = "EXCLUSIONS_TRIGGERED"`.
+
+5. **Pre-authorisation check** — For `claim_type ∈ {hospitalisation, surgical, maternity}`:
    - `pre_authorisation_no` must be non-null and match the format `^PA-\d{4}-\d{6}$` (e.g. `PA-2025-001234`, where `YYYY` is the year of issuance and `######` is a 6-digit zero-padded sequence number).
    - Query the `pre_authorisations` table:
      ```sql
@@ -65,12 +101,12 @@ medical_details:            object    # extracted from supporting documents
      - `incident_date ≤ expiry_date`; if expired → flag `PRE_AUTH_EXPIRED`.
    - For `claim_type ∈ {outpatient, dental, vision, emergency, mental_health}`: `pre_auth_verified = true` unconditionally (pre-auth not required).
 
-5. **Hospitalisation duration check** — If `admission_date` and `discharge_date` are non-null:
+6. **Hospitalisation duration check** — If `admission_date` and `discharge_date` are non-null:
    - `discharge_date ≥ admission_date`; if violated → flag `INVALID_ADMISSION_DISCHARGE_DATES`.
    - `length_of_stay = discharge_date − admission_date` (calendar days).
    - Query `rps_schedule` for benchmark cost per inpatient day for `primary_diagnosis_icd10` and compare against `claim_amount_requested / length_of_stay` as a per-day plausibility check.
 
-6. **Physician licence validation** — Validate `physician_license_no`:
+7. **Physician licence validation** — Validate `physician_license_no`:
    - Format regex: `^MCR-\d{5}[A-Z]$` (e.g. `MCR-12345A`), where `MCR` = Medical Council Registration prefix, `\d{5}` is the 5-digit registration number, and the trailing letter is the check character.
    - Query the `physician_registry` table:
      ```sql
@@ -81,7 +117,7 @@ medical_details:            object    # extracted from supporting documents
    - If no row → flag `INVALID_PHYSICIAN_LICENCE`.
    - If `status ≠ 'active'` or `expiry_date < incident_date` → flag `INVALID_PHYSICIAN_LICENCE`.
 
-7. **Medical necessity determination** — Query the `medical_necessity_guidelines` table:
+8. **Medical necessity determination** — Query the `medical_necessity_guidelines` table:
    ```sql
    SELECT necessity_confirmed
    FROM medical_necessity_guidelines
@@ -90,7 +126,7 @@ medical_details:            object    # extracted from supporting documents
    ```
    If `necessity_confirmed = false` for any CPT/ICD-10 pair → flag `MEDICAL_NECESSITY_UNCONFIRMED`.
 
-8. **Bill reasonableness check** — Compute `rps_benchmark` by summing reference prices for all submitted CPT codes:
+9. **Bill reasonableness check** — Compute `rps_benchmark` by summing reference prices for all submitted CPT codes:
    ```sql
    SELECT SUM(unit_price) AS rps_benchmark
    FROM rps_schedule
@@ -102,7 +138,7 @@ medical_details:            object    # extracted from supporting documents
    Compute `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100`.
    If `bill_variance_pct > 50` → flag `BILL_EXCEEDS_BENCHMARK`.
 
-9. **Medical review result** — `medical_approved = valid_icd10 ∧ valid_cpt ∧ cpt_icd10_plausible ∧ pre_auth_satisfied ∧ valid_admission_dates ∧ physician_valid ∧ medical_necessity_confirmed ∧ not_bill_anomaly`. The first failing condition produces `medical_rejection_reason`.
+10. **Medical review result** — `medical_review_passed = is_medically_necessary ∧ no_exclusions_triggered ∧ los_valid ∧ cost_reasonable ∧ pre_auth_valid`. All conditions must be `true`. The first failing reason populates `review_failure_reason`.
 
 ## B: Output
 
@@ -114,8 +150,9 @@ claim_type:                     enum      # passthrough
 incident_date:                  date      # passthrough
 claim_amount_requested:         number    # passthrough
 claimable_ceiling:              number    # passthrough
-medical_approved:               bool      # overall medical review result
-medical_rejection_reason:       string?   # null if approved; first failing check if not
+medical_review_passed:          bool      # overall medical review result
+exclusions_triggered:           string[]  # list of matched exclusion keys
+review_failure_reason:          string?   # null if approved; first failing check if not
 non_panel_flag:                 bool      # true if provider is not on insurer panel
 pre_auth_verified:              bool
 length_of_stay:                 number?   # days (null for outpatient)
@@ -126,21 +163,31 @@ medical_flags:                  string[]  # e.g. ["BILL_EXCEEDS_BENCHMARK", "NON
 review_timestamp:               datetime
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
 
-- [ ] `claim_reference_draft` in B matches A
-- [ ] `policy_no` in B matches A
-- [ ] `medical_approved` is boolean
-- [ ] If `medical_approved = false` → `medical_rejection_reason` is non-empty and identifies the first failing check
-- [ ] If `medical_approved = true` → `medical_rejection_reason` is null
-- [ ] `medical_approved = true` ⟹ `pre_auth_verified = true` for `claim_type ∈ {hospitalisation, surgical, maternity}`
-- [ ] `medical_approved = true` ⟹ `medical_necessity_confirmed = true`
-- [ ] `length_of_stay = discharge_date − admission_date` in days (if both dates present)
-- [ ] `length_of_stay ≥ 0` (discharge cannot precede admission)
-- [ ] `length_of_stay` is null for outpatient claims
-- [ ] `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100` (arithmetic correctness)
-- [ ] `BILL_EXCEEDS_BENCHMARK` is in `medical_flags` iff `bill_variance_pct > 50`
-- [ ] `NON_PANEL_PROVIDER` is in `medical_flags` iff `non_panel_flag = true`
-- [ ] `rps_benchmark > 0` (reference price must be positive)
-- [ ] `review_timestamp` is valid ISO 8601, not future-dated
-- [ ] No Δe→∫de violation: benchmark comparison is specific to this claim's codes, not an actuarial prediction for the claimant population
+### Correctness
+
+- `claim_reference_draft` in B matches A
+- `policy_no` in B matches A
+- `medical_approved` is boolean
+- If `medical_approved = false` → `medical_rejection_reason` is non-empty and identifies the first failing check
+- If `medical_approved = true` → `medical_rejection_reason` is null
+- `medical_approved = true` ⟹ `pre_auth_verified = true` for `claim_type ∈ {hospitalisation, surgical, maternity}`
+- `medical_approved = true` ⟹ `medical_necessity_confirmed = true`
+- `length_of_stay = discharge_date − admission_date` in days (if both dates present)
+- `length_of_stay ≥ 0` (discharge cannot precede admission)
+- `length_of_stay` is null for outpatient claims
+- `bill_variance_pct = (claim_amount_requested − rps_benchmark) / rps_benchmark × 100` (arithmetic correctness)
+- `BILL_EXCEEDS_BENCHMARK` is in `medical_flags` iff `bill_variance_pct > 50`
+- `NON_PANEL_PROVIDER` is in `medical_flags` iff `non_panel_flag = true`
+- `rps_benchmark > 0` (reference price must be positive)
+- `review_timestamp` is valid ISO 8601, not future-dated
+- No Δe→∫de violation: benchmark comparison is specific to this claim's codes, not an actuarial prediction for the claimant population
+
+## Circus Executor
+
+**stage_type:** llm-assisted
+**agent_role:** medical-review-agent
+**routing_priority:** medium
+**trust_gate_L1:** 75 // company policy: clinical schemas (ICD-10 / CPT / pre-auth) require precise alignment — moderate-high threshold per MOH circular 04/2024
+**trust_gate_L2:** 88 // company policy: medical-necessity + exclusions drive payout eligibility — high threshold per InsClaims-PolicyDoc §7.4 (clinical adjudication standard)

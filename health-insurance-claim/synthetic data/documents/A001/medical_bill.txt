@@ -1,0 +1,121 @@
+```
+[Hospital Logo Placeholder - e.g., SGH Logo]
+
+**SINGAPORE GENERAL HOSPITAL**
+Outram Road, Singapore 169608
+Tel: +65 6222 3322 | Fax: +65 6222 9999 | Website: www.sgh.com.sg
+UEN: 200000000A (Singapore General Hospital)
+
+---
+
+**TAX INVOICE / MEDICAL BILL**
+
+**Invoice No:** SGH-INV-2025-0012345
+**Invoice Date:** 2025-04-15
+**Payment Due Date:** 2025-05-15
+
+---
+
+**PATIENT DETAILS:**
+
+| Field                | Details                                   |
+| :------------------- | :---------------------------------------- |
+| **Patient Name**     | Tan Wei Ming                              |
+| **NRIC / FIN**       | SXXXX123A                                 |
+| **Date of Birth**    | 1975-08-22                                |
+| **Address**          | Blk 123 Ang Mo Kio Ave 4, #08-09          |
+|                      | Singapore 560123                          |
+| **Contact No.**      | +65 9123 4567                             |
+| **Patient Account No.** | P-SGH-2025-000567                         |
+| **Medical Record No.** | M-SGH-2025-000890                         |
+
+---
+
+**ADMISSION DETAILS:**
+
+| Field                     | Details                                   |
+| :------------------------ | :---------------------------------------- |
+| **Admission Date**        | 2025-04-10                                |
+| **Discharge Date**        | 2025-04-14                                |
+| **Total Days Admitted**   | 4 Days                                    |
+| **Ward Class**            | A1 Single Room                            |
+| **Referring Doctor**      | Dr. Lee Wei Jian                          |
+| **Pre-authorisation Ref.** | PA-2025-001234                            |
+| **Billing Period**        | 2025-04-10 to 2025-04-14                  |
+
+---
+
+**ITEMISED BILLING STATEMENT:**
+
+| Date       | Service Code | Description                                  | Qty | Unit Price (SGD) | Amount (SGD) |
+| :--------- | :----------- | :------------------------------------------- | :-- | :--------------- | :----------- |
+| 2025-04-10 | R&B-A1       | Room & Board - A1 Single Room                | 1   | 1,250.00         | 1,250.00     |
+| 2025-04-11 | R&B-A1       | Room & Board - A1 Single Room                | 1   | 1,250.00         | 1,250.00     |
+| 2025-04-12 | R&B-A1       | Room & Board - A1 Single Room                | 1   | 1,250.00         | 1,250.00     |
+| 2025-04-13 | R&B-A1       | Room & Board - A1 Single Room                | 1   | 1,250.00         | 1,250.00     |
+|            |              | **Subtotal Room & Board**                    |     |                  | **5,000.00** |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | CPT 99232    | Inpatient Physician Visit (Initial)          | 1   | 250.00           | 250.00       |
+| 2025-04-11 | CPT 99232    | Inpatient Physician Visit (Subsequent)       | 1   | 250.00           | 250.00       |
+| 2025-04-12 | CPT 99232    | Inpatient Physician Visit (Subsequent)       | 1   | 250.00           | 250.00       |
+|            |              | **Subtotal Inpatient Visits**                |     |                  | **750.00**   |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | CPT 71046    | Chest X-ray, 2 views                         | 1   | 120.00           | 120.00       |
+| 2025-04-10 | IM-CTTH      | CT Thorax with Contrast                      | 1   | 800.00           | 800.00       |
+| 2025-04-10 | DIAG-ECG     | Electrocardiogram (ECG)                      | 1   | 150.00           | 150.00       |
+|            |              | **Subtotal Diagnostic Imaging & Tests**      |     |                  | **1,070.00** |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | PHARM-IV     | Pharmacy & Medications (e.g., IV Antibiotics)| 1   | 2,700.00         | 2,700.00     |
+|            |              | **Subtotal Pharmacy**                        |     |                  | **2,700.00** |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | LAB-GEN      | Laboratory Services (Blood tests, Cultures)  | 1   | 1,700.00         | 1,700.00     |
+|            |              | **Subtotal Laboratory**                      |     |                  | **1,700.00** |
+|            |              |                                              |     |                  |              |
+| 2025-04-11 | CONS-SPEC    | Consultant Fees (Specialist Review)          | 1   | 2,200.00         | 2,200.00     |
+|            |              | **Subtotal Consultant Fees**                 |     |                  | **2,200.00** |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | SUPP-MED     | Medical Supplies (e.g., IV sets, dressings)  | 1   | 850.00           | 850.00       |
+|            |              | **Subtotal Medical Supplies**                |     |                  | **850.00**   |
+|            |              |                                              |     |                  |              |
+| 2025-04-10 | NUR-ANC      | General Nursing & Ancillary Services         | 1   | 1,100.00         | 1,100.00     |
+| 2025-04-11 | PROC-MIN     | Minor Procedure Fee (e.g., Central Line Ins.)| 1   | 1,600.00         | 1,600.00     |
+| 2025-04-13 | THER-PHY     | Physiotherapy Session                        | 1   | 300.00           | 300.00       |
+| 2025-04-12 | THER-RESP    | Respiratory Therapy / Nebulizer Treatment    | 1   | 250.00           | 250.00       |
+| 2025-04-14 | ADMIN-FEE    | Hospital Service & Admin Fee                 | 1   | 252.50           | 252.50       |
+|            |              | **Subtotal Other Services**                  |     |                  | **3,502.50** |
+
+---
+
+**SUMMARY OF CHARGES:**
+
+| Description                   | Amount (SGD) |
+| :---------------------------- | :----------- |
+| **Subtotal (before GST)**     | **16,972.50**|
+| **GST @ 9%**                  | **1,527.53** |
+|                               |              |
+| **TOTAL AMOUNT DUE**          | **18,500.03**|
+
+---
+
+**PAYMENT INFORMATION:**
+
+*   Please make payment by **2025-05-15**.
+*   Payment can be made via:
+    *   **Online Payment:** Visit www.sgh.com.sg/paybill
+    *   **Bank Transfer:** DBS Bank, Account Name: Singapore General Hospital, Account No: 001-XXXXX-X (Please quote Invoice No. as reference)
+    *   **At Hospital:** Cash, NETS, Credit Card (Visa, Mastercard, Amex) at any SGH cashier counter.
+    *   **Cheque:** Payable to "Singapore General Hospital". Please write Invoice No. and Patient Name on the back of the cheque.
+
+---
+
+**IMPORTANT NOTES:**
+
+*   This bill reflects charges for services rendered during the stated admission period.
+*   Please present this invoice for insurance claims. For Medisave claims, please contact our Business Office.
+*   For any billing enquiries, please contact our Business Office at +65 6321 4321, Monday to Friday, 9:00 AM to 5:00 PM.
+*   All charges are subject to change without prior notice.
+*   A late payment charge may be imposed for overdue accounts.
+
+---
+*Thank you for choosing Singapore General Hospital for your healthcare needs.*
+```

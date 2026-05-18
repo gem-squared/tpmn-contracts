@@ -1,0 +1,75 @@
+```text
+================================================================================
+                          TAX INVOICE / STATEMENT OF ACCOUNT
+================================================================================
+
+PROVIDER INFORMATION
+--------------------------------------------------------------------------------
+Novena Surgical and Orthopaedic Centre
+38 Irrawaddy Road, #10-35 Mount Elizabeth Novena Specialist Centre
+Singapore 329563
+Tel: +65 6734 8890 | Fax: +65 6734 8891
+Co. Reg. No.: 201512345A | GST Reg. No.: 201512345A
+
+PATIENT & CLAIM DETAILS
+--------------------------------------------------------------------------------
+To:
+    Ahmad Zulkifli bin Hassan
+    [Patient Address Redacted for Privacy]
+
+Invoice No   : INV-25-008172
+Invoice Date : 2025-05-05
+Patient ID   : P25-9811
+NRIC         : S****1234Z
+
+Incident Date: 2025-05-02 (Date of Admission)
+Discharge Date: 2025-05-03
+Claim Type   : Surgical
+
+DIAGNOSIS
+--------------------------------------------------------------------------------
+Primary Diagnosis (ICD-10): K35.80 - Unspecified acute appendicitis
+
+DETAILS OF CHARGES
+--------------------------------------------------------------------------------
+| Date       | Code  | Description                                | Qty | Unit Price (SGD) | Total (SGD) |
+|------------|-------|--------------------------------------------|-----|------------------|-------------|
+| 2025-05-02 | 44950 | SURGEON'S FEE: Appendectomy                | 1   |         6,500.00 |    6,500.00 |
+| 2025-05-02 |       | ANAESTHETIST'S FEE                         | 1   |         2,000.00 |    2,000.00 |
+| 2025-05-02 |       | OPERATING THEATRE CHARGES (2 HOURS)        | 1   |         1,200.00 |    1,200.00 |
+| 2025-05-02 |       | SURGICAL SUPPLIES & CONSUMABLES            | 1   |           550.46 |      550.46 |
+| 2025-05-03 | 99232 | SUBSEQUENT HOSPITAL CARE (POST-OP REVIEW)  | 1   |           300.00 |      300.00 |
+--------------------------------------------------------------------------------
+
+SUMMARY OF ACCOUNT
+--------------------------------------------------------------------------------
+                                                     Subtotal :    10,550.46 SGD
+                                          GST @ 9% (M-Suffix) :       949.54 SGD
+                                                                ----------------
+                                             TOTAL AMOUNT DUE :    11,500.00 SGD
+                                                                ================
+
+PAYMENT ADVICE
+--------------------------------------------------------------------------------
+Please make payment within 30 days from the date of this invoice.
+
+1. Bank Transfer:
+   Bank Name: United Overseas Bank (UOB)
+   Account Name: Novena Surgical and Orthopaedic Centre Pte Ltd
+   Account No.: 301-355-987-6
+   Swift Code: UOVBSGSGXXX
+   Please indicate Invoice No. INV-25-008172 in the payment reference.
+
+2. Cheque:
+   Please cross cheque and make payable to "Novena Surgical and Orthopaedic Centre Pte Ltd".
+   Mail to the address stated above.
+
+3. PayNow:
+   Scan the PayNow QR code on the original PDF invoice or pay to UEN 201512345A.
+
+--------------------------------------------------------------------------------
+This is a computer-generated invoice. No signature is required.
+Thank you for your prompt payment. An interest of 1.5% per month will be
+charged on all overdue accounts.
+================================================================================
+```

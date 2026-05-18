@@ -1,6 +1,5 @@
 {
-  "_comment": "Synthetic fixture — accredited_providers table. Queried by claim-04-medical-review.md Step 1.",
-
+  "_comment": "Synthetic fixture \u2014 accredited_providers table. Queried by claim-04-medical-review.md Step 1.",
   "accredited_providers": [
     {
       "provider_registration": "MOH-HOSP-00142",
@@ -9,7 +8,7 @@
       "setting": "inpatient",
       "panel_status": "active",
       "accreditation_expiry_date": "2027-12-31",
-      "_scenario": "A001 — panel hospital for pneumonia hospitalisation"
+      "_scenario": "A001 \u2014 panel hospital for pneumonia hospitalisation"
     },
     {
       "provider_registration": "MOH-CLIN-00887",
@@ -18,7 +17,7 @@
       "setting": "outpatient",
       "panel_status": "active",
       "accreditation_expiry_date": "2026-06-30",
-      "_scenario": "A002 — panel GP clinic for outpatient hypertension"
+      "_scenario": "A002 \u2014 panel GP clinic for outpatient hypertension"
     },
     {
       "provider_registration": "MOH-HOSP-00273",
@@ -27,7 +26,7 @@
       "setting": "inpatient",
       "panel_status": "active",
       "accreditation_expiry_date": "2027-12-31",
-      "_scenario": "A003 — maternity hospital (claim rejected at eligibility before reaching medical-review)"
+      "_scenario": "A003 \u2014 maternity hospital (claim rejected at eligibility before reaching medical-review)"
     },
     {
       "provider_registration": "MOH-HOSP-00391",
@@ -36,7 +35,7 @@
       "setting": "inpatient",
       "panel_status": "active",
       "accreditation_expiry_date": "2027-12-31",
-      "_scenario": "A005 — emergency hospital"
+      "_scenario": "A005 \u2014 emergency hospital"
     },
     {
       "provider_registration": "MOH-SPEC-00554",
@@ -54,7 +53,7 @@
       "setting": "inpatient",
       "panel_status": "non_panel",
       "accreditation_expiry_date": null,
-      "_scenario": "A004 — non-panel private hospital; triggers non_panel_flag=true and 60% reimbursement under Bronze"
+      "_scenario": "A004 \u2014 non-panel private hospital; triggers non_panel_flag=true and 60% reimbursement under Bronze"
     }
   ]
 }

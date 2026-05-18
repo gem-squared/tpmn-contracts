@@ -1,0 +1,74 @@
+```
+================================================================================
+                         KK Women's and Children's Hospital
+                        (A Member of the SingHealth Group)
+                  100 Bukit Timah Road, Singapore 229899
+                  Co. Reg. No. 198903340W | GST Reg. No. M90369859L
+                  Tel: +65 6225 5554 | www.kkh.com.sg
+================================================================================
+
+                               TAX INVOICE / HOSPITAL BILL
+
+--------------------------------------------------------------------------------
+PATIENT DETAILS                                     BILLING DETAILS
+--------------------------------------------------------------------------------
+Name: Priya Subramaniam                             Invoice No: KKH-INV-25-881023
+Patient ID (MRN): 89014522                          Invoice Date: 18-MAY-2025
+NRIC/FIN: SXXXX6789A                                Case No: CSN20250513-0451
+Address: Blk 123, Toa Payoh Lorong 1,                Visit No: VSN-5593012
+         #10-123, Singapore 310123                   Claim Type: Maternity
+
+Admission Date: 13-MAY-2025 08:30
+Discharge Date: 16-MAY-2025 11:00
+Attending Physician: Dr. Evelyn Tan Mei Ling (MCRN: 12345F)
+--------------------------------------------------------------------------------
+
+ITEMISED CHARGES
++-------+------------------------------------------------------+-----+------------+-------------+
+| S/N   | Description of Charges                               | Qty | Unit Price | Total (SGD) |
+|       |                                                      |     |   (SGD)    |             |
++-------+------------------------------------------------------+-----+------------+-------------+
+| 1     | ACCOMMODATION - SINGLE ROOM (A-CLASS)                |  3  |   600.00   |   1,800.00  |
+| 2     | DELIVERY SUITE / LABOUR WARD CHARGES                 |  1  |  1,500.00  |   1,500.00  |
+| 3     | ANAESTHESIA - EPIDURAL                               |  1  |  1,200.00  |   1,200.00  |
+| 4     | OBSTETRICIAN PROFESSIONAL FEES (NORMAL DELIVERY)     |  1  |  2,000.00  |   2,000.00  |
+| 5     | PAEDIATRICIAN PROFESSIONAL FEES (NEWBORN ASSESSMENT) |  1  |   400.00   |     400.00  |
+| 6     | NURSERY CARE                                         |  3  |   100.00   |     300.00  |
+| 7     | MEDICATIONS & MEDICAL SUPPLIES                       |  1  |   650.00   |     650.00  |
+| 8     | LABORATORY & DIAGNOSTIC TESTS                        |  1  |   350.00   |     350.00  |
++-------+------------------------------------------------------+-----+------------+-------------+
+
+--------------------------------------------------------------------------------
+SUMMARY OF BILL
+--------------------------------------------------------------------------------
+                                         Sub-Total Charges :      SGD   8,200.00
+                                         GST @ 9% :               SGD       0.00
+                                         (Medical services are exempt from GST)
+
+                                         ---------------------------------------
+                                         TOTAL BILL AMOUNT :      SGD   8,200.00
+                                         ---------------------------------------
+
+                                         Less: Deposit Paid :     SGD       0.00
+                                         (Payment to be settled by insurer)
+
+                                         =======================================
+                                         AMOUNT DUE FOR CLAIM :   SGD   8,200.00
+                                         =======================================
+
+PAYMENT INSTRUCTIONS:
+This bill has been submitted directly to your insurer for processing. This document
+is for your records and for submission of your insurance claim. No payment is
+required from you at this time, pending the insurer's assessment.
+
+For billing enquiries, please contact our Business Office at +65 6394 1168 or
+email billing@kkh.com.sg with your Invoice No. KKH-INV-25-881023.
+
+Thank you for choosing KK Women's and Children's Hospital. We wish you and your
+baby the best of health.
+
+================================================================================
+Document ID: 49201-BILLS-20250518-PRIYASUB                        Page 1 of 1
+This is a computer-generated document. No signature is required.
+================================================================================
+```

@@ -30,6 +30,39 @@ claimant_contact_email: string    # email for correspondence
 claimant_contact_phone: string    # phone number for correspondence
 ```
 
+## P_pre: Preconditions
+
+### Type Alignment
+- `policy_no` must be a non-empty string.
+- `policy_holder` must be a non-empty string.
+- `claimant_name` must be a non-empty string.
+- `claimant_relationship` must be one of `{self, spouse, child, parent, sibling, other_dependent}`.
+- `id_document_type` must be one of `{nric, passport, fin, birth_certificate}`.
+- `id_document_no` must be a non-empty string.
+- `date_of_birth`, `claim_date`, `incident_date` must each be valid ISO 8601 dates (YYYY-MM-DD).
+- `claim_type` must be one of `{hospitalisation, outpatient, surgical, dental, vision, maternity, mental_health, emergency}`.
+- `provider_name` must be a non-empty string.
+- `provider_registration` must be a non-empty string.
+- `claim_amount_requested` must be a positive decimal number.
+- `supporting_documents` must be a non-empty array of strings.
+- `claimant_contact_email` must be a non-empty string.
+- `claimant_contact_phone` must be a non-empty string.
+
+### Format Validation
+- `policy_no` must match the regex `^HIC-\d{4}-\d{5}$`.
+- `claim_amount_requested ≤ 10,000,000 SGD` (sanity cap to catch data-entry errors).
+- `date_of_birth < claim_date` (claimant must be born before submission).
+- `incident_date ≤ claim_date` (no claims for future incidents).
+- `claim_date − incident_date ≤ 365` calendar days (statutory filing window).
+- `claimant_contact_email` must match the simplified RFC 5322 pattern `^[^@\s]+@[^@\s]+\.[^@\s]+$`.
+- `claimant_contact_phone` must match `^\+?[0-9]{8,15}$`.
+- `supporting_documents` tokens must be drawn from `{medical_bill, discharge_summary, referral_letter, prescription, lab_report, imaging_report, specialist_memo, pre_auth_approval}`.
+
+### Regulation/Compliance Gates
+- `policies` reference table must be loadable at runtime — policy existence lookup is mandatory per InsClaims-PolicyDoc §3.1.
+- Server-side date (UTC+8) must be resolvable — `claim_date == today` is checked at intake (Gate G0 — temporal integrity).
+- Audit-log channel must be available — every intake submission is recorded per regulator requirement (MAS Notice 117 §4).
+
 ## F: Processing Logic
 
 1. **Policy number format check** — Verify `policy_no` matches the exact regex pattern `^HIC-\d{4}-\d{5}$`, where:
@@ -80,9 +113,13 @@ claimant_contact_phone: string    # phone number for correspondence
 ## B: Output
 
 ```yaml
-claim_reference_draft:  string    # temporary reference ID (e.g. "DRAFT-20240514-00789"); becomes permanent upon full processing
+claim_reference_draft:  string    # temporary reference ID (e.g. "DRAFT-20240514-00789")
 policy_no:              string    # passthrough from A
 claimant_name:          string    # passthrough from A
+id_document_type:       enum      # passthrough from A
+id_document_no:         string    # passthrough from A
+date_of_birth:          date      # passthrough from A
+claimant_relationship:  enum      # passthrough from A
 claim_type:             enum      # passthrough from A
 incident_date:          date      # passthrough from A
 claim_date:             date      # passthrough from A
@@ -93,19 +130,29 @@ missing_documents:      string[]  # list of required but absent document types (
 intake_timestamp:       datetime  # server-side timestamp of intake record creation
 ```
 
-## P: Postcondition Checklist
+## P_post: Postconditions
+
+### Correctness
 
 AI verification checks — all must pass for CONTRACT satisfaction:
 
-- [ ] `policy_no` in B matches `policy_no` in A
-- [ ] `claimant_name` in B matches `claimant_name` in A
-- [ ] `intake_accepted` is boolean (not null, not missing)
-- [ ] If `intake_accepted = false` → `rejection_reason` is a non-empty string identifying the first failing check
-- [ ] If `intake_accepted = true` → `rejection_reason` is null
-- [ ] `claim_date − incident_date ≤ 365` (submission window invariant)
-- [ ] `incident_date ≤ claim_date` (temporal ordering invariant)
-- [ ] `claim_amount_requested > 0` if `intake_accepted = true`
-- [ ] `missing_documents` contains only document types that are required for `claim_type` but absent from `supporting_documents`
-- [ ] `claim_reference_draft` is non-empty and follows the DRAFT-YYYYMMDD-##### format
-- [ ] `intake_timestamp` is valid ISO 8601, not future-dated, and within ±5 minutes of `claim_date`
-- [ ] No SPT violation: intake decision is specific to this submission; no generalisation about claimant demographics
+- `policy_no` in B matches `policy_no` in A
+- `claimant_name` in B matches `claimant_name` in A
+- `intake_accepted` is boolean (not null, not missing)
+- If `intake_accepted = false` → `rejection_reason` is a non-empty string identifying the first failing check
+- If `intake_accepted = true` → `rejection_reason` is null
+- `claim_date − incident_date ≤ 365` (submission window invariant)
+- `incident_date ≤ claim_date` (temporal ordering invariant)
+- `claim_amount_requested > 0` if `intake_accepted = true`
+- `missing_documents` contains only document types that are required for `claim_type` but absent from `supporting_documents`
+- `claim_reference_draft` is non-empty and follows the DRAFT-YYYYMMDD-##### format
+- `intake_timestamp` is valid ISO 8601, not future-dated, and within ±5 minutes of `claim_date`
+- No SPT violation: intake decision is specific to this submission; no generalisation about claimant demographics
+
+## Circus Executor
+
+**stage_type:** llm-assisted
+**agent_role:** claim-intake-agent
+**routing_priority:** high
+**trust_gate_L1:** 70 // company policy: structural input validation — moderate threshold per InsClaims-PolicyDoc §4.2
+**trust_gate_L2:** 85 // company policy: intake decision gates the entire downstream pipeline — high threshold per WorkbenchIQ governance standard

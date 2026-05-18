@@ -1,7 +1,6 @@
 {
-  "_scenario": "A002 — Outpatient (Hypertension), COMP-HEALTH-SILVER, Spouse Dependent, APPROVED with co-pay & co-insurance",
+  "_scenario": "A002 \u2014 Outpatient (Hypertension), COMP-HEALTH-SILVER, Spouse Dependent, APPROVED with co-pay & co-insurance",
   "_outcome": "Disbursed via direct_credit. Spouse dependent verified. Cost-sharing applied.",
-
   "stage_1_intake": {
     "_input": {
       "policy_no": "HIC-2023-00456",
@@ -16,8 +15,11 @@
       "claim_type": "outpatient",
       "provider_name": "HealthFirst Medical Clinic",
       "provider_registration": "MOH-CLIN-00887",
-      "claim_amount_requested": 380.00,
-      "supporting_documents": ["medical_bill", "prescription"],
+      "claim_amount_requested": 380.0,
+      "supporting_documents": [
+        "medical_bill",
+        "prescription"
+      ],
       "claimant_contact_email": "limkaixuan@email.sg",
       "claimant_contact_phone": "+6598765432"
     },
@@ -31,7 +33,9 @@
       "claim_amount_gt_zero": true,
       "documents_vocab_valid": true,
       "minimum_documents_present": true,
-      "required_for_outpatient": ["medical_bill"],
+      "required_for_outpatient": [
+        "medical_bill"
+      ],
       "missing_documents": []
     },
     "_output": {
@@ -41,14 +45,21 @@
       "claim_type": "outpatient",
       "incident_date": "2025-05-14",
       "claim_date": "2025-05-14",
-      "claim_amount_requested": 380.00,
+      "claim_amount_requested": 380.0,
       "intake_accepted": true,
       "rejection_reason": null,
       "missing_documents": [],
-      "intake_timestamp": "2025-05-14T11:10:00+08:00"
+      "intake_timestamp": "2025-05-14T11:10:00+08:00",
+      "id_document_type": "nric",
+      "id_document_no": "S8867890C",
+      "date_of_birth": "1988-11-30",
+      "claimant_relationship": "spouse",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A002/medical_bill.pdf",
+        "prescription": "data/health-insurance-claim/synthetic data/documents/A002/prescription.pdf"
+      }
     }
   },
-
   "stage_2_policy_verification": {
     "_db_lookups": {
       "policy_found": true,
@@ -71,7 +82,7 @@
       "claimant_name": "Lim Kai Xuan",
       "claim_type": "outpatient",
       "incident_date": "2025-05-14",
-      "claim_amount_requested": 380.00,
+      "claim_amount_requested": 380.0,
       "policy_verified": true,
       "verification_failure": null,
       "policy_start_date": "2023-06-01",
@@ -79,22 +90,25 @@
       "policy_product_code": "COMP-HEALTH-SILVER",
       "premium_payment_mode": "monthly",
       "dependent_verified": true,
-      "verification_timestamp": "2025-05-14T11:10:30+08:00"
+      "verification_timestamp": "2025-05-14T11:10:30+08:00",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A002/medical_bill.pdf",
+        "prescription": "data/health-insurance-claim/synthetic data/documents/A002/prescription.pdf"
+      }
     }
   },
-
   "stage_3_eligibility_check": {
     "_db_lookups": {
       "covered": true,
       "waiting_period_days": 30,
       "days_since_policy_start": 713,
       "waiting_period_satisfied": true,
-      "annual_limit": 5000.00,
-      "per_claim_limit": 500.00,
-      "annual_utilised": 180.00,
-      "annual_limit_remaining": 4820.00,
-      "lifetime_utilised": 180.00,
-      "lifetime_limit": 600000.00,
+      "annual_limit": 5000.0,
+      "per_claim_limit": 500.0,
+      "annual_utilised": 180.0,
+      "annual_limit_remaining": 4820.0,
+      "lifetime_utilised": 180.0,
+      "lifetime_limit": 600000.0,
       "lifetime_limit_exhausted": false,
       "exclusions_triggered": []
     },
@@ -107,28 +121,34 @@
       "claimant_name": "Lim Kai Xuan",
       "claim_type": "outpatient",
       "incident_date": "2025-05-14",
-      "claim_amount_requested": 380.00,
+      "claim_amount_requested": 380.0,
       "eligible": true,
       "eligibility_failure_reason": null,
       "claim_type_covered": true,
       "waiting_period_satisfied": true,
       "waiting_period_days": 30,
-      "annual_limit": 5000.00,
-      "annual_utilised": 180.00,
-      "annual_limit_remaining": 4820.00,
-      "per_claim_limit": 500.00,
-      "claimable_ceiling": 380.00,
-      "exclusions_triggered": [],
-      "eligibility_timestamp": "2025-05-14T11:11:00+08:00"
+      "annual_limit": 5000.0,
+      "annual_utilised": 180.0,
+      "annual_limit_remaining": 4820.0,
+      "per_claim_limit": 500.0,
+      "claimable_ceiling": 380.0,
+      "eligibility_timestamp": "2025-05-14T11:11:00+08:00",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A002/medical_bill.pdf",
+        "prescription": "data/health-insurance-claim/synthetic data/documents/A002/prescription.pdf"
+      }
     }
   },
-
   "stage_4_medical_review": {
     "_medical_details": {
       "primary_diagnosis_icd10": "I10",
       "primary_diagnosis_description": "Essential (primary) hypertension",
-      "procedure_cpt_codes": ["99213"],
-      "procedure_descriptions": ["Office/outpatient visit, established patient, moderate complexity"],
+      "procedure_cpt_codes": [
+        "99213"
+      ],
+      "procedure_descriptions": [
+        "Office/outpatient visit, established patient, moderate complexity"
+      ],
       "admission_date": null,
       "discharge_date": null,
       "attending_physician": "Dr. Nur Aisyah Binte Ramli",
@@ -140,12 +160,12 @@
       "non_panel_flag": false,
       "icd10_valid": true,
       "cpt_99213_valid": true,
-      "cpt_icd10_plausibility": "PASS — 99213 (outpatient visit) consistent with I10 (hypertension)",
+      "cpt_icd10_plausibility": "PASS \u2014 99213 (outpatient visit) consistent with I10 (hypertension)",
       "pre_auth_required": false,
       "pre_auth_verified": true,
       "physician_status": "active",
       "physician_valid": true,
-      "rps_benchmark": 320.00,
+      "rps_benchmark": 320.0,
       "bill_variance_pct": "((380 - 320) / 320) * 100 = 18.75%",
       "bill_exceeds_benchmark": false,
       "medical_necessity_confirmed": true
@@ -156,46 +176,45 @@
       "claimant_name": "Lim Kai Xuan",
       "claim_type": "outpatient",
       "incident_date": "2025-05-14",
-      "claim_amount_requested": 380.00,
-      "claimable_ceiling": 380.00,
-      "medical_approved": true,
-      "medical_rejection_reason": null,
+      "claim_amount_requested": 380.0,
+      "claimable_ceiling": 380.0,
       "non_panel_flag": false,
       "pre_auth_verified": true,
       "length_of_stay": null,
-      "rps_benchmark": 320.00,
+      "rps_benchmark": 320.0,
       "bill_variance_pct": 18.75,
       "medical_necessity_confirmed": true,
       "medical_flags": [],
-      "review_timestamp": "2025-05-14T11:11:45+08:00"
+      "review_timestamp": "2025-05-14T11:11:45+08:00",
+      "medical_review_passed": true,
+      "review_failure_reason": null
     }
   },
-
   "stage_5_adjudication": {
     "_db_lookups": {
-      "deductible_annual": 2000.00,
+      "deductible_annual": 2000.0,
       "co_payment_pct": 20,
       "co_insurance_pct": 15,
-      "co_insurance_cap": 300.00,
-      "deductible_utilised": 0.00
+      "co_insurance_cap": 300.0,
+      "deductible_utilised": 0.0
     },
     "_computation": {
-      "adjudication_base": "claim(380) <= rps(320)? NO → adjudication_base = 320.00, then min(320, 380) = 320.00",
+      "adjudication_base": "claim(380) <= rps(320)? NO \u2192 adjudication_base = 320.00, then min(320, 380) = 320.00",
       "step4_non_panel": "none",
       "deductible_remaining": "max(0, 2000.00 - 0.00) = 2000.00",
       "amount_after_deductible": "max(0, 320.00 - 2000.00) = 0.00",
       "deductible_applied": "320.00 - 0.00 = 320.00",
-      "_note": "Entire adjudication base absorbed by deductible → net_payable = 0.00 → adjudication_status = zero_benefit",
-      "_override_note": "Wait — claim_amount(380) vs rps_benchmark(320): adjudication_base = min(claim, rps, ceiling) = min(380,320,380) = 320. Deductible_utilised=0, deductible_remaining=2000 > 320, so entire base absorbed.",
-      "co_pay_amount": 0.00,
-      "co_insurance_amount": 0.00,
-      "net_payable": 0.00,
-      "claimant_liability": 380.00,
+      "_note": "Entire adjudication base absorbed by deductible \u2192 net_payable = 0.00 \u2192 adjudication_status = zero_benefit",
+      "_override_note": "Wait \u2014 claim_amount(380) vs rps_benchmark(320): adjudication_base = min(claim, rps, ceiling) = min(380,320,380) = 320. Deductible_utilised=0, deductible_remaining=2000 > 320, so entire base absorbed.",
+      "co_pay_amount": 0.0,
+      "co_insurance_amount": 0.0,
+      "net_payable": 0.0,
+      "claimant_liability": 380.0,
       "adjudication_status_initial": "zero_benefit"
     },
     "_design_note": "Silver plan deductible of SGD 2,000 fully absorbs this small outpatient claim of SGD 320 (RPS). To make A002 more instructive as an APPROVED case, we assign a deductible_utilised of SGD 1,800 (from earlier claims this year) so only SGD 200 deductible remains.",
     "_adjusted_db_lookups": {
-      "deductible_utilised": 1800.00,
+      "deductible_utilised": 1800.0,
       "_source": "deductible_ledger: prior claims in benefit_year 2025 consumed SGD 1,800 of the SGD 2,000 annual deductible"
     },
     "_adjusted_computation": {
@@ -207,7 +226,7 @@
       "co_insurance_raw": "round(96.00 * 15/100, 2) = 14.40",
       "co_insurance_amount": "min(14.40, 300.00) = 14.40",
       "amount_after_coinsurance": "96.00 - 14.40 = 81.60",
-      "net_payable": 81.60,
+      "net_payable": 81.6,
       "claimant_liability": "380.00 - 81.60 = 298.40"
     },
     "_output": {
@@ -215,19 +234,18 @@
       "policy_no": "HIC-2023-00456",
       "claimant_name": "Lim Kai Xuan",
       "claim_type": "outpatient",
-      "claim_amount_requested": 380.00,
-      "adjudication_base": 320.00,
-      "deductible_applied_this_claim": 200.00,
-      "co_pay_amount": 24.00,
-      "co_insurance_amount": 14.40,
-      "net_payable": 81.60,
-      "claimant_liability": 298.40,
+      "claim_amount_requested": 380.0,
+      "adjudication_base": 320.0,
+      "deductible_applied_this_claim": 200.0,
+      "co_pay_amount": 24.0,
+      "co_insurance_amount": 14.4,
+      "net_payable": 81.6,
+      "claimant_liability": 298.4,
       "adjudication_status": "approved",
       "adjudication_notes": "Adjudicated at RPS SGD 320 (claim SGD 380). Remaining deductible SGD 200 applied. Co-pay 20% (SGD 24). Co-insurance 15% (SGD 14.40). Net payable SGD 81.60.",
       "adjudication_timestamp": "2025-05-14T11:12:30+08:00"
     }
   },
-
   "stage_6_disbursement": {
     "_payment_details": {
       "payment_mode": "giro",
@@ -238,7 +256,7 @@
       "payee_name": "Lim Kai Xuan"
     },
     "_validation": {
-      "adjudication_status_check": "approved → proceed",
+      "adjudication_status_check": "approved \u2192 proceed",
       "net_payable_gt_zero": true,
       "bank_account_valid": true,
       "payee_name_matches_claimant": true,
@@ -250,8 +268,8 @@
       "claimant_name": "Lim Kai Xuan",
       "claim_type": "outpatient",
       "disbursement_status": "disbursed",
-      "net_payable": 81.60,
-      "claimant_liability": 298.40,
+      "net_payable": 81.6,
+      "claimant_liability": 298.4,
       "payment_mode": "giro",
       "payee_name": "Lim Kai Xuan (****6789)",
       "disbursement_date": "2025-05-19",

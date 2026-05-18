@@ -1,7 +1,6 @@
 {
-  "_scenario": "A004 — Surgical (Appendectomy), COMP-HEALTH-BRONZE, Self, Non-Panel Hospital, APPROVED at 60% reimbursement",
+  "_scenario": "A004 \u2014 Surgical (Appendectomy), COMP-HEALTH-BRONZE, Self, Non-Panel Hospital, APPROVED at 60% reimbursement",
   "_outcome": "Disbursed via provider_direct. Non-panel surcharge applied; net payable significantly reduced.",
-
   "stage_1_intake": {
     "_input": {
       "policy_no": "HIC-2022-00321",
@@ -16,8 +15,12 @@
       "claim_type": "surgical",
       "provider_name": "Novena Surgical and Orthopaedic Centre",
       "provider_registration": "PRV-HOSP-09921",
-      "claim_amount_requested": 11500.00,
-      "supporting_documents": ["medical_bill", "discharge_summary", "pre_auth_approval"],
+      "claim_amount_requested": 11500.0,
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ],
       "claimant_contact_email": "ahmad.hassan@email.sg",
       "claimant_contact_phone": "+6597654321"
     },
@@ -39,14 +42,22 @@
       "claim_type": "surgical",
       "incident_date": "2025-05-02",
       "claim_date": "2025-05-14",
-      "claim_amount_requested": 11500.00,
+      "claim_amount_requested": 11500.0,
       "intake_accepted": true,
       "rejection_reason": null,
       "missing_documents": [],
-      "intake_timestamp": "2025-05-14T15:30:00+08:00"
+      "intake_timestamp": "2025-05-14T15:30:00+08:00",
+      "id_document_type": "nric",
+      "id_document_no": "S7534567E",
+      "date_of_birth": "1975-09-03",
+      "claimant_relationship": "self",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A004/medical_bill.pdf",
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A004/discharge_summary.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A004/pre_auth_approval.pdf"
+      }
     }
   },
-
   "stage_2_policy_verification": {
     "_db_lookups": {
       "policy_found": true,
@@ -67,7 +78,7 @@
       "claimant_name": "Ahmad Zulkifli bin Hassan",
       "claim_type": "surgical",
       "incident_date": "2025-05-02",
-      "claim_amount_requested": 11500.00,
+      "claim_amount_requested": 11500.0,
       "policy_verified": true,
       "verification_failure": null,
       "policy_start_date": "2022-09-01",
@@ -75,22 +86,26 @@
       "policy_product_code": "COMP-HEALTH-BRONZE",
       "premium_payment_mode": "quarterly",
       "dependent_verified": true,
-      "verification_timestamp": "2025-05-14T15:30:30+08:00"
+      "verification_timestamp": "2025-05-14T15:30:30+08:00",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A004/medical_bill.pdf",
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A004/discharge_summary.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A004/pre_auth_approval.pdf"
+      }
     }
   },
-
   "stage_3_eligibility_check": {
     "_db_lookups": {
       "covered": true,
       "waiting_period_days": 90,
       "days_since_policy_start": 973,
       "waiting_period_satisfied": true,
-      "annual_limit": 25000.00,
-      "per_claim_limit": 12000.00,
-      "annual_utilised": 0.00,
-      "annual_limit_remaining": 25000.00,
-      "lifetime_utilised": 0.00,
-      "lifetime_limit": 300000.00,
+      "annual_limit": 25000.0,
+      "per_claim_limit": 12000.0,
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 25000.0,
+      "lifetime_utilised": 0.0,
+      "lifetime_limit": 300000.0,
       "exclusions_triggered": []
     },
     "_computation": {
@@ -102,28 +117,37 @@
       "claimant_name": "Ahmad Zulkifli bin Hassan",
       "claim_type": "surgical",
       "incident_date": "2025-05-02",
-      "claim_amount_requested": 11500.00,
+      "claim_amount_requested": 11500.0,
       "eligible": true,
       "eligibility_failure_reason": null,
       "claim_type_covered": true,
       "waiting_period_satisfied": true,
       "waiting_period_days": 90,
-      "annual_limit": 25000.00,
-      "annual_utilised": 0.00,
-      "annual_limit_remaining": 25000.00,
-      "per_claim_limit": 12000.00,
-      "claimable_ceiling": 11500.00,
-      "exclusions_triggered": [],
-      "eligibility_timestamp": "2025-05-14T15:31:00+08:00"
+      "annual_limit": 25000.0,
+      "annual_utilised": 0.0,
+      "annual_limit_remaining": 25000.0,
+      "per_claim_limit": 12000.0,
+      "claimable_ceiling": 11500.0,
+      "eligibility_timestamp": "2025-05-14T15:31:00+08:00",
+      "document_paths": {
+        "medical_bill": "data/health-insurance-claim/synthetic data/documents/A004/medical_bill.pdf",
+        "discharge_summary": "data/health-insurance-claim/synthetic data/documents/A004/discharge_summary.pdf",
+        "pre_auth_approval": "data/health-insurance-claim/synthetic data/documents/A004/pre_auth_approval.pdf"
+      }
     }
   },
-
   "stage_4_medical_review": {
     "_medical_details": {
       "primary_diagnosis_icd10": "K35.80",
       "primary_diagnosis_description": "Other and unspecified acute appendicitis without abscess",
-      "procedure_cpt_codes": ["44950", "99232"],
-      "procedure_descriptions": ["Appendectomy", "Subsequent hospital inpatient visit"],
+      "procedure_cpt_codes": [
+        "44950",
+        "99232"
+      ],
+      "procedure_descriptions": [
+        "Appendectomy",
+        "Subsequent hospital inpatient visit"
+      ],
       "admission_date": "2025-05-02",
       "discharge_date": "2025-05-04",
       "attending_physician": "Dr. Tan Boon Kiat",
@@ -138,14 +162,14 @@
       "icd10_valid": true,
       "cpt_44950_valid": true,
       "cpt_99232_valid": true,
-      "cpt_icd10_plausibility": "PASS — 44950 (appendectomy) consistent with K35.80",
+      "cpt_icd10_plausibility": "PASS \u2014 44950 (appendectomy) consistent with K35.80",
       "pre_auth_status": "approved",
       "pre_auth_policy_match": true,
       "pre_auth_not_expired": true,
       "length_of_stay_days": 2,
       "physician_status": "active",
       "physician_valid": true,
-      "rps_benchmark": 9500.00,
+      "rps_benchmark": 9500.0,
       "bill_variance_pct": "((11500 - 9500) / 9500) * 100 = 21.05%",
       "bill_exceeds_benchmark": false,
       "medical_necessity_confirmed": true
@@ -156,36 +180,37 @@
       "claimant_name": "Ahmad Zulkifli bin Hassan",
       "claim_type": "surgical",
       "incident_date": "2025-05-02",
-      "claim_amount_requested": 11500.00,
-      "claimable_ceiling": 11500.00,
-      "medical_approved": true,
-      "medical_rejection_reason": null,
+      "claim_amount_requested": 11500.0,
+      "claimable_ceiling": 11500.0,
       "non_panel_flag": true,
       "pre_auth_verified": true,
       "length_of_stay": 2,
-      "rps_benchmark": 9500.00,
+      "rps_benchmark": 9500.0,
       "bill_variance_pct": 21.05,
       "medical_necessity_confirmed": true,
-      "medical_flags": ["NON_PANEL_PROVIDER"],
-      "review_timestamp": "2025-05-14T15:32:00+08:00"
+      "medical_flags": [
+        "NON_PANEL_PROVIDER"
+      ],
+      "review_timestamp": "2025-05-14T15:32:00+08:00",
+      "medical_review_passed": true,
+      "review_failure_reason": null
     }
   },
-
   "stage_5_adjudication": {
     "_db_lookups": {
-      "deductible_annual": 3500.00,
+      "deductible_annual": 3500.0,
       "co_payment_pct": 20,
       "co_insurance_pct": 20,
-      "co_insurance_cap": 2000.00,
+      "co_insurance_cap": 2000.0,
       "non_panel_reimbursement_pct": 60,
-      "deductible_utilised": 0.00
+      "deductible_utilised": 0.0
     },
     "_computation": {
-      "step3a": "claim(11500) > rps(9500) → adjudication_base = rps = 9500.00",
+      "step3a": "claim(11500) > rps(9500) \u2192 adjudication_base = rps = 9500.00",
       "step3b": "min(9500.00, 11500.00) = 9500.00",
-      "adjudication_base_pre_panel": 9500.00,
+      "adjudication_base_pre_panel": 9500.0,
       "step4_non_panel": "9500.00 * (60/100) = 5700.00",
-      "adjudication_base": 5700.00,
+      "adjudication_base": 5700.0,
       "deductible_remaining": "max(0, 3500.00 - 0.00) = 3500.00",
       "amount_after_deductible": "max(0, 5700.00 - 3500.00) = 2200.00",
       "deductible_applied": "5700.00 - 2200.00 = 3500.00",
@@ -194,7 +219,7 @@
       "co_insurance_raw": "round(1760.00 * 20/100, 2) = 352.00",
       "co_insurance_amount": "min(352.00, 2000.00) = 352.00",
       "amount_after_coinsurance": "1760.00 - 352.00 = 1408.00",
-      "net_payable": 1408.00,
+      "net_payable": 1408.0,
       "claimant_liability": "11500.00 - 1408.00 = 10092.00"
     },
     "_output": {
@@ -202,19 +227,18 @@
       "policy_no": "HIC-2022-00321",
       "claimant_name": "Ahmad Zulkifli bin Hassan",
       "claim_type": "surgical",
-      "claim_amount_requested": 11500.00,
-      "adjudication_base": 5700.00,
-      "deductible_applied_this_claim": 3500.00,
-      "co_pay_amount": 440.00,
-      "co_insurance_amount": 352.00,
-      "net_payable": 1408.00,
-      "claimant_liability": 10092.00,
+      "claim_amount_requested": 11500.0,
+      "adjudication_base": 5700.0,
+      "deductible_applied_this_claim": 3500.0,
+      "co_pay_amount": 440.0,
+      "co_insurance_amount": 352.0,
+      "net_payable": 1408.0,
+      "claimant_liability": 10092.0,
       "adjudication_status": "approved",
       "adjudication_notes": "Non-panel provider: RPS SGD 9,500 adjusted to 60% = SGD 5,700. Annual deductible SGD 3,500 fully applied. Co-pay 20% (SGD 440). Co-insurance 20% (SGD 352). Net payable SGD 1,408.",
       "adjudication_timestamp": "2025-05-14T15:33:00+08:00"
     }
   },
-
   "stage_6_disbursement": {
     "_payment_details": {
       "payment_mode": "provider_direct",
@@ -224,7 +248,7 @@
       "bank_account_no": "MASKED_FROM_REGISTRY"
     },
     "_validation": {
-      "adjudication_status_check": "approved → proceed",
+      "adjudication_status_check": "approved \u2192 proceed",
       "net_payable_gt_zero": true,
       "payee_name_matches_provider_registry": true,
       "fraud_flag": false
@@ -235,8 +259,8 @@
       "claimant_name": "Ahmad Zulkifli bin Hassan",
       "claim_type": "surgical",
       "disbursement_status": "disbursed",
-      "net_payable": 1408.00,
-      "claimant_liability": 10092.00,
+      "net_payable": 1408.0,
+      "claimant_liability": 10092.0,
       "payment_mode": "provider_direct",
       "payee_name": "Novena Surgical and Orthopaedic Centre",
       "disbursement_date": "2025-05-21",
