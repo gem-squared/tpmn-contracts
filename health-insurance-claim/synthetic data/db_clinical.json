@@ -1,4 +1,5 @@
 {
+  "_comment": "Synthetic fixture — clinical reference tables. Used by claim-03-eligibility-check.md (exclusion_catalogue), claim-04-medical-review.md (icd10_reference, cpt_reference, rps_schedule). NOTE: icd10_cpt_plausibility and medical_necessity_guidelines have been REMOVED — plausibility and necessity assessment is now performed by LLM open-ended reasoning at Node 4 (Step 5). RPS benchmark is computed from rps_schedule by summing unit_price for all CPT codes on the claim.",
   "icd10_reference": [
     {
       "code": "J18.9",
@@ -16,20 +17,44 @@
       "status": "active"
     },
     {
+      "code": "Z37.0",
+      "description": "Single liveborn infant, delivered vaginally",
+      "status": "active"
+    },
+    {
+      "code": "S52.501A",
+      "description": "Unspecified fracture of lower end of right radius, initial encounter for closed fracture",
+      "status": "active"
+    },
+    {
       "code": "Z41.1",
       "description": "Encounter for cosmetic surgery",
-      "status": "active"
+      "status": "active",
+      "_exclusion": "COSMETIC_PROCEDURE"
     },
     {
       "code": "X71",
       "description": "Intentional self-harm by drowning",
-      "status": "active"
+      "status": "active",
+      "_exclusion": "SELF_INFLICTED_INJURY"
+    },
+    {
+      "code": "F10",
+      "description": "Alcohol related disorders",
+      "status": "active",
+      "_exclusion": "SUBSTANCE_ABUSE"
+    },
+    {
+      "code": "Y36.0",
+      "description": "War operations involving explosion of marine weapons",
+      "status": "active",
+      "_exclusion": "WAR_TERRORISM"
     }
   ],
   "cpt_reference": [
     {
       "code": "99232",
-      "description": "Subsequent hospital inpatient visit",
+      "description": "Subsequent hospital inpatient visit, typically 25 minutes",
       "status": "active"
     },
     {
@@ -39,7 +64,7 @@
     },
     {
       "code": "99213",
-      "description": "Office/outpatient visit, established patient",
+      "description": "Office or other outpatient visit, established patient, low complexity",
       "status": "active"
     },
     {
@@ -48,97 +73,40 @@
       "status": "active"
     },
     {
-      "code": "15820",
-      "description": "Blepharoplasty, lower eyelid",
+      "code": "59400",
+      "description": "Routine obstetric care including antepartum care, vaginal delivery, and postpartum care",
+      "status": "active"
+    },
+    {
+      "code": "25600",
+      "description": "Closed treatment of distal radial fracture (eg, Colles or Smith type), without manipulation",
+      "status": "active"
+    },
+    {
+      "code": "73100",
+      "description": "Radiologic examination, wrist; 2 views",
       "status": "active"
     },
     {
       "code": "93000",
-      "description": "Electrocardiogram, complete",
+      "description": "Electrocardiogram, routine, with at least 12 leads; with interpretation and report",
       "status": "active"
     },
     {
       "code": "80048",
       "description": "Basic metabolic panel",
       "status": "active"
-    }
-  ],
-  "icd10_cpt_plausibility": [
-    {
-      "icd10_code": "J18.9",
-      "cpt_code": "99232",
-      "plausible": true
     },
     {
-      "icd10_code": "J18.9",
-      "cpt_code": "71046",
-      "plausible": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "99213",
-      "plausible": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "93000",
-      "plausible": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "80048",
-      "plausible": true
-    },
-    {
-      "icd10_code": "K35.80",
-      "cpt_code": "44950",
-      "plausible": true
-    },
-    {
-      "icd10_code": "K35.80",
-      "cpt_code": "99232",
-      "plausible": true
-    }
-  ],
-  "medical_necessity_guidelines": [
-    {
-      "icd10_code": "J18.9",
-      "cpt_code": "99232",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "J18.9",
-      "cpt_code": "71046",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "99213",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "93000",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "I10",
-      "cpt_code": "80048",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "K35.80",
-      "cpt_code": "44950",
-      "necessity_confirmed": true
-    },
-    {
-      "icd10_code": "K35.80",
-      "cpt_code": "99232",
-      "necessity_confirmed": true
+      "code": "15820",
+      "description": "Blepharoplasty, lower eyelid",
+      "status": "active",
+      "_note": "Cosmetic procedure — typically excluded"
     }
   ],
   "rps_schedule": [
     {
+      "_comment": "Reference Price Schedule benchmarks — summed across all CPT codes on a claim to produce rps_benchmark for Node 4 bill_variance_pct computation. provider_type and setting must match claim context.",
       "cpt_code": "99232",
       "provider_type": "hospital",
       "setting": "inpatient",
@@ -163,6 +131,24 @@
       "unit_price": 8500.0
     },
     {
+      "cpt_code": "59400",
+      "provider_type": "hospital",
+      "setting": "inpatient",
+      "unit_price": 6500.0
+    },
+    {
+      "cpt_code": "25600",
+      "provider_type": "hospital",
+      "setting": "emergency",
+      "unit_price": 1500.0
+    },
+    {
+      "cpt_code": "73100",
+      "provider_type": "hospital",
+      "setting": "emergency",
+      "unit_price": 80.0
+    },
+    {
       "cpt_code": "93000",
       "provider_type": "clinic",
       "setting": "outpatient",
@@ -179,32 +165,44 @@
     {
       "exclusion_key": "COSMETIC_PROCEDURE",
       "type": "icd10_prefix",
-      "value": "Z41."
+      "value": "Z41.",
+      "_description": "Encounter for cosmetic procedures — excluded across all plans"
     },
     {
       "exclusion_key": "COSMETIC_PROCEDURE",
       "type": "cpt_list",
-      "value": "15820,15821,15822,15823"
+      "value": "15820,15821,15822,15823",
+      "_description": "Blepharoplasty and similar cosmetic CPT codes"
     },
     {
       "exclusion_key": "SELF_INFLICTED_INJURY",
       "type": "icd10_prefix",
-      "value": "X7"
+      "value": "X7",
+      "_description": "Intentional self-harm (X71–X83)"
     },
     {
       "exclusion_key": "SUBSTANCE_ABUSE",
       "type": "icd10_prefix",
-      "value": "F1"
+      "value": "F1",
+      "_description": "Mental and behavioural disorders due to psychoactive substance use (F10–F19)"
     },
     {
       "exclusion_key": "WAR_TERRORISM",
       "type": "icd10_prefix",
-      "value": "Y36."
+      "value": "Y36.",
+      "_description": "War operations"
+    },
+    {
+      "exclusion_key": "WAR_TERRORISM",
+      "type": "icd10_prefix",
+      "value": "Y38.",
+      "_description": "Terrorism"
     },
     {
       "exclusion_key": "EXPERIMENTAL_TREATMENT",
       "type": "cpt_list",
-      "value": "00000"
+      "value": "00000",
+      "_description": "Placeholder for experimental or unregistered procedure codes"
     }
   ]
 }

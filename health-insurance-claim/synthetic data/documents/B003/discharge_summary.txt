@@ -1,0 +1,54 @@
+DISCHARGE SUMMARY
+KK Women's and Children's Hospital
+Department of Obstetrics & Gynaecology
+
+=============================================
+PATIENT:         Priya Subramaniam
+NRIC:            S9023456D
+DOB:             18 May 1990
+MRN:             KKH-2025-051422
+ADMISSION DATE:  14 May 2025 (02:15)
+DISCHARGE DATE:  17 May 2025 (10:00)
+WARD:            Post-Natal Ward, Class B1
+
+ATTENDING PHYSICIAN:
+  Dr. Kavitha Rajendran
+  Specialist in Obstetrics & Gynaecology
+  SMC Licence: MCR-31457C
+  KK Women's and Children's Hospital
+=============================================
+
+PRIMARY DIAGNOSIS:
+  Z37.0 — Single liveborn infant, delivered vaginally
+
+CLINICAL SUMMARY:
+  Priya Subramaniam, a 35-year-old primigravida (G1P0), was admitted
+  at 38 weeks gestation in active labour. She had regular antenatal
+  care. No significant antenatal complications noted.
+
+DELIVERY DETAILS:
+  Mode of Delivery: Normal Vaginal Delivery (SVD)
+  Time of Delivery: 14 May 2025, 05:47
+  Baby: Live female infant, weight 3.12 kg, APGAR 9/10 at 1 min,
+        10/10 at 5 min.
+  Procedure: CPT 59400 — Routine obstetric care including antepartum
+             care, vaginal delivery, and postpartum care.
+
+POST-NATAL COURSE:
+  Post-natal monitoring (CPT 99232) x 3 days (14–16 May 2025).
+  Mother recovered well. Breastfeeding established.
+  Baby passed newborn screening. Paediatrician assessment completed.
+
+DISCHARGE CONDITION:
+  Mother: Stable, well, no complications.
+  Baby: Healthy, feeding well.
+
+DISCHARGE PLAN:
+  Follow-up with KKH Obstetrics Outpatient Clinic at 6 weeks
+  post-delivery.
+
+PRE-AUTHORISATION:   PA-2025-550001
+
+Signed: Dr. Kavitha Rajendran (MCR-31457C)
+Date:   17 May 2025
+=============================================

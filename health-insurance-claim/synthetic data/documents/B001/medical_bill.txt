@@ -1,0 +1,41 @@
+MEDICAL BILL
+Singapore General Hospital
+Outram Road, Singapore 169608
+Tel: +65 6222 3322 | Reg No: 198904226Z
+
+=============================================
+BILL DATE:       14 April 2025
+PATIENT NAME:    Tan Wei Ming
+NRIC:            S7801234A
+DATE OF BIRTH:   22 March 1978
+WARD:            Bunga Mas 6, Class B2
+ADMISSION DATE:  10 April 2025
+DISCHARGE DATE:  14 April 2025
+=============================================
+
+ITEMISED CHARGES
+----------------
+Ward Charges (Class B2 - 4 Nights)        SGD  4,800.00
+  @ SGD 1,200 per night x 4 nights
+
+Physician Consultation (Dr. Chong WL)     SGD  1,000.00
+  @ SGD 250 per visit x 4 visits
+  (10 Apr, 11 Apr, 12 Apr, 13 Apr 2025)
+
+Chest X-Ray (2 views) - 10 Apr 2025       SGD    120.00
+  CPT Code: 71046
+
+IV Amoxicillin-Clavulanate (5 days)       SGD    840.00
+  @ SGD 210 per day x 4 days
+
+Nursing Procedures & Consumables          SGD 11,740.00
+
+                                         ____________
+TOTAL BILLED AMOUNT:                     SGD 18,500.00
+
+PRE-AUTHORISATION NO:   PA-2025-110001
+PROVIDER REGISTRATION:  MOH-HOSP-00142
+
+Payment due within 30 days of discharge.
+=============================================
+Issued by: SGH Finance Department

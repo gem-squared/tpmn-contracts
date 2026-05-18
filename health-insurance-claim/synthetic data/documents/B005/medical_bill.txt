@@ -1,0 +1,59 @@
+MEDICAL BILL
+Tan Tock Seng Hospital — Emergency Department
+11 Jalan Tan Tock Seng, Singapore 308433
+Tel: +65 6256 6011 | Reg No: 198702573N
+
+=============================================
+BILL DATE:       21 April 2025
+PATIENT NAME:    Chen Mei Ling
+NRIC:            S9145678F
+DATE OF BIRTH:   07 December 1991
+VISIT TYPE:      Accident & Emergency (Outpatient)
+VISIT DATE:      21 April 2025
+TIME IN:         14:20
+TIME OUT:        18:45
+=============================================
+
+ITEMISED CHARGES
+----------------
+Emergency Consultation & Assessment        SGD    180.00
+  (Triage Category P2 — Urgent)
+
+X-Ray Right Wrist (2 views)                SGD     95.00
+  CPT Code: 73100
+  Date: 21 April 2025
+
+Closed Reduction, Right Distal            SGD  1,800.00
+  Radius Fracture (under IV sedation)
+  CPT Code: 25600
+  Date: 21 April 2025
+
+Plaster Splint Application                 SGD    350.00
+  (Dorsal wrist splint, below elbow)
+
+Analgesics & Medications                   SGD    425.00
+  (Tramadol 50mg IV, Ketorolac,
+   Paracetamol, Ondansetron)
+
+                                         ____________
+TOTAL BILLED AMOUNT:                     SGD  2,850.00
+
+ATTENDING PHYSICIAN:    Dr. Lim Ah Kow
+PHYSICIAN LICENCE:      MCR-55678E
+SPECIALTY:              Emergency Medicine
+PROVIDER REGISTRATION:  MOH-HOSP-00391
+
+DIAGNOSIS:  S52.501A — Unspecified fracture of the lower end of
+            right radius, initial encounter for closed fracture
+            (ICD-10 S52.501A)
+
+SYMPTOM ONSET:  21 April 2025 (fall incident same day)
+
+Pre-authorisation is not required for emergency claims.
+Payment due within 30 days.
+=============================================
+NOTE: A claim for this visit (incident date 21 April 2025, 
+emergency claim) was previously submitted and processed as
+CLM-2025-0000877. Please do not resubmit.
+=============================================
+Issued by: TTSH Finance Department

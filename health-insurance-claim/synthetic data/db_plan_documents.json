@@ -1,0 +1,126 @@
+{
+  "_comment": "Synthetic fixture — plan_documents table. Queried by claim-03-eligibility-check.md (Step 1) and claim-05-adjudication.md (Step 1). Each row stores a natural-language coverage matrix document (plan_document) for the given product_code + claim_type combination. The agent reads this document to interpret coverage scope, waiting periods, limits, and cost-sharing parameters. Monetary values are in SGD.",
+  "_replaces": "db_plan_benefits.json — plan_benefits table has been superseded by plan_documents. Do not use plan_benefits for Nodes 3 or 5.",
+  "plan_documents": [
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "hospitalisation",
+      "plan_document": "COMP-HEALTH-GOLD — Hospitalisation Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 30 calendar days from policy inception date. For claims where symptom onset predates the incident date, the waiting period is measured from the earliest documented symptom date.\n\nAnnual Benefit Limit: SGD 100,000 per benefit year (January to December). This limit is shared across all hospitalisation claims in the same year.\n\nPer-Claim Limit: SGD 50,000 per single hospitalisation event.\n\nLifetime Limit: SGD 1,000,000 aggregate over the lifetime of the policy.\n\nAnnual Deductible: SGD 1,000 per benefit year. The deductible is applied first before any insurer payment. Any unused deductible from a prior year does not carry forward.\n\nCo-Payment: 5% of the amount remaining after the deductible is applied. This is a fixed percentage payable by the claimant.\n\nCo-Insurance: 10% of the amount remaining after co-payment, subject to a maximum co-insurance cap of SGD 3,000 per benefit year.\n\nNon-Panel Provider Reimbursement: Where the treating hospital is not on the insurer's panel of accredited providers, reimbursement is capped at 80% of the adjudicated amount.\n\nExclusions: Cosmetic procedures (ICD-10 Z41.x), self-inflicted injuries (ICD-10 X71–X83), substance abuse unless explicitly endorsed (ICD-10 F10–F19), acts of war or terrorism (ICD-10 Y36.x, Y38.x), experimental or unregistered treatments.\n\nSubstance Abuse: Not covered under standard hospitalisation benefit.\n\nPre-Authorisation: Required for all planned hospitalisation events. Pre-authorisation number must be submitted with claim documents (format: PA-YYYY-NNNNNN). Claims without a valid pre-authorisation number will not be processed."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "surgical",
+      "plan_document": "COMP-HEALTH-GOLD — Surgical Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 30 calendar days from policy inception date.\n\nAnnual Benefit Limit: SGD 80,000 per benefit year.\n\nPer-Claim Limit: SGD 40,000 per surgical episode.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 1,000 per benefit year (shared with hospitalisation deductible ledger).\n\nCo-Payment: 5% of the post-deductible amount.\n\nCo-Insurance: 10% of the post-co-payment amount, capped at SGD 3,000 per benefit year.\n\nNon-Panel Provider Reimbursement: 80% of adjudicated amount for non-panel surgical facilities.\n\nExclusions: Cosmetic surgery, experimental procedures, surgeries arising from self-inflicted injury or substance abuse.\n\nPre-Authorisation: Required. A valid pre-authorisation certificate must accompany the claim."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "outpatient",
+      "plan_document": "COMP-HEALTH-GOLD — Outpatient Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 30 calendar days from policy inception date.\n\nAnnual Benefit Limit: SGD 10,000 per benefit year.\n\nPer-Claim Limit: SGD 2,000 per outpatient consultation event.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 1,000 per benefit year.\n\nCo-Payment: 10% of the post-deductible amount.\n\nCo-Insurance: 10% of the post-co-payment amount, capped at SGD 500 per benefit year.\n\nNon-Panel Provider Reimbursement: 80% for non-panel outpatient clinics.\n\nExclusions: Non-medically necessary consultations, cosmetic treatments, substance abuse consultations (unless endorsed).\n\nPre-Authorisation: Not required for outpatient consultations."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "maternity",
+      "plan_document": "COMP-HEALTH-GOLD — Maternity Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 270 calendar days (9 months) from policy inception date. This is measured from the earliest documented symptom or conception date if earlier than the incident date.\n\nAnnual Benefit Limit: SGD 20,000 per benefit year.\n\nPer-Claim Limit: SGD 10,000 per maternity event.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 1,000 per benefit year.\n\nCo-Payment: 0% — no co-payment applies to maternity claims under the Gold plan.\n\nCo-Insurance: 10% of the post-co-payment amount, capped at SGD 2,000 per benefit year.\n\nNon-Panel Provider Reimbursement: 80% for non-panel maternity providers.\n\nExclusions: Elective terminations, cosmetic post-natal procedures.\n\nPre-Authorisation: Required. Pre-authorisation certificate must be obtained at least 30 days before the expected delivery date."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "emergency",
+      "plan_document": "COMP-HEALTH-GOLD — Emergency Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days — emergency coverage is immediate from policy inception.\n\nAnnual Benefit Limit: SGD 15,000 per benefit year.\n\nPer-Claim Limit: SGD 5,000 per emergency episode.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 1,000 per benefit year.\n\nCo-Payment: 0% — no co-payment applies to emergency claims.\n\nCo-Insurance: 0% — no co-insurance applies to emergency claims.\n\nNon-Panel Provider Reimbursement: 80% for non-panel emergency facilities.\n\nExclusions: Events that were not genuine medical emergencies (elective visits presented as emergencies).\n\nPre-Authorisation: Not required for emergency claims. However, retrospective notification must be submitted within 24 hours of admission."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "dental",
+      "plan_document": "COMP-HEALTH-GOLD — Dental Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 2,000 per benefit year.\n\nPer-Claim Limit: SGD 500 per dental visit.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 0 — no deductible applies to dental claims.\n\nCo-Payment: 20% of the billed amount per visit.\n\nCo-Insurance: 0%.\n\nNon-Panel Provider Reimbursement: 80%.\n\nExclusions: Cosmetic dental procedures (veneers, whitening), orthodontic treatments not medically indicated.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "vision",
+      "plan_document": "COMP-HEALTH-GOLD — Vision Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 1,000 per benefit year.\n\nPer-Claim Limit: SGD 300 per vision claim.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 0.\n\nCo-Payment: 20% of the billed amount.\n\nCo-Insurance: 0%.\n\nNon-Panel Provider Reimbursement: 80%.\n\nExclusions: Cosmetic vision corrections (laser eye surgery for refractive purposes only), designer eyewear.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-GOLD",
+      "claim_type": "mental_health",
+      "plan_document": "COMP-HEALTH-GOLD — Mental Health Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 5,000 per benefit year.\n\nPer-Claim Limit: SGD 1,000 per consultation episode.\n\nLifetime Limit: SGD 1,000,000.\n\nAnnual Deductible: SGD 1,000 per benefit year.\n\nCo-Payment: 10% of the post-deductible amount.\n\nCo-Insurance: 10% of the post-co-payment amount, capped at SGD 500 per benefit year.\n\nNon-Panel Provider Reimbursement: 80%.\n\nSubstance Abuse: Not covered under mental health benefit. Substance abuse disorders (ICD-10 F10–F19) are excluded.\n\nExclusions: Substance abuse disorders, court-ordered psychiatric evaluations, non-therapeutic counselling.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "hospitalisation",
+      "plan_document": "COMP-HEALTH-SILVER — Hospitalisation Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 60 calendar days from policy inception date.\n\nAnnual Benefit Limit: SGD 60,000 per benefit year.\n\nPer-Claim Limit: SGD 30,000 per hospitalisation event.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000 per benefit year.\n\nCo-Payment: 10% of the post-deductible amount.\n\nCo-Insurance: 15% of the post-co-payment amount, capped at SGD 3,000 per benefit year.\n\nNon-Panel Provider Reimbursement: 70% for non-panel hospitals.\n\nExclusions: Same standard exclusions apply (cosmetic, self-inflicted, substance abuse, war/terrorism).\n\nSubstance Abuse: Not covered.\n\nPre-Authorisation: Required for all planned hospitalisations."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "surgical",
+      "plan_document": "COMP-HEALTH-SILVER — Surgical Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 60 calendar days.\n\nAnnual Benefit Limit: SGD 50,000.\n\nPer-Claim Limit: SGD 25,000.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000.\n\nCo-Payment: 10%.\n\nCo-Insurance: 15%, capped at SGD 3,000.\n\nNon-Panel Provider Reimbursement: 70%.\n\nPre-Authorisation: Required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "outpatient",
+      "plan_document": "COMP-HEALTH-SILVER — Outpatient Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 30 calendar days.\n\nAnnual Benefit Limit: SGD 5,000.\n\nPer-Claim Limit: SGD 500 per outpatient visit.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000.\n\nCo-Payment: 20%.\n\nCo-Insurance: 15%, capped at SGD 300.\n\nNon-Panel Provider Reimbursement: 70%.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "maternity",
+      "plan_document": "COMP-HEALTH-SILVER — Maternity Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 365 calendar days (12 months) from policy inception date.\n\nAnnual Benefit Limit: SGD 10,000.\n\nPer-Claim Limit: SGD 5,000.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000.\n\nCo-Payment: 0%.\n\nCo-Insurance: 15%, capped at SGD 1,500.\n\nNon-Panel Provider Reimbursement: 70%.\n\nPre-Authorisation: Required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "emergency",
+      "plan_document": "COMP-HEALTH-SILVER — Emergency Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 10,000.\n\nPer-Claim Limit: SGD 3,000.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000.\n\nCo-Payment: 0%.\n\nCo-Insurance: 0%.\n\nNon-Panel Provider Reimbursement: 70%.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "dental",
+      "plan_document": "COMP-HEALTH-SILVER — Dental Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 1,000.\n\nPer-Claim Limit: SGD 300.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 0.\n\nCo-Payment: 30%.\n\nCo-Insurance: 0%.\n\nNon-Panel Provider Reimbursement: 70%.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "vision",
+      "plan_document": "COMP-HEALTH-SILVER — Vision Coverage Matrix\n\nCoverage Status: NOT COVERED\n\nVision benefits are not included under the COMP-HEALTH-SILVER plan. Claims submitted under this claim type will be rejected with BENEFIT_NOT_IN_PLAN."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-SILVER",
+      "claim_type": "mental_health",
+      "plan_document": "COMP-HEALTH-SILVER — Mental Health Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 3,000.\n\nPer-Claim Limit: SGD 600.\n\nLifetime Limit: SGD 600,000.\n\nAnnual Deductible: SGD 2,000.\n\nCo-Payment: 20%.\n\nCo-Insurance: 15%, capped at SGD 300.\n\nNon-Panel Provider Reimbursement: 70%.\n\nSubstance Abuse: Not covered.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "hospitalisation",
+      "plan_document": "COMP-HEALTH-BRONZE — Hospitalisation Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 90 calendar days from policy inception date.\n\nAnnual Benefit Limit: SGD 30,000 per benefit year.\n\nPer-Claim Limit: SGD 15,000 per hospitalisation event.\n\nLifetime Limit: SGD 300,000.\n\nAnnual Deductible: SGD 3,500 per benefit year.\n\nCo-Payment: 20% of the post-deductible amount.\n\nCo-Insurance: 20% of the post-co-payment amount, capped at SGD 2,000 per benefit year.\n\nNon-Panel Provider Reimbursement: 60% for non-panel hospitals.\n\nExclusions: Standard exclusions apply.\n\nSubstance Abuse: Not covered.\n\nPre-Authorisation: Required for all planned hospitalisations."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "surgical",
+      "plan_document": "COMP-HEALTH-BRONZE — Surgical Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 90 calendar days.\n\nAnnual Benefit Limit: SGD 25,000.\n\nPer-Claim Limit: SGD 12,000.\n\nLifetime Limit: SGD 300,000.\n\nAnnual Deductible: SGD 3,500.\n\nCo-Payment: 20%.\n\nCo-Insurance: 20%, capped at SGD 2,000.\n\nNon-Panel Provider Reimbursement: 60%.\n\nPre-Authorisation: Required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "outpatient",
+      "plan_document": "COMP-HEALTH-BRONZE — Outpatient Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 60 calendar days.\n\nAnnual Benefit Limit: SGD 2,000.\n\nPer-Claim Limit: SGD 200 per visit.\n\nLifetime Limit: SGD 300,000.\n\nAnnual Deductible: SGD 3,500.\n\nCo-Payment: 30%.\n\nCo-Insurance: 20%, capped at SGD 150.\n\nNon-Panel Provider Reimbursement: 60%.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "maternity",
+      "plan_document": "COMP-HEALTH-BRONZE — Maternity Coverage Matrix\n\nCoverage Status: NOT COVERED\n\nMaternity benefits are not included under the COMP-HEALTH-BRONZE plan. Claims submitted under this claim type will be rejected with BENEFIT_NOT_IN_PLAN."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "emergency",
+      "plan_document": "COMP-HEALTH-BRONZE — Emergency Coverage Matrix\n\nCoverage Status: COVERED\n\nWaiting Period: 0 days.\n\nAnnual Benefit Limit: SGD 5,000.\n\nPer-Claim Limit: SGD 2,000.\n\nLifetime Limit: SGD 300,000.\n\nAnnual Deductible: SGD 3,500.\n\nCo-Payment: 0%.\n\nCo-Insurance: 0%.\n\nNon-Panel Provider Reimbursement: 60%.\n\nPre-Authorisation: Not required."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "dental",
+      "plan_document": "COMP-HEALTH-BRONZE — Dental Coverage Matrix\n\nCoverage Status: NOT COVERED\n\nDental benefits are not included under the COMP-HEALTH-BRONZE plan. Claims submitted under this claim type will be rejected with BENEFIT_NOT_IN_PLAN."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "vision",
+      "plan_document": "COMP-HEALTH-BRONZE — Vision Coverage Matrix\n\nCoverage Status: NOT COVERED\n\nVision benefits are not included under the COMP-HEALTH-BRONZE plan."
+    },
+    {
+      "policy_product_code": "COMP-HEALTH-BRONZE",
+      "claim_type": "mental_health",
+      "plan_document": "COMP-HEALTH-BRONZE — Mental Health Coverage Matrix\n\nCoverage Status: NOT COVERED\n\nMental health benefits are not included under the COMP-HEALTH-BRONZE plan."
+    }
+  ]
+}

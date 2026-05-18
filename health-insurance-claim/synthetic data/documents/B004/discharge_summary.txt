@@ -1,0 +1,72 @@
+DISCHARGE SUMMARY
+Novena Surgical and Orthopaedic Centre
+Department of General Surgery
+
+=============================================
+PATIENT:         Ahmad Zulkifli bin Hassan
+NRIC:            S7534567E
+DOB:             03 September 1975
+MRN:             NSOC-2025-050211
+ADMISSION DATE:  02 May 2025 (14:30)
+DISCHARGE DATE:  04 May 2025 (11:00)
+WARD:            Surgical Ward, Level 4
+
+ATTENDING SURGEON:
+  Dr. Tan Boon Kiat
+  Specialist in General Surgery
+  SMC Licence: MCR-44012D
+  Novena Surgical and Orthopaedic Centre
+=============================================
+
+PRIMARY DIAGNOSIS:
+  K35.80 — Acute appendicitis, other and unspecified,
+            without mention of peritonitis
+
+SYMPTOM ONSET:
+  Patient reported onset of periumbilical pain migrating to the
+  right iliac fossa beginning on 01 May 2025 (approximately
+  18 hours prior to admission).
+  Estimated symptom onset date: 01 May 2025.
+
+HISTORY OF PRESENTING ILLNESS:
+  Ahmad Zulkifli bin Hassan, a 49-year-old male, presented to
+  Novena Surgical and Orthopaedic Centre on 02 May 2025 with
+  progressive right iliac fossa pain, nausea, and low-grade fever
+  (37.8°C). Rebound tenderness positive. Rovsing's sign positive.
+  CT abdomen confirmed non-perforated acute appendicitis.
+
+INVESTIGATIONS:
+  - WBC: 15.8 x10^9/L
+  - CRP: 145 mg/L
+  - CT Abdomen & Pelvis: Appendiceal wall thickening with
+    periappendiceal fat stranding. No free air. No perforation.
+    Findings consistent with acute appendicitis.
+
+PROCEDURE:
+  Open Appendectomy (CPT 44950) performed under general anaesthesia
+  on 02 May 2025. Appendix measuring 9cm, grossly inflamed, no
+  perforation. Specimen sent for histopathology — confirmed acute
+  appendicitis.
+
+POST-OPERATIVE COURSE:
+  Post-surgical monitoring (CPT 99232) on 02 May and 03 May 2025.
+  Tolerating light diet by Day 2. Ambulating with assistance on Day 1,
+  independently on Day 2. No wound complications.
+
+DISCHARGE CONDITION:
+  Stable. Afebrile. Tolerating oral intake. Wound clean and dry.
+
+DISCHARGE MEDICATIONS:
+  - Amoxicillin-Clavulanate 625mg PO TDS x 5 days
+  - Tramadol 50mg PRN for pain
+  - Wound care instructions provided
+
+FOLLOW-UP:
+  Review at Novena Surgical Clinic in 1 week for wound check and
+  histopathology results.
+
+PRE-AUTHORISATION:   PA-2025-880001
+
+Signed: Dr. Tan Boon Kiat (MCR-44012D)
+Date:   04 May 2025
+=============================================

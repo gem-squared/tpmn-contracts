@@ -1,0 +1,70 @@
+DISCHARGE SUMMARY
+Singapore General Hospital — Department of Internal Medicine
+Outram Road, Singapore 169608
+
+=============================================
+PATIENT:         Tan Wei Ming
+NRIC:            S7801234A
+DOB:             22 March 1978
+MRN:             SGH-2025-041014
+ADMISSION DATE:  10 April 2025 (09:45)
+DISCHARGE DATE:  14 April 2025 (11:30)
+WARD:            Bunga Mas 6, Class B2
+
+ATTENDING PHYSICIAN:
+  Dr. Chong Wei Liang
+  Specialist in Internal Medicine
+  SMC Licence: MCR-10234A
+  Singapore General Hospital, Dept. of General Medicine
+=============================================
+
+PRIMARY DIAGNOSIS:
+  J18.9 — Pneumonia, unspecified organism
+  (Community-Acquired Pneumonia, moderate severity)
+
+SYMPTOM ONSET:
+  Patient reported onset of productive cough, fever (38.8°C), and
+  dyspnoea approximately 3 days prior to admission.
+  Estimated symptom onset date: 07 April 2025.
+
+HISTORY OF PRESENTING ILLNESS:
+  Mr. Tan Wei Ming, a 47-year-old male, presented to the SGH Emergency
+  Department on 10 April 2025 with a 3-day history of productive
+  cough, high-grade fever (38.8°C), and worsening shortness of breath.
+  He had no significant past medical history and was not on regular
+  medications. SpO2 on admission was 91% on room air.
+
+INVESTIGATIONS:
+  - Chest X-Ray (71046): Bilateral lower zone consolidations consistent
+    with pneumonia. (10 April 2025)
+  - Full Blood Count: WBC 14.2 x10^9/L (elevated, consistent with
+    bacterial pneumonia)
+  - C-Reactive Protein: 112 mg/L (elevated)
+  - Blood cultures: No growth after 48 hours
+
+TREATMENT:
+  - IV Amoxicillin-Clavulanate 1.2g q8h x 4 days
+  - Supplemental O2 therapy (nasal cannula, 2–4 L/min)
+  - Inpatient physician review daily (CPT 99232 x4)
+  - Physiotherapy for chest clearance
+
+CLINICAL COURSE:
+  Patient showed clinical improvement by Day 3. Fever resolved on
+  Day 2. SpO2 improved to 97% on room air by Day 3. Tolerating oral
+  feeds and ambulating independently by Day 4.
+
+DISCHARGE CONDITION:
+  Stable. Apyrexial. SpO2 97% on room air.
+
+DISCHARGE MEDICATIONS:
+  - Amoxicillin-Clavulanate 625mg PO TDS x 5 days
+  - Paracetamol 500mg PRN for fever
+
+FOLLOW-UP:
+  Review at SGH General Medicine Outpatient Clinic in 2 weeks.
+
+PRE-AUTHORISATION:   PA-2025-110001
+
+Signed: Dr. Chong Wei Liang (MCR-10234A)
+Date:   14 April 2025
+=============================================
