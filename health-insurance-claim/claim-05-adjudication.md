@@ -57,7 +57,8 @@ medical_review_notes:   string    # from medical-review output (≤ 100-word ver
    - Additionally query `deductible_ledger` for `SUM(amount)` where `policy_no + benefit_year = YEAR(incident_date)` to get `deductible_utilised`. Compute `deductible_remaining = max(0, deductible_annual − deductible_utilised)`.
 
 2. **Adjudication base** — Determine the effective amount subject to cost-sharing:
-   - `adjudication_base = min(claim_amount_requested, rps_benchmark, claimable_ceiling)`
+   - For `claim_type ∈ {hospitalisation, maternity}`: `adjudication_base = min(claim_amount_requested, claimable_ceiling)` (procedural RPS benchmark does not cap the entire claim).
+   - For all other claim types: `adjudication_base = min(claim_amount_requested, rps_benchmark, claimable_ceiling)`.
    - If `non_panel_flag = true` → apply non-panel discount: `adjudication_base = adjudication_base × (non_panel_reimbursement_pct / 100)` using the rate read from `plan_document`.
 
 3. **Deductible & co-payment application** — Apply in order:
@@ -102,8 +103,9 @@ adjudication_timestamp:        datetime
 
 ### Correctness
 - `claim_reference_draft` and `policy_no` in B match A exactly.
-- `adjudication_base = min(claim_amount_requested, rps_benchmark, claimable_ceiling)` before non-panel adjustment (arithmetic correctness).
-- `adjudication_base ≤ claimable_ceiling` and `adjudication_base ≤ rps_benchmark`.
+- `adjudication_base = min(claim_amount_requested, claimable_ceiling)` for hospitalisation/maternity; else `min(claim_amount_requested, rps_benchmark, claimable_ceiling)` before non-panel adjustment.
+- `adjudication_base ≤ claimable_ceiling`.
+- `adjudication_base ≤ rps_benchmark` (except for hospitalisation and maternity claims).
 - `deductible_applied_this_claim = adjudication_base − amount_after_deductible` (arithmetic correctness).
 - `deductible_applied_this_claim ≥ 0`.
 - `co_pay_amount = round(amount_after_deductible × (co_payment_pct / 100), 2)` (arithmetic correctness).

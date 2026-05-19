@@ -138,6 +138,18 @@
       "registry_source": "Singapore Medical Council Full Medical Register",
       "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
       "_scenario": "A005 — ED physician for fracture treatment (claim rejected at Node 2 duplicate check)"
+    },
+    {
+      "physician_license_no": "MCR-67890F",
+      "full_name": "Dr. Farhan Bin Riza",
+      "specialty": "General Practice",
+      "institution": "CityMed Family Clinic",
+      "registration_date": "2015-03-01",
+      "status": "active",
+      "expiry_date": "2027-08-31",
+      "registry_source": "Singapore Medical Council Full Medical Register",
+      "registry_url": "https://www.smc.gov.sg/register-of-practitioners",
+      "_scenario": "B002 — GP for non-panel outpatient hypertension claim"
     }
   ]
 }

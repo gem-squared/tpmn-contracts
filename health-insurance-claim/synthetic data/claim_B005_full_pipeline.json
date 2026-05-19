@@ -1,6 +1,6 @@
 {
-  "_scenario": "B005 — Emergency (Closed Radius Fracture from Fall), COMP-HEALTH-GOLD, Self, REJECTED at Node 2 (Duplicate Claim)",
-  "_outcome": "Pipeline halts at Node 2. An existing paid claim CLM-2025-0000877 already exists for policy HIC-2024-00099 + incident_date 2025-04-21 + claim_type emergency with status=paid. Duplicate check fails → DUPLICATE_CLAIM.",
+  "_scenario": "B005 \u2014 Emergency (Closed Radius Fracture from Fall), COMP-HEALTH-GOLD, Self, REJECTED at Node 2 (Duplicate Claim)",
+  "_outcome": "Pipeline halts at Node 2. An existing paid claim CLM-2025-0000877 already exists for policy HIC-2024-00099 + incident_date 2025-04-21 + claim_type emergency with status=paid. Duplicate check fails \u2192 DUPLICATE_CLAIM.",
   "stage_1_intake": {
     "_input": {
       "policy_no": "HIC-2024-00099",
@@ -15,8 +15,12 @@
       "claim_amount_requested": 2850.0,
       "provider_name": "Tan Tock Seng Hospital",
       "provider_registration": "MOH-HOSP-00391",
-      "supporting_documents": ["medical_bill"],
-      "scanned_files": ["B005/medical_bill.pdf"]
+      "supporting_documents": [
+        "medical_bill"
+      ],
+      "scanned_files": [
+        "B005/medical_bill.pdf"
+      ]
     },
     "_validation": {
       "policy_no_regex_match": true,
@@ -29,14 +33,37 @@
     "_document_extraction": {
       "total_billed_amount": 2850.0,
       "itemised_charges": [
-        {"description": "Emergency consultation and assessment", "quantity": 1, "unit_price": 180.0},
-        {"description": "X-ray right wrist (2 views)", "quantity": 1, "unit_price": 95.0},
-        {"description": "Closed reduction right distal radius fracture", "quantity": 1, "unit_price": 1800.0},
-        {"description": "Plaster splint application", "quantity": 1, "unit_price": 350.0},
-        {"description": "Analgesics and medications", "quantity": 1, "unit_price": 425.0}
+        {
+          "description": "Emergency consultation and assessment",
+          "quantity": 1,
+          "unit_price": 180.0
+        },
+        {
+          "description": "X-ray right wrist (2 views)",
+          "quantity": 1,
+          "unit_price": 95.0
+        },
+        {
+          "description": "Closed reduction right distal radius fracture",
+          "quantity": 1,
+          "unit_price": 1800.0
+        },
+        {
+          "description": "Plaster splint application",
+          "quantity": 1,
+          "unit_price": 350.0
+        },
+        {
+          "description": "Analgesics and medications",
+          "quantity": 1,
+          "unit_price": 425.0
+        }
       ],
       "primary_diagnosis_icd10": "S52.501A",
-      "procedure_cpt_codes": ["25600", "73100"],
+      "procedure_cpt_codes": [
+        "25600",
+        "73100"
+      ],
       "symptom_onset_date": "2025-04-21",
       "admission_date": null,
       "discharge_date": null,
@@ -67,14 +94,37 @@
       "document_summary": {
         "total_billed_amount": 2850.0,
         "itemised_charges": [
-          {"description": "Emergency consultation and assessment", "quantity": 1, "unit_price": 180.0},
-          {"description": "X-ray right wrist (2 views)", "quantity": 1, "unit_price": 95.0},
-          {"description": "Closed reduction right distal radius fracture", "quantity": 1, "unit_price": 1800.0},
-          {"description": "Plaster splint application", "quantity": 1, "unit_price": 350.0},
-          {"description": "Analgesics and medications", "quantity": 1, "unit_price": 425.0}
+          {
+            "description": "Emergency consultation and assessment",
+            "quantity": 1,
+            "unit_price": 180.0
+          },
+          {
+            "description": "X-ray right wrist (2 views)",
+            "quantity": 1,
+            "unit_price": 95.0
+          },
+          {
+            "description": "Closed reduction right distal radius fracture",
+            "quantity": 1,
+            "unit_price": 1800.0
+          },
+          {
+            "description": "Plaster splint application",
+            "quantity": 1,
+            "unit_price": 350.0
+          },
+          {
+            "description": "Analgesics and medications",
+            "quantity": 1,
+            "unit_price": 425.0
+          }
         ],
         "primary_diagnosis_icd10": "S52.501A",
-        "procedure_cpt_codes": ["25600", "73100"],
+        "procedure_cpt_codes": [
+          "25600",
+          "73100"
+        ],
         "symptom_onset_date": "2025-04-21",
         "admission_date": null,
         "discharge_date": null,
@@ -83,7 +133,7 @@
         "pre_authorisation_no": null,
         "provider_name_on_bill": "Tan Tock Seng Hospital",
         "extraction_warnings": [],
-        "summary_narrative": "Chen Mei Ling, 33, attended Tan Tock Seng Hospital Emergency Department on 21 Apr 2025 following a fall resulting in a closed right distal radius fracture (ICD-10 S52.501A). Procedures included emergency assessment, wrist X-ray (CPT 73100), closed reduction (CPT 25600), and splint application. No admission — outpatient emergency visit. Total billed SGD 2,850. No pre-authorisation required for emergency claims."
+        "summary_narrative": "Chen Mei Ling, 33, attended Tan Tock Seng Hospital Emergency Department on 21 Apr 2025 following a fall resulting in a closed right distal radius fracture (ICD-10 S52.501A). Procedures included emergency assessment, wrist X-ray (CPT 73100), closed reduction (CPT 25600), and splint application. No admission \u2014 outpatient emergency visit. Total billed SGD 2,850. No pre-authorisation required for emergency claims."
       }
     }
   },
@@ -102,7 +152,7 @@
       "arrears_count": 0,
       "duplicate_query": "SELECT COUNT(*) FROM claims WHERE policy_no='HIC-2024-00099' AND incident_date='2025-04-21' AND claim_type='emergency' AND status IN ('pending','approved','paid')",
       "dup_count": 1,
-      "dup_existing_claim": "CLM-2025-0000877 — status=paid, created 2025-04-22"
+      "dup_existing_claim": "CLM-2025-0000877 \u2014 status=paid, created 2025-04-22"
     },
     "_output": {
       "claim_reference_draft": "DRAFT-20250501-01105",
@@ -117,7 +167,50 @@
       "claim_amount_requested": 2850.0,
       "provider_name": "Tan Tock Seng Hospital",
       "provider_registration": "MOH-HOSP-00391",
-      "document_summary": "<<passthrough>>",
+      "document_summary": {
+        "total_billed_amount": 2850.0,
+        "itemised_charges": [
+          {
+            "description": "Emergency consultation and assessment",
+            "quantity": 1,
+            "unit_price": 180.0
+          },
+          {
+            "description": "X-ray right wrist (2 views)",
+            "quantity": 1,
+            "unit_price": 95.0
+          },
+          {
+            "description": "Closed reduction right distal radius fracture",
+            "quantity": 1,
+            "unit_price": 1800.0
+          },
+          {
+            "description": "Plaster splint application",
+            "quantity": 1,
+            "unit_price": 350.0
+          },
+          {
+            "description": "Analgesics and medications",
+            "quantity": 1,
+            "unit_price": 425.0
+          }
+        ],
+        "primary_diagnosis_icd10": "S52.501A",
+        "procedure_cpt_codes": [
+          "25600",
+          "73100"
+        ],
+        "symptom_onset_date": "2025-04-21",
+        "admission_date": null,
+        "discharge_date": null,
+        "attending_physician": "Dr. Lim Ah Kow",
+        "physician_license_no": "MCR-55678E",
+        "pre_authorisation_no": null,
+        "provider_name_on_bill": "Tan Tock Seng Hospital",
+        "extraction_warnings": [],
+        "summary_narrative": "Chen Mei Ling, 33, attended Tan Tock Seng Hospital Emergency Department on 21 Apr 2025 following a fall resulting in a closed right distal radius fracture (ICD-10 S52.501A). Procedures included emergency assessment, wrist X-ray (CPT 73100), closed reduction (CPT 25600), and splint application. No admission \u2014 outpatient emergency visit. Total billed SGD 2,850. No pre-authorisation required for emergency claims."
+      },
       "policy_verified": false,
       "verification_failure": "DUPLICATE_CLAIM",
       "policy_start_date": "2024-04-01",
@@ -129,7 +222,7 @@
     }
   },
   "stage_3_eligibility_check": {
-    "_skipped": "Pipeline halted at Node 2 — policy_verified=false (DUPLICATE_CLAIM). Node 3 is not invoked."
+    "_skipped": "Pipeline halted at Node 2 \u2014 policy_verified=false (DUPLICATE_CLAIM). Node 3 is not invoked."
   },
   "stage_4_medical_review": {
     "_skipped": "Pipeline halted at Node 2."

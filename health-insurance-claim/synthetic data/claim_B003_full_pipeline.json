@@ -1,6 +1,6 @@
 {
-  "_scenario": "B003 — Maternity (Normal delivery), COMP-HEALTH-GOLD, Self, REJECTED at Node 3 (Waiting Period Not Met)",
-  "_outcome": "Pipeline halts at Node 3. Policy inception 2025-03-10. Incident date 2025-05-14. Days elapsed = 65. Maternity waiting period = 270 days. 65 < 270 → WAITING_PERIOD_NOT_MET.",
+  "_scenario": "B003 \u2014 Maternity (Normal delivery), COMP-HEALTH-GOLD, Self, REJECTED at Node 3 (Waiting Period Not Met)",
+  "_outcome": "Pipeline halts at Node 3. Policy inception 2025-03-10. Incident date 2025-05-14. Days elapsed = 65. Maternity waiting period = 270 days. 65 < 270 \u2192 WAITING_PERIOD_NOT_MET.",
   "_waiting_period_computation": {
     "policy_start_date": "2025-03-10",
     "incident_date": "2025-05-14",
@@ -24,8 +24,16 @@
       "claim_amount_requested": 8200.0,
       "provider_name": "KK Women's and Children's Hospital",
       "provider_registration": "MOH-HOSP-00273",
-      "supporting_documents": ["medical_bill", "discharge_summary", "pre_auth_approval"],
-      "scanned_files": ["B003/medical_bill.pdf", "B003/discharge_summary.pdf", "B003/pre_auth_approval.pdf"]
+      "supporting_documents": [
+        "medical_bill",
+        "discharge_summary",
+        "pre_auth_approval"
+      ],
+      "scanned_files": [
+        "B003/medical_bill.pdf",
+        "B003/discharge_summary.pdf",
+        "B003/pre_auth_approval.pdf"
+      ]
     },
     "_validation": {
       "policy_no_regex_match": true,
@@ -38,13 +46,32 @@
     "_document_extraction": {
       "total_billed_amount": 8200.0,
       "itemised_charges": [
-        {"description": "Delivery suite charges (normal vaginal delivery)", "quantity": 1, "unit_price": 3500.0},
-        {"description": "Ward charges (Class B1, 3 days)", "quantity": 3, "unit_price": 850.0},
-        {"description": "Paediatrician assessment (newborn)", "quantity": 1, "unit_price": 250.0},
-        {"description": "Medications and consumables", "quantity": 1, "unit_price": 1900.0}
+        {
+          "description": "Delivery suite charges (normal vaginal delivery)",
+          "quantity": 1,
+          "unit_price": 3500.0
+        },
+        {
+          "description": "Ward charges (Class B1, 3 days)",
+          "quantity": 3,
+          "unit_price": 850.0
+        },
+        {
+          "description": "Paediatrician assessment (newborn)",
+          "quantity": 1,
+          "unit_price": 250.0
+        },
+        {
+          "description": "Medications and consumables",
+          "quantity": 1,
+          "unit_price": 1900.0
+        }
       ],
       "primary_diagnosis_icd10": "Z37.0",
-      "procedure_cpt_codes": ["59400", "99232"],
+      "procedure_cpt_codes": [
+        "59400",
+        "99232"
+      ],
       "symptom_onset_date": null,
       "admission_date": "2025-05-14",
       "discharge_date": "2025-05-17",
@@ -75,13 +102,32 @@
       "document_summary": {
         "total_billed_amount": 8200.0,
         "itemised_charges": [
-          {"description": "Delivery suite charges (normal vaginal delivery)", "quantity": 1, "unit_price": 3500.0},
-          {"description": "Ward charges (Class B1, 3 days)", "quantity": 3, "unit_price": 850.0},
-          {"description": "Paediatrician assessment (newborn)", "quantity": 1, "unit_price": 250.0},
-          {"description": "Medications and consumables", "quantity": 1, "unit_price": 1900.0}
+          {
+            "description": "Delivery suite charges (normal vaginal delivery)",
+            "quantity": 1,
+            "unit_price": 3500.0
+          },
+          {
+            "description": "Ward charges (Class B1, 3 days)",
+            "quantity": 3,
+            "unit_price": 850.0
+          },
+          {
+            "description": "Paediatrician assessment (newborn)",
+            "quantity": 1,
+            "unit_price": 250.0
+          },
+          {
+            "description": "Medications and consumables",
+            "quantity": 1,
+            "unit_price": 1900.0
+          }
         ],
         "primary_diagnosis_icd10": "Z37.0",
-        "procedure_cpt_codes": ["59400", "99232"],
+        "procedure_cpt_codes": [
+          "59400",
+          "99232"
+        ],
         "symptom_onset_date": null,
         "admission_date": "2025-05-14",
         "discharge_date": "2025-05-17",
@@ -122,7 +168,45 @@
       "claim_amount_requested": 8200.0,
       "provider_name": "KK Women's and Children's Hospital",
       "provider_registration": "MOH-HOSP-00273",
-      "document_summary": "<<passthrough>>",
+      "document_summary": {
+        "total_billed_amount": 8200.0,
+        "itemised_charges": [
+          {
+            "description": "Delivery suite charges (normal vaginal delivery)",
+            "quantity": 1,
+            "unit_price": 3500.0
+          },
+          {
+            "description": "Ward charges (Class B1, 3 days)",
+            "quantity": 3,
+            "unit_price": 850.0
+          },
+          {
+            "description": "Paediatrician assessment (newborn)",
+            "quantity": 1,
+            "unit_price": 250.0
+          },
+          {
+            "description": "Medications and consumables",
+            "quantity": 1,
+            "unit_price": 1900.0
+          }
+        ],
+        "primary_diagnosis_icd10": "Z37.0",
+        "procedure_cpt_codes": [
+          "59400",
+          "99232"
+        ],
+        "symptom_onset_date": null,
+        "admission_date": "2025-05-14",
+        "discharge_date": "2025-05-17",
+        "attending_physician": "Dr. Kavitha Rajendran",
+        "physician_license_no": "MCR-31457C",
+        "pre_authorisation_no": "PA-2025-550001",
+        "provider_name_on_bill": "KK Women's and Children's Hospital",
+        "extraction_warnings": [],
+        "summary_narrative": "Priya Subramaniam, 35, admitted to KK Women's and Children's Hospital on 14 May 2025 for normal vaginal delivery (ICD-10 Z37.0). No prior symptom onset date recorded. Procedures include delivery suite and routine post-natal inpatient management (CPT 59400, 99232). Discharged 17 May 2025. Total billed SGD 8,200 covering delivery, 3-day ward stay, paediatric assessment, and medications. Pre-authorisation PA-2025-550001 submitted."
+      },
       "policy_verified": true,
       "verification_failure": null,
       "policy_start_date": "2025-03-10",
@@ -162,24 +246,62 @@
       "policy_product_code": "COMP-HEALTH-GOLD",
       "provider_name": "KK Women's and Children's Hospital",
       "provider_registration": "MOH-HOSP-00273",
-      "document_summary": "<<passthrough>>",
+      "document_summary": {
+        "total_billed_amount": 8200.0,
+        "itemised_charges": [
+          {
+            "description": "Delivery suite charges (normal vaginal delivery)",
+            "quantity": 1,
+            "unit_price": 3500.0
+          },
+          {
+            "description": "Ward charges (Class B1, 3 days)",
+            "quantity": 3,
+            "unit_price": 850.0
+          },
+          {
+            "description": "Paediatrician assessment (newborn)",
+            "quantity": 1,
+            "unit_price": 250.0
+          },
+          {
+            "description": "Medications and consumables",
+            "quantity": 1,
+            "unit_price": 1900.0
+          }
+        ],
+        "primary_diagnosis_icd10": "Z37.0",
+        "procedure_cpt_codes": [
+          "59400",
+          "99232"
+        ],
+        "symptom_onset_date": null,
+        "admission_date": "2025-05-14",
+        "discharge_date": "2025-05-17",
+        "attending_physician": "Dr. Kavitha Rajendran",
+        "physician_license_no": "MCR-31457C",
+        "pre_authorisation_no": "PA-2025-550001",
+        "provider_name_on_bill": "KK Women's and Children's Hospital",
+        "extraction_warnings": [],
+        "summary_narrative": "Priya Subramaniam, 35, admitted to KK Women's and Children's Hospital on 14 May 2025 for normal vaginal delivery (ICD-10 Z37.0). No prior symptom onset date recorded. Procedures include delivery suite and routine post-natal inpatient management (CPT 59400, 99232). Discharged 17 May 2025. Total billed SGD 8,200 covering delivery, 3-day ward stay, paediatric assessment, and medications. Pre-authorisation PA-2025-550001 submitted."
+      },
       "eligible": false,
       "eligibility_failure_reason": "WAITING_PERIOD_NOT_MET",
       "waiting_period_satisfied": false,
       "waiting_period_days": 270,
       "waiting_period_basis": "incident_date",
-      "annual_limit": 20000.0,
+      "annual_limit": 0.0,
       "annual_utilised": 0.0,
-      "annual_limit_remaining": 20000.0,
-      "per_claim_limit": 10000.0,
+      "annual_limit_remaining": 0.0,
+      "per_claim_limit": 0.0,
       "claimable_ceiling": 0.0,
       "exclusions_triggered": [],
-      "eligibility_rationale": "Maternity benefit under COMP-HEALTH-GOLD requires a 270-day waiting period from policy inception. Policy started 10 Mar 2025; incident date 14 May 2025 is only 65 days after inception — 205 days short of the required 270. No symptom onset date available to use as alternative reference. Claim is ineligible: WAITING_PERIOD_NOT_MET.",
+      "eligibility_rationale": "Maternity benefit under COMP-HEALTH-GOLD requires a 270-day waiting period from policy inception. Policy started 10 Mar 2025; incident date 14 May 2025 is only 65 days after inception \u2014 205 days short of the required 270. No symptom onset date available to use as alternative reference. Claim is ineligible: WAITING_PERIOD_NOT_MET.",
       "eligibility_timestamp": "2025-05-20T11:02:00+08:00"
     }
   },
   "stage_4_medical_review": {
-    "_skipped": "Pipeline halted at Node 3 — eligible=false. Node 4 is not invoked."
+    "_skipped": "Pipeline halted at Node 3 \u2014 eligible=false. Node 4 is not invoked."
   },
   "stage_5_adjudication": {
     "_skipped": "Pipeline halted at Node 3."
