@@ -9,23 +9,24 @@
 ## A: Input
 
 ```yaml
-applicant_id:       string    # from pre-screen output
-income_annual:      number    # gross annual income (USD)
-loan_amount:        number    # requested amount (USD)
-existing_debt:      number    # total outstanding debt (USD)
-collateral_value:   number?   # appraised value if secured (nullable)
-credit_history:     object    # bureau data
-  accounts_open:    number    # active credit accounts
-  accounts_closed:  number    # closed accounts
-  missed_payments:  number    # payments >30 days late in last 24 months
-  oldest_account_months: number  # age of oldest account
-  utilization_pct:  number    # credit utilization ratio [0,100]
-  bankruptcies:     number    # bankruptcy filings
-  inquiries_6mo:    number    # hard inquiries in last 6 months
+applicant_id:       string    # from pre-screen.B passthrough
+income_annual:      number    # passthrough from pre-screen.B (gross annual USD)
+loan_amount:        number    # passthrough from pre-screen.B (requested USD)
+existing_debt:      number    # passthrough from pre-screen.B (total outstanding USD)
+collateral_value:   number?   # passthrough from pre-screen.B (null if unsecured)
+loan_purpose:       enum      # passthrough from pre-screen.B (for downstream)
+# Note: credit_history is NOT an A input. It is fetched in F-block step 0
+# from the credit bureau using applicant_id. See WP-AO-98 rationale —
+# bureau data is an F-block lookup, not an upstream B emission.
 ```
 
 ## F: Processing Logic
 
+0. **Bureau lookup** — `credit_history = query_credit_bureau(applicant_id)`. Block until response or fail with `BUREAU_TIMEOUT`. Expected shape:
+   ```
+   { accounts_open, accounts_closed, missed_payments, oldest_account_months,
+     utilization_pct, bankruptcies, inquiries_6mo }
+   ```
 1. **Base score calculation** — Start at 600. Adjust by weighted factors:
    - `oldest_account_months > 60` → +50
    - `missed_payments = 0` → +80; per missed payment → -30
@@ -53,6 +54,11 @@ ltv_ratio:          number?   # null if unsecured
 financial_health:   enum      # {strong, adequate, weak, critical}
 score_factors:      string[]  # top contributing factors (positive and negative)
 scoring_timestamp:  datetime
+# Co-design passthroughs — preserved A fields needed by downstream stages
+loan_amount:        number    # passthrough from A (compliance, underwriting, disbursement)
+loan_purpose:       enum      # passthrough from A (compliance, underwriting)
+income_annual:      number    # passthrough from A (compliance, underwriting)
+collateral_value:   number?   # passthrough from A (underwriting); null iff unsecured
 ```
 
 ## P: Postcondition Checklist
@@ -69,3 +75,5 @@ scoring_timestamp:  datetime
 - [ ] `scoring_timestamp` is valid ISO 8601, not future-dated
 - [ ] No S→T violation: score reflects current snapshot, not permanent characterization
 - [ ] No Δe→∫de violation: single applicant score not extrapolated to portfolio prediction
+- [ ] Passthroughs identity-preserving: `B.loan_amount = A.loan_amount`, `B.loan_purpose = A.loan_purpose`, `B.income_annual = A.income_annual`, `B.collateral_value = A.collateral_value` (downstream chain integrity)
+- [ ] Bureau lookup performed: `score_factors` reflects bureau-sourced credit_history fields (no fabrication from {} placeholder)

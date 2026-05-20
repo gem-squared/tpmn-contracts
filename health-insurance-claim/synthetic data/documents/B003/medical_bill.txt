@@ -1,0 +1,45 @@
+MEDICAL BILL
+KK Women's and Children's Hospital
+100 Bukit Timah Road, Singapore 229899
+Tel: +65 6225 5554 | Reg No: 198901215N
+
+=============================================
+BILL DATE:       20 May 2025
+PATIENT NAME:    Priya Subramaniam
+NRIC:            S9023456D
+DATE OF BIRTH:   18 May 1990
+WARD:            Delivery Suite / Post-Natal Ward, Class B1
+ADMISSION DATE:  14 May 2025
+DISCHARGE DATE:  17 May 2025
+=============================================
+
+ITEMISED CHARGES
+----------------
+Delivery Suite Charges (Normal Vaginal     SGD  3,500.00
+  Delivery) — CPT Code: 59400
+
+Post-Natal Ward (Class B1 - 3 Nights)     SGD  2,550.00
+  @ SGD 850 per night x 3 nights
+  (14 May, 15 May, 16 May 2025)
+  CPT Code: 99232
+
+Paediatrician Assessment (Newborn)         SGD    250.00
+
+Medications & Consumables                  SGD  1,900.00
+  (IV oxytocin, suture materials, pain
+   management, post-natal supplements)
+
+                                         ____________
+TOTAL BILLED AMOUNT:                     SGD  8,200.00
+
+PRE-AUTHORISATION NO:   PA-2025-550001
+ATTENDING PHYSICIAN:    Dr. Kavitha Rajendran
+PHYSICIAN LICENCE:      MCR-31457C
+SPECIALTY:              Obstetrics & Gynaecology
+PROVIDER REGISTRATION:  MOH-HOSP-00273
+
+Diagnosis:  Z37.0 — Single liveborn infant, delivered vaginally
+
+Payment due within 30 days.
+=============================================
+Issued by: KKH Finance Department

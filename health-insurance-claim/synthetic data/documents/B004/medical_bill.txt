@@ -1,0 +1,54 @@
+MEDICAL BILL
+Novena Surgical and Orthopaedic Centre
+9 Novena Rise, #04-01, Singapore 297992
+Tel: +65 6397 2200 | GST Reg: 201834561W
+
+=============================================
+BILL DATE:       05 May 2025
+PATIENT NAME:    Ahmad Zulkifli bin Hassan
+NRIC:            S7534567E
+DATE OF BIRTH:   03 September 1975
+WARD:            Surgical Ward Level 4
+ADMISSION DATE:  02 May 2025
+DISCHARGE DATE:  04 May 2025
+=============================================
+
+ITEMISED CHARGES
+----------------
+Open Appendectomy (Emergency)              SGD  8,500.00
+  CPT Code: 44950
+  Procedure date: 02 May 2025
+
+Anaesthesia (General)                      SGD  1,200.00
+  Dr. Melissa Chua (Anaesthetist)
+  Procedure date: 02 May 2025
+
+Post-Surgical Ward (2 Nights)              SGD  1,300.00
+  @ SGD 650 per night x 2 nights
+  (02 May, 03 May 2025)
+  CPT Code: 99232
+
+Post-Operative Medications                 SGD  1,000.00
+  (IV Cefazolin prophylaxis, Tramadol,
+   Omeprazole, wound dressings)
+
+                                         ____________
+TOTAL BILLED AMOUNT:                     SGD 12,000.00
+
+  Less: Patient's direct payment           SGD    200.00
+                                         ____________
+OUTSTANDING (for insurance claim):        SGD 11,800.00
+
+PRE-AUTHORISATION NO:   PA-2025-880001
+ATTENDING SURGEON:      Dr. Tan Boon Kiat
+PHYSICIAN LICENCE:      MCR-44012D
+SPECIALTY:              General Surgery
+PROVIDER REGISTRATION:  PRV-HOSP-09921
+
+DIAGNOSIS:  K35.80 — Acute appendicitis without abscess
+
+Payment due within 14 days.
+This hospital is a private specialist centre and is not on the
+TPMN Health Insurance panel.
+=============================================
+Issued by: Novena Surgical Finance Department
