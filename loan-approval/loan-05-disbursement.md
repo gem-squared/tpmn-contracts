@@ -9,23 +9,23 @@
 ## A: Input
 
 ```yaml
-applicant_id:       string
-approved:           bool      # from underwriting (must be true)
-loan_amount:        number
-rate:               number    # APR from underwriting
-term_months:        number
-monthly_payment:    number
-conditions:         string[]  # pre-disbursement requirements
-conditions_met:     bool[]    # parallel array: each condition satisfied?
-disbursement_account: object
-  bank_name:        string
-  routing_number:   string
-  account_number:   string
-  account_type:     enum      # {checking, savings}
+applicant_id:       string                  # from underwriting.B passthrough
+approved:           bool                    # from underwriting.B (must be true to proceed)
+loan_amount:        number                  # from underwriting.B passthrough
+rate:               number                  # from underwriting.B (APR)
+term_months:        number                  # from underwriting.B
+monthly_payment:    number                  # from underwriting.B
+conditions:         string[]                # from underwriting.B (pre-disbursement requirements)
+# Note: conditions_met and disbursement_account are NOT A inputs.
+# Both are runtime sample_i values supplied at request-time:
+#   - conditions_met: operations-team verification of each `conditions[i]`
+#   - disbursement_account: applicant-provided bank details
+# See WP-AO-98 rationale — these don't originate in any upstream B.
 ```
 
 ## F: Processing Logic
 
+0. **Runtime inputs** — Read `conditions_met: bool[]` and `disbursement_account: object{bank_name, routing_number, account_number, account_type}` from the request body / runtime context (canvas sample_i or deployed API call payload). These are not upstream-stage outputs.
 1. **Approval gate** — If `approved = false`, halt. No disbursement without underwriting approval.
 2. **Conditions gate** — If any `conditions_met[i] = false`, halt. List outstanding conditions in output.
 3. **Account validation** — Verify `routing_number` is 9 digits, `account_number` is non-empty, `bank_name` is non-empty.

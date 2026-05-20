@@ -9,17 +9,17 @@
 ## A: Input
 
 ```yaml
-applicant_id:       string
-credit_score:       number    # from credit-scoring
-risk_tier:          enum      # {A, B, C, D}
-compliant:          bool      # from compliance-check
-debt_ratio:         number
-ltv_ratio:          number?
-loan_amount:        number
-loan_purpose:       enum
-income_annual:      number
-collateral_value:   number?
-flags:              string[]  # any compliance or SPT flags
+applicant_id:       string                  # from compliance-check.B passthrough
+credit_score:       number                  # from compliance-check.B passthrough (originated in credit-scoring.B)
+risk_tier:          enum                    # from compliance-check.B passthrough {A, B, C, D}
+compliant:          bool                    # from compliance-check.B
+debt_ratio:         number                  # from compliance-check.B passthrough
+ltv_ratio:          number?                 # from compliance-check.B passthrough (null iff unsecured)
+loan_amount:        number                  # from compliance-check.B passthrough
+loan_purpose:       enum                    # from compliance-check.B passthrough {mortgage, auto, personal, business, education}
+income_annual:      number                  # from compliance-check.B passthrough
+collateral_value:   number?                 # from compliance-check.B passthrough (null iff unsecured)
+flags:              string[]                # from compliance-check.B (any compliance or SPT flags)
 ```
 
 ## F: Processing Logic
@@ -55,6 +55,8 @@ monthly_payment:    number    # calculated payment
 conditions:         string[]  # pre-disbursement requirements
 underwriting_notes: string    # summary rationale
 decision_timestamp: datetime
+# Co-design passthrough — preserved field needed by disbursement
+loan_amount:        number    # passthrough chain (needed for disbursed_amount in disbursement)
 ```
 
 ## P: Postcondition Checklist

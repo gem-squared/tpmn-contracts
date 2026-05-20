@@ -9,21 +9,26 @@
 ## A: Input
 
 ```yaml
-applicant_id:       string
-credit_score:       number    # from credit-scoring
-risk_tier:          enum      # {A, B, C, D}
-loan_amount:        number
-loan_purpose:       enum      # {mortgage, auto, personal, business, education}
-loan_type:          enum      # {secured, unsecured}
-income_annual:      number
-debt_ratio:         number
-applicant_demographics:  object
-  age:              number
-  state:            string    # US state code
-  military_status:  bool
+applicant_id:       string                  # from credit-scoring.B passthrough
+credit_score:       number                  # from credit-scoring.B
+risk_tier:          enum                    # from credit-scoring.B {A, B, C, D}
+debt_ratio:         number                  # from credit-scoring.B
+ltv_ratio:          number?                 # from credit-scoring.B (null iff unsecured)
+loan_amount:        number                  # passthrough chain — pre-screen.B → credit-scoring.B → here
+loan_purpose:       enum                    # passthrough chain {mortgage, auto, personal, business, education}
+income_annual:      number                  # passthrough chain
+collateral_value:   number?                 # passthrough chain (null iff unsecured)
+# Note: applicant_demographics and loan_type are NOT A inputs.
+# loan_type is derived in F-block step 0b from collateral_value.
+# applicant_demographics is fetched in F-block step 0a from the
+# applicant registry by applicant_id. See WP-AO-98 rationale.
 ```
 
 ## F: Processing Logic
+
+0a. **Demographics lookup** — `applicant_demographics = query_applicant_registry(applicant_id)` returning `{age, state, military_status}`. Block until response or fail with `REGISTRY_TIMEOUT`. PII access logged for audit.
+
+0b. **Loan type derivation** — `loan_type = (collateral_value != null) ? 'secured' : 'unsecured'`. No external lookup required.
 
 1. **Fair lending check** — Verify no prohibited factors used in prior scoring (race, religion, national origin, sex, marital status). Flag if demographic data was input to credit-scoring beyond permitted fields.
 2. **Usury limit check** — Look up state-specific interest rate caps for `applicant_demographics.state` and `loan_type`. Flag if projected rate would exceed cap.
@@ -53,6 +58,15 @@ audit_trail:        object
   checks_failed:    number
   timestamp:        datetime
   reviewer:         string    # "gem2-tpmn-checker-v0.5.2"
+# Co-design passthroughs — preserved fields needed by underwriting + disbursement
+credit_score:       number    # passthrough from A (underwriting)
+risk_tier:          enum      # passthrough from A (underwriting)
+debt_ratio:         number    # passthrough from A (underwriting)
+loan_amount:        number    # passthrough chain (underwriting + disbursement)
+loan_purpose:       enum      # passthrough chain (underwriting)
+income_annual:      number    # passthrough chain (underwriting)
+collateral_value:   number?   # passthrough chain (underwriting); null iff unsecured
+ltv_ratio:          number?   # passthrough from A (originating in credit-scoring.B); null iff unsecured — needed by underwriting
 ```
 
 ## P: Postcondition Checklist

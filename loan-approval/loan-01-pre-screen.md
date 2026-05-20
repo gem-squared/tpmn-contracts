@@ -44,6 +44,15 @@ lti:                number    # loan-to-income ratio
 ltv:                number?   # loan-to-value (null if unsecured)
 flags:              string[]  # warning flags: ["HIGH_DTI", "HIGH_LTI", "HIGH_LTV", "SHORT_EMPLOYMENT"]
 screening_timestamp: datetime # when screening completed
+# Co-design passthroughs — preserved A fields needed by downstream stages
+full_name:          string    # passthrough from A (compliance + audit trail)
+income_annual:      number    # passthrough from A (credit-scoring, compliance, underwriting)
+loan_amount:        number    # passthrough from A (every downstream stage)
+loan_purpose:       enum      # passthrough from A {mortgage, auto, personal, business, education}
+employment_years:   number    # passthrough from A (underwriting conditions, compliance)
+existing_debt:      number    # passthrough from A (credit-scoring)
+collateral_value:   number?   # passthrough from A (credit-scoring, underwriting); null iff unsecured
+id_verified:        bool      # passthrough from A (compliance audit, idempotent gate)
 ```
 
 ## P: Postcondition Checklist
@@ -64,3 +73,4 @@ AI verification checks — all must pass for CONTRACT satisfaction:
 - [ ] `flags` array contains correct flag for each threshold breach
 - [ ] `screening_timestamp` is valid ISO 8601, not in the future
 - [ ] No SPT violation: screening result is about THIS applicant only (no L→G generalization)
+- [ ] Passthroughs identity-preserving: `B.full_name = A.full_name`, `B.income_annual = A.income_annual`, `B.loan_amount = A.loan_amount`, `B.loan_purpose = A.loan_purpose`, `B.employment_years = A.employment_years`, `B.existing_debt = A.existing_debt`, `B.collateral_value = A.collateral_value`, `B.id_verified = A.id_verified` (downstream chain integrity)
